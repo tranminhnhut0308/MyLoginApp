@@ -258,6 +258,28 @@ namespace MyLoginApp.ViewModels
                         await cmd.ExecuteNonQueryAsync();
                     }
 
+                    // 4. Insert vào bảng cam_kho_vang_cam
+                    using (var cmdKho = new MySqlCommand(@"
+                        INSERT INTO cam_kho_vang_cam (
+                            MA_HANG_HOA, TEN_HANG_HOA, LOAI_VANG, CAN_TONG, TL_HOT, DON_GIA, NGAY_CAM, NGAY_QUA_HAN, TEN_KH, PHIEU_MA, SU_DUNG
+                        ) VALUES (
+                            @maHangHoa, @tenHangHoa, @loaiVang, @canTong, @tlHot, @donGia, @ngayCam, @ngayQuaHan, @tenKh, @phieuMa, @suDung
+                        )", conn))
+                    {
+                        cmdKho.Parameters.AddWithValue("@maHangHoa", DBNull.Value); // hoặc mã hàng hóa thực tế nếu có
+                        cmdKho.Parameters.AddWithValue("@tenHangHoa", TenHang ?? "");
+                        cmdKho.Parameters.AddWithValue("@loaiVang", SelectedLoaiVang != null ? SelectedLoaiVang.TenLoaiVang : "");
+                        cmdKho.Parameters.AddWithValue("@canTong", CanTong ?? 0);
+                        cmdKho.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
+                        cmdKho.Parameters.AddWithValue("@donGia", DonGia ?? 0);
+                        cmdKho.Parameters.AddWithValue("@ngayCam", NgayCam);
+                        cmdKho.Parameters.AddWithValue("@ngayQuaHan", NgayHetHan ?? (object)DBNull.Value);
+                        cmdKho.Parameters.AddWithValue("@tenKh", TenKhach ?? "");
+                        cmdKho.Parameters.AddWithValue("@phieuMa", phieuMaMoi);
+                        cmdKho.Parameters.AddWithValue("@suDung", 1);
+                        await cmdKho.ExecuteNonQueryAsync();
+                    }
+
                     maPhieuVuaTao = phieuMaMoi;
                     await Shell.Current.DisplayAlert("Thành công", $"Tạo phiếu cầm thành công!\nMã phiếu: {maPhieuVuaTao}", "OK");
                     
