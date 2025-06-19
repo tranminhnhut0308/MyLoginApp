@@ -110,8 +110,9 @@ namespace MyLoginApp.ViewModels
 
         // Xử lý thanh toán
         [RelayCommand]
-        public async Task OnThanhToanClickedAsync()
+        public async Task<string> OnThanhToanClickedAsync()
         {
+            string maPhieuVuaTao = null;
             try
             {
                 var missingFields = new List<string>();
@@ -177,7 +178,7 @@ namespace MyLoginApp.ViewModels
                     var message = "Vui lòng kiểm tra lại các thông tin sau:\n\n" + 
                                 string.Join("\n", missingFields.Select(f => $"• {f}"));
                     await Shell.Current.DisplayAlert("Thiếu thông tin", message, "OK");
-                    return;
+                    return null;
                 }
 
                 // Nếu tất cả thông tin đã hợp lệ, tiếp tục lưu vào database
@@ -227,9 +228,9 @@ namespace MyLoginApp.ViewModels
                         newPhieuCamVangId = Convert.ToInt64(obj);
                     }
 
-                    // Lấy PHIEU_MA mới
-                    string today = DateTime.Now.ToString("yyyyMMdd");
-                    string prefix = $"PC.{today}";
+                    // Lấy PHIEU_MA mới (rút gọn: PC.ddMMyy01)
+                    string todayShort = DateTime.Now.ToString("ddMMyy");
+                    string prefix = $"PC.{todayShort}";
                     string phieuMaMoi = $"{prefix}01";
                     using (var getPhieuMaCmd = new MySqlCommand("SELECT PHIEU_MA FROM cam_phieu_cam_vang WHERE PHIEU_MA LIKE @prefix ORDER BY PHIEU_MA DESC LIMIT 1", conn))
                     {
@@ -268,7 +269,9 @@ namespace MyLoginApp.ViewModels
                         await cmdPhieu.ExecuteNonQueryAsync();
                     }
 
-                    await Shell.Current.DisplayAlert("Thành công", "Đã lưu thông tin cầm vàng!", "OK");
+                    maPhieuVuaTao = phieuMaMoi;
+
+                    await Shell.Current.DisplayAlert("Thành công", $"Tạo phiếu cầm thành công!\nMã phiếu: {maPhieuVuaTao}", "OK");
                     
                     // Reset form
                     TenKhach = "";
@@ -290,6 +293,7 @@ namespace MyLoginApp.ViewModels
             {
                 await Shell.Current.DisplayAlert("Lỗi", $"Không thể lưu thông tin: {ex.Message}", "OK");
             }
+            return maPhieuVuaTao;
         }
 
         // Khởi tạo và tải dữ liệu ban đầu

@@ -126,6 +126,10 @@ public class PhieuDangCamViewModel : ObservableObject
 
             while (await reader.ReadAsync())
             {
+                if (reader["KH_TEN"] == DBNull.Value)
+                {
+                    Console.WriteLine($"[DEBUG] Phiếu {reader["PHIEU_MA"]} không có KH_TEN (KH_ID null hoặc sai)");
+                }
                 DanhSachPhieuDangCam.Add(new PhieuDangCamModel
                 {
                     MaPhieu = reader["PHIEU_MA"].ToString(),
