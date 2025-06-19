@@ -23,7 +23,7 @@ namespace MyLoginApp.ViewModels
     public partial class CamVangViewModel : ObservableObject
     {
         [ObservableProperty] private string tenKhach, soDienThoai, tenHang, ghiChu;
-        [ObservableProperty] private double canTong, tlHot, donGia, thanhTien, tienCam, laiSuat;
+        [ObservableProperty] private double? canTong, tlHot, donGia, thanhTien, tienCam, laiSuat;
         [ObservableProperty] private DateTime ngayCam = DateTime.Now;
         [ObservableProperty] private DateTime? ngayHetHan = null;
 
@@ -38,7 +38,7 @@ namespace MyLoginApp.ViewModels
         {
             get
             {
-                double truHot = (CanTong - TlHot);
+                double truHot = (CanTong ?? 0) - (TlHot ?? 0);
                 return truHot.ToString("N3") + " gram";
             }
         }
@@ -88,13 +88,13 @@ namespace MyLoginApp.ViewModels
         }
 
         // Các phương thức tính toán tự động
-        partial void OnDonGiaChanged(double value) => TinhThanhTien();
-        partial void OnCanTongChanged(double value)
+        partial void OnDonGiaChanged(double? value) => TinhThanhTien();
+        partial void OnCanTongChanged(double? value)
         {
             TinhTruHot();
             TinhThanhTien();
         }
-        partial void OnTlHotChanged(double value)
+        partial void OnTlHotChanged(double? value)
         {
             TinhTruHot();
             TinhThanhTien();
@@ -106,7 +106,7 @@ namespace MyLoginApp.ViewModels
             OnPropertyChanged(nameof(TruHotDisplay));
         }
         // Tính thành tiền = trừ hột * đơn giá
-        private void TinhThanhTien() => ThanhTien = (CanTong - TlHot) * DonGia;
+        private void TinhThanhTien() => ThanhTien = ((CanTong ?? 0) - (TlHot ?? 0)) * (DonGia ?? 0);
 
         // Xử lý thanh toán
         [RelayCommand]
@@ -134,23 +134,23 @@ namespace MyLoginApp.ViewModels
                 }
 
                 // Kiểm tra thông tin cân nặng
-                if (CanTong <= 0)
+                if ((CanTong ?? 0) <= 0)
                 {
                     missingFields.Add("Cân tổng (phải lớn hơn 0)");
                 }
 
-                if (TlHot < 0)
+                if ((TlHot ?? 0) < 0)
                 {
                     missingFields.Add("TL hột (không được âm)");
                 }
 
                 // Kiểm tra thông tin tiền
-                if (TienCam <= 0)
+                if ((TienCam ?? 0) <= 0)
                 {
                     missingFields.Add("Tiền cầm (phải lớn hơn 0)");
                 }
 
-                if (LaiSuat < 0)
+                if ((LaiSuat ?? 0) < 0)
                 {
                     missingFields.Add("Lãi suất (không được âm)");
                 }
@@ -166,7 +166,7 @@ namespace MyLoginApp.ViewModels
                 }
 
                 // Kiểm tra thành tiền
-                if (ThanhTien <= 0)
+                if ((ThanhTien ?? 0) <= 0)
                 {
                     missingFields.Add("Thành tiền (phải lớn hơn 0)");
                 }
@@ -192,10 +192,10 @@ namespace MyLoginApp.ViewModels
                         )", conn);
 
                     cmd.Parameters.AddWithValue("@tenHangHoa", TenHang ?? "");
-                    cmd.Parameters.AddWithValue("@canTong", CanTong);
-                    cmd.Parameters.AddWithValue("@tlHot", TlHot);
-                    cmd.Parameters.AddWithValue("@donGia", DonGia);
-                    cmd.Parameters.AddWithValue("@thanhTien", ThanhTien);
+                    cmd.Parameters.AddWithValue("@canTong", CanTong ?? 0);
+                    cmd.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
+                    cmd.Parameters.AddWithValue("@donGia", DonGia ?? 0);
+                    cmd.Parameters.AddWithValue("@thanhTien", ThanhTien ?? 0);
                     cmd.Parameters.AddWithValue("@soLuong", 1); // mặc định 1
                     cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(GhiChu) ? DBNull.Value : GhiChu);
                     cmd.Parameters.AddWithValue("@suDung", 1); // mặc định 1
@@ -254,11 +254,11 @@ namespace MyLoginApp.ViewModels
                         cmdPhieu.Parameters.AddWithValue("@phieuCamVangId", newPhieuCamVangId);
                         cmdPhieu.Parameters.AddWithValue("@soPhieu", "123"); // Luôn là 123
                         cmdPhieu.Parameters.AddWithValue("@phieuMa", phieuMaMoi);
-                        cmdPhieu.Parameters.AddWithValue("@canTong", CanTong);
-                        cmdPhieu.Parameters.AddWithValue("@tlHot", TlHot);
-                        cmdPhieu.Parameters.AddWithValue("@tongGiaTri", ThanhTien);
-                        cmdPhieu.Parameters.AddWithValue("@laiXuat", LaiSuat);
-                        cmdPhieu.Parameters.AddWithValue("@tienKhachNhan", TienCam);
+                        cmdPhieu.Parameters.AddWithValue("@canTong", CanTong ?? 0);
+                        cmdPhieu.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
+                        cmdPhieu.Parameters.AddWithValue("@tongGiaTri", ThanhTien ?? 0);
+                        cmdPhieu.Parameters.AddWithValue("@laiXuat", LaiSuat ?? 0);
+                        cmdPhieu.Parameters.AddWithValue("@tienKhachNhan", TienCam ?? 0);
                         cmdPhieu.Parameters.AddWithValue("@denNgay", NgayHetHan ?? DateTime.Now);
                         cmdPhieu.Parameters.AddWithValue("@soNgayCam", (NgayHetHan != null ? (NgayHetHan.Value - NgayCam).Days : 0));
                         cmdPhieu.Parameters.AddWithValue("@khId", KhachHangId ?? "");
@@ -274,12 +274,12 @@ namespace MyLoginApp.ViewModels
                     TenKhach = "";
                     SoDienThoai = "";
                     TenHang = "";
-                    CanTong = 0;
-                    TlHot = 0;
-                    DonGia = 0;
-                    ThanhTien = 0;
-                    TienCam = 0;
-                    LaiSuat = 0;
+                    CanTong = null;
+                    TlHot = null;
+                    DonGia = null;
+                    ThanhTien = null;
+                    TienCam = null;
+                    LaiSuat = null;
                     NgayCam = DateTime.Now;
                     NgayHetHan = null;
                     GhiChu = "";

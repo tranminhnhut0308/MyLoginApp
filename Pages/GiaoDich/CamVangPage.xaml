@@ -176,7 +176,7 @@
                     <Label Text="⚖️ Cân tổng" TextColor="Black"/>
                     <Entry x:Name="entryCanTong" 
                            Keyboard="Numeric" 
-                           Placeholder="gram" 
+                           Placeholder="Nhập cân tổng (gram)" 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
                            Text="{Binding CanTong, Mode=TwoWay}"/>
@@ -184,7 +184,7 @@
                     <Label Text="💎 TL Hột" TextColor="Black"/>
                     <Entry x:Name="entryTLHot" 
                            Keyboard="Numeric" 
-                           Placeholder="gram" 
+                           Placeholder="Nhập TL hột (gram)" 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
                            Text="{Binding TlHot, Mode=TwoWay}"/>
@@ -211,7 +211,7 @@
                     <Label Text="💰 Tiền cầm" TextColor="Black"/>
                     <Entry x:Name="entryTienCam" 
                            Keyboard="Numeric" 
-                           Placeholder="VNĐ" 
+                           Placeholder="Nhập số tiền cầm (VNĐ)" 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
                            Text="{Binding TienCam, Mode=TwoWay}"/>
@@ -219,7 +219,7 @@
                     <Label Text="📈 Lãi suất (%)" TextColor="Black"/>
                     <Entry x:Name="entryLaiSuat" 
                            Keyboard="Numeric" 
-                           Placeholder="%" 
+                           Placeholder="Nhập lãi suất (%)" 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
                            Text="{Binding LaiSuat, Mode=TwoWay}"/>
