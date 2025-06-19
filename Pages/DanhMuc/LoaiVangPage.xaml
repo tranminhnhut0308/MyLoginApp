@@ -126,7 +126,7 @@
                        Padding="15" 
                        Margin="0,0,0,10"
                        HasShadow="True">
-                    <Label Text="📋 Danh sách loại vàng" 
+                    <Label Text="📋 Danh sách loại vàng 12318235183257s" 
                            FontAttributes="Bold" 
                            FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
                            HorizontalOptions="Center" 
