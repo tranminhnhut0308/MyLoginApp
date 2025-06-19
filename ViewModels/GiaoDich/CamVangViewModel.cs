@@ -39,7 +39,7 @@ namespace MyLoginApp.ViewModels
             get
             {
                 double truHot = (CanTong ?? 0) - (TlHot ?? 0);
-                return truHot.ToString("N3") + " gram";
+                return truHot.ToString("N3");
             }
         }
 

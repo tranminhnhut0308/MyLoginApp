@@ -47,13 +47,13 @@
                             SelectedItem="{Binding SelectedLoaiVang}"/>
 
                     <Label Text="⚖️ Cân tổng" TextColor="Black"/>
-                    <Entry x:Name="entryCanTong" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+                    <Entry x:Name="entryCanTong" Keyboard="Numeric" Placeholder="0.000" TextColor="Black" PlaceholderColor="Gray"/>
 
                     <Label Text="💎 TL Hột" TextColor="Black"/>
-                    <Entry x:Name="entryTLHot" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+                    <Entry x:Name="entryTLHot" Keyboard="Numeric" Placeholder="0.000" TextColor="Black" PlaceholderColor="Gray"/>
 
                     <Label Text="➖ Trừ hột" TextColor="Black"/>
-                    <Entry x:Name="entryTruHot" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+                    <Entry x:Name="entryTruHot" Keyboard="Numeric" Placeholder="0.000" TextColor="Black" PlaceholderColor="Gray"/>
                 </VerticalStackLayout>
 
                 <!-- Cột phải -->

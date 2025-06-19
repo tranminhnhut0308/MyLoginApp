@@ -16,6 +16,14 @@ public class PhieuDangCamViewModel : ObservableObject
     private bool canGoNext = false;
     private bool canGoPrevious = false;
     private string searchKeyword = string.Empty;
+    private int tongSoPhieu;
+    private decimal tongCanTong;
+    private decimal tongCanTongLuong;
+    private decimal tongSoLuongVang;
+    private decimal tongTLHot;
+    private decimal tongTLThuc;
+    private decimal tongTienNhan;
+    private decimal tongTienCamMoi;
 
     public ObservableCollection<PhieuDangCamModel> DanhSachPhieuDangCam { get; set; } = new ObservableCollection<PhieuDangCamModel>();
     public int CurrentPage { get => currentPage; set => SetProperty(ref currentPage, value); }
@@ -23,6 +31,60 @@ public class PhieuDangCamViewModel : ObservableObject
     public bool CanGoNext { get => canGoNext; set => SetProperty(ref canGoNext, value); }
     public bool CanGoPrevious { get => canGoPrevious; set => SetProperty(ref canGoPrevious, value); }
     public string SearchKeyword { get => searchKeyword; set => SetProperty(ref searchKeyword, value); }
+    public int TongSoPhieu
+    {
+        get => tongSoPhieu;
+        set => SetProperty(ref tongSoPhieu, value);
+    }
+    public decimal TongCanTong
+    {
+        get => tongCanTong;
+        set
+        {
+            if (SetProperty(ref tongCanTong, value))
+            {
+                // Cập nhật TongTLThuc khi TongCanTong thay đổi
+                TongTLThuc = value - TongTLHot;
+            }
+        }
+    }
+    public decimal TongCanTongLuong
+    {
+        get => tongCanTongLuong;
+        set => SetProperty(ref tongCanTongLuong, value);
+    }
+    public decimal TongSoLuongVang
+    {
+        get => tongSoLuongVang;
+        set => SetProperty(ref tongSoLuongVang, value);
+    }
+    public decimal TongTLHot
+    {
+        get => tongTLHot;
+        set
+        {
+            if (SetProperty(ref tongTLHot, value))
+            {
+                // Cập nhật TongTLThuc khi TongTLHot thay đổi
+                TongTLThuc = TongCanTong - value;
+            }
+        }
+    }
+    public decimal TongTLThuc
+    {
+        get => tongTLThuc;
+        set => SetProperty(ref tongTLThuc, value);
+    }
+    public decimal TongTienNhan
+    {
+        get => tongTienNhan;
+        set => SetProperty(ref tongTienNhan, value);
+    }
+    public decimal TongTienCamMoi
+    {
+        get => tongTienCamMoi;
+        set => SetProperty(ref tongTienCamMoi, value);
+    }
 
     private bool _isLoading;
     public bool IsLoading
@@ -65,7 +127,7 @@ public class PhieuDangCamViewModel : ObservableObject
                 LEFT JOIN phx_khach_hang ON cam_phieu_cam_vang.KH_ID = phx_khach_hang.KH_ID
                 WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL 
                     AND cam_phieu_cam_vang.THANH_LY IS NULL 
-                    AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 1";
+                    AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 0";
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -82,6 +144,51 @@ public class PhieuDangCamViewModel : ObservableObject
             TotalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
             CanGoNext = currentPage < TotalPages;
             CanGoPrevious = currentPage > 1;
+            TongSoPhieu = totalRecords;
+
+            // Lấy tổng cân tổng của toàn bộ phiếu (không chỉ trang hiện tại)
+            string sumQuery = @"
+                SELECT 
+                    SUM(t.CAN_TONG) as TONG_CAN,
+                    SUM(t.TL_HOT) as TONG_TL_HOT,
+                    SUM(t.TIEN_KHACH_NHAN) as TONG_TIEN_NHAN,
+                    SUM(t.TIEN_KHACH_NHAN + IFNULL(t.TIEN_THEM, 0)) as TONG_TIEN_CAM_MOI
+                FROM (
+                    SELECT DISTINCT 
+                        cam_phieu_cam_vang.PHIEU_CAM_VANG_ID,
+                        cam_phieu_cam_vang.CAN_TONG,
+                        cam_phieu_cam_vang.TL_HOT,
+                        cam_phieu_cam_vang.TIEN_KHACH_NHAN,
+                        cam_nhan_tien_them.TIEN_THEM
+                    FROM cam_phieu_cam_vang
+                    LEFT JOIN cam_chi_tiet_phieu_cam_vang ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_chi_tiet_phieu_cam_vang.PHIEU_CAM_VANG_ID
+                    LEFT JOIN phx_khach_hang ON cam_phieu_cam_vang.KH_ID = phx_khach_hang.KH_ID
+                    LEFT JOIN cam_nhan_tien_them ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_nhan_tien_them.PHIEU_CAM_ID
+                    WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL
+                      AND cam_phieu_cam_vang.THANH_LY IS NULL
+                      AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 0
+                ) as t";
+            if (!string.IsNullOrEmpty(searchText))
+            {
+                sumQuery += " AND (cam_phieu_cam_vang.PHIEU_MA LIKE @SearchText OR phx_khach_hang.KH_TEN LIKE @SearchText)";
+            }
+            using (var sumCmd = new MySqlCommand(sumQuery, conn))
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    sumCmd.Parameters.AddWithValue("@SearchText", "%" + searchText + "%");
+                }
+                using (var sumReader = await sumCmd.ExecuteReaderAsync())
+                {
+                    if (await sumReader.ReadAsync())
+                    {
+                        TongCanTong = sumReader["TONG_CAN"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_CAN"]);
+                        TongTLHot = sumReader["TONG_TL_HOT"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TL_HOT"]);
+                        TongTienNhan = sumReader["TONG_TIEN_NHAN"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TIEN_NHAN"]);
+                        TongTienCamMoi = sumReader["TONG_TIEN_CAM_MOI"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TIEN_CAM_MOI"]);
+                    }
+                }
+            }
 
             string query = @"
                 SELECT 
@@ -104,7 +211,7 @@ public class PhieuDangCamViewModel : ObservableObject
                 LEFT JOIN cam_nhan_tien_them ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_nhan_tien_them.PHIEU_CAM_ID
                 WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL 
                     AND cam_phieu_cam_vang.THANH_LY IS NULL 
-                    AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 1";
+                    AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 0";
 
             if (!string.IsNullOrEmpty(searchText))
             {
@@ -123,14 +230,14 @@ public class PhieuDangCamViewModel : ObservableObject
 
             using var reader = await cmd.ExecuteReaderAsync();
             DanhSachPhieuDangCam.Clear();
-
+            decimal sumSoLuongVang = 0;
             while (await reader.ReadAsync())
             {
                 if (reader["KH_TEN"] == DBNull.Value)
                 {
                     Console.WriteLine($"[DEBUG] Phiếu {reader["PHIEU_MA"]} không có KH_TEN (KH_ID null hoặc sai)");
                 }
-                DanhSachPhieuDangCam.Add(new PhieuDangCamModel
+                var model = new PhieuDangCamModel
                 {
                     MaPhieu = reader["PHIEU_MA"].ToString(),
                     TenKhachHang = reader["KH_TEN"].ToString(),
@@ -143,8 +250,12 @@ public class PhieuDangCamViewModel : ObservableObject
                     TienNhanThem = Convert.ToDecimal(reader["TIEN_THEM"]),
                     TienCamMoi = Convert.ToDecimal(reader["TIEN_MOI"]),
                     LaiSuat = Convert.ToDecimal(reader["LAI_XUAT"])
-                });
+                };
+                DanhSachPhieuDangCam.Add(model);
+                sumSoLuongVang += model.DinhGia;
             }
+            TongSoLuongVang = sumSoLuongVang;
+            TongCanTongLuong = sumSoLuongVang / 37.5m;
         }
         catch (Exception ex)
         {
