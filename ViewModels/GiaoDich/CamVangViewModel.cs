@@ -181,57 +181,26 @@ namespace MyLoginApp.ViewModels
                     return null;
                 }
 
-                // Nếu tất cả thông tin đã hợp lệ, tiếp tục lưu vào database
                 using var conn = await DatabaseHelper.GetOpenConnectionAsync();
                 if (conn != null)
                 {
-                    using var cmd = new MySqlCommand(@"
-                        INSERT INTO cam_chi_tiet_phieu_cam_vang (
-                            TEN_HANG_HOA, CAN_TONG, TL_HOT, DON_GIA, THANH_TIEN, SO_LUONG, GHI_CHU, SU_DUNG, LOAI_VANG, NHOM_ID
-                        ) VALUES (
-                            @tenHangHoa, @canTong, @tlHot, @donGia, @thanhTien, @soLuong, @ghiChu, @suDung, @loaiVang, @nhomId
-                        )", conn);
-
-                    cmd.Parameters.AddWithValue("@tenHangHoa", TenHang ?? "");
-                    cmd.Parameters.AddWithValue("@canTong", CanTong ?? 0);
-                    cmd.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
-                    cmd.Parameters.AddWithValue("@donGia", DonGia ?? 0);
-                    cmd.Parameters.AddWithValue("@thanhTien", ThanhTien ?? 0);
-                    cmd.Parameters.AddWithValue("@soLuong", 1); // mặc định 1
-                    cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(GhiChu) ? DBNull.Value : GhiChu);
-                    cmd.Parameters.AddWithValue("@suDung", 1); // mặc định 1
-                    cmd.Parameters.AddWithValue("@loaiVang", SelectedLoaiVang != null ? SelectedLoaiVang.TenLoaiVang : "");
-                    cmd.Parameters.AddWithValue("@nhomId", DonGia);
-
-                    await cmd.ExecuteNonQueryAsync();
-
-                    // Lấy CHI_TIET_ID vừa tạo
-                    var getIdCmd = new MySqlCommand("SELECT LAST_INSERT_ID();", conn);
-                    var chiTietIdObj = await getIdCmd.ExecuteScalarAsync();
-                    long chiTietId = Convert.ToInt64(chiTietIdObj);
-                    long phieuCamVangId = chiTietId + 10;
-
-                    // Cập nhật lại PHIEU_CAM_VANG_ID
-                    using (var updateCmd = new MySqlCommand(
-                        "UPDATE cam_chi_tiet_phieu_cam_vang SET PHIEU_CAM_VANG_ID = @phieuCamVangId WHERE CHI_TIET_ID = @chiTietId", conn))
-                    {
-                        updateCmd.Parameters.AddWithValue("@phieuCamVangId", phieuCamVangId);
-                        updateCmd.Parameters.AddWithValue("@chiTietId", chiTietId);
-                        await updateCmd.ExecuteNonQueryAsync();
-                    }
-
-                    // Lấy PHIEU_CAM_VANG_ID lớn nhất hiện tại
+                    // 1. Trước khi insert, lấy PHIEU_CAM_VANG_ID lớn nhất hiện có
                     long newPhieuCamVangId = 1;
-                    using (var getMaxCmd = new MySqlCommand("SELECT IFNULL(MAX(PHIEU_CAM_VANG_ID), 0) + 1 FROM cam_phieu_cam_vang", conn))
+                    using (var getMaxIdCmd = new MySqlCommand("SELECT MAX(PHIEU_CAM_VANG_ID) FROM cam_phieu_cam_vang", conn))
                     {
-                        var obj = await getMaxCmd.ExecuteScalarAsync();
-                        newPhieuCamVangId = Convert.ToInt64(obj);
+                        var obj = await getMaxIdCmd.ExecuteScalarAsync();
+                        if (obj != DBNull.Value && obj != null)
+                        {
+                            newPhieuCamVangId = Convert.ToInt64(obj) + 1;
+                        }
                     }
 
-                    // Lấy PHIEU_MA mới (rút gọn: PC.ddMMyy01)
+                    // 2. Insert vào bảng cam_phieu_cam_vang trước
+                    string phieuMaMoi = ""; // Khai báo biến trước
+                    // Sinh mã phiếu mới
                     string todayShort = DateTime.Now.ToString("ddMMyy");
                     string prefix = $"PC.{todayShort}";
-                    string phieuMaMoi = $"{prefix}01";
+                    phieuMaMoi = $"{prefix}01";
                     using (var getPhieuMaCmd = new MySqlCommand("SELECT PHIEU_MA FROM cam_phieu_cam_vang WHERE PHIEU_MA LIKE @prefix ORDER BY PHIEU_MA DESC LIMIT 1", conn))
                     {
                         getPhieuMaCmd.Parameters.AddWithValue("@prefix", prefix + "%");
@@ -243,8 +212,6 @@ namespace MyLoginApp.ViewModels
                             phieuMaMoi = $"{prefix}{stt:D2}";
                         }
                     }
-
-                    // Insert với PHIEU_CAM_VANG_ID mới
                     using (var cmdPhieu = new MySqlCommand(@"
                         INSERT INTO cam_phieu_cam_vang
                         (PHIEU_CAM_VANG_ID, SO_PHIEU, PHIEU_MA, CAN_TONG, TL_HOT, TONG_GIA_TRI, LAI_XUAT, TIEN_KHACH_NHAN, TU_NGAY, DEN_NGAY, SO_NGAY_CAM, KH_ID, TIEN_LAI_NGAY, TIEN_CHU, GHI_CHU)
@@ -253,7 +220,7 @@ namespace MyLoginApp.ViewModels
                     ", conn))
                     {
                         cmdPhieu.Parameters.AddWithValue("@phieuCamVangId", newPhieuCamVangId);
-                        cmdPhieu.Parameters.AddWithValue("@soPhieu", "123"); // Luôn là 123
+                        cmdPhieu.Parameters.AddWithValue("@soPhieu", "123");
                         cmdPhieu.Parameters.AddWithValue("@phieuMa", phieuMaMoi);
                         cmdPhieu.Parameters.AddWithValue("@canTong", CanTong ?? 0);
                         cmdPhieu.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
@@ -269,8 +236,29 @@ namespace MyLoginApp.ViewModels
                         await cmdPhieu.ExecuteNonQueryAsync();
                     }
 
-                    maPhieuVuaTao = phieuMaMoi;
+                    // 3. Insert vào bảng cam_chi_tiet_phieu_cam_vang với PHIEU_CAM_VANG_ID vừa tạo
+                    using (var cmd = new MySqlCommand(@"
+                        INSERT INTO cam_chi_tiet_phieu_cam_vang (
+                            PHIEU_CAM_VANG_ID, TEN_HANG_HOA, CAN_TONG, TL_HOT, DON_GIA, THANH_TIEN, SO_LUONG, GHI_CHU, SU_DUNG, LOAI_VANG, NHOM_ID
+                        ) VALUES (
+                            @phieuCamVangId, @tenHangHoa, @canTong, @tlHot, @donGia, @thanhTien, @soLuong, @ghiChu, @suDung, @loaiVang, @nhomId
+                        )", conn))
+                    {
+                        cmd.Parameters.AddWithValue("@phieuCamVangId", newPhieuCamVangId);
+                        cmd.Parameters.AddWithValue("@tenHangHoa", TenHang ?? "");
+                        cmd.Parameters.AddWithValue("@canTong", CanTong ?? 0);
+                        cmd.Parameters.AddWithValue("@tlHot", TlHot ?? 0);
+                        cmd.Parameters.AddWithValue("@donGia", DonGia ?? 0);
+                        cmd.Parameters.AddWithValue("@thanhTien", ThanhTien ?? 0);
+                        cmd.Parameters.AddWithValue("@soLuong", 1);
+                        cmd.Parameters.AddWithValue("@ghiChu", string.IsNullOrWhiteSpace(GhiChu) ? DBNull.Value : GhiChu);
+                        cmd.Parameters.AddWithValue("@suDung", 1);
+                        cmd.Parameters.AddWithValue("@loaiVang", SelectedLoaiVang != null ? SelectedLoaiVang.TenLoaiVang : "");
+                        cmd.Parameters.AddWithValue("@nhomId", DonGia);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
 
+                    maPhieuVuaTao = phieuMaMoi;
                     await Shell.Current.DisplayAlert("Thành công", $"Tạo phiếu cầm thành công!\nMã phiếu: {maPhieuVuaTao}", "OK");
                     
                     // Reset form
@@ -286,7 +274,6 @@ namespace MyLoginApp.ViewModels
                     NgayCam = DateTime.Now;
                     NgayHetHan = null;
                     GhiChu = "";
-                    // Không set SelectedLoaiVang = null để tránh lỗi binding
                 }
             }
             catch (Exception ex)
