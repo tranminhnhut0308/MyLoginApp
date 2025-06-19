@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyLoginApp.ViewModels.BaoCao"
+             xmlns:models="clr-namespace:MyLoginApp.Models.BaoCao"
+             xmlns:converters="clr-namespace:MyLoginApp.Converter"
+             xmlns:localConverters="clr-namespace:MyLoginApp.Converters"
+             x:Class="MyLoginApp.Pages.BaoCao.KhoVangMuaVaoPage"
+             Title="Kho vàng mua vào">
+
+    <ContentPage.BindingContext>
+        <vm:KhoVangMuaVaoViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InvertedBoolConverter x:Key="InvertedBoolConverter"/>
+            <converters:StringNotEmptyConverter x:Key="StringNotEmptyConverter"/>
+            <localConverters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Sử dụng Grid làm container chung cho cả layout chính và popup -->
+    <Grid>
+        <!-- Layout chính -->
+        <Grid RowDefinitions="Auto,Auto,Auto,*,Auto" Padding="15" RowSpacing="15">
+            <Frame Grid.Row="0"
+       BackgroundColor="#007AFF"
+       CornerRadius="10"
+       Padding="10"
+       Margin="0,10,0,0"
+       HasShadow="True"
+       HorizontalOptions="FillAndExpand">
+                <Label Text="Kho vàng mua vào"
+           FontSize="26"
+           TextColor="White"
+           FontAttributes="Bold"
+           HorizontalTextAlignment="Center"
+           VerticalTextAlignment="Center"/>
+            </Frame>
+
+            <!-- Form tìm kiếm -->
+            <Frame Grid.Row="1" 
+                   BorderColor="#007AFF" 
+                   Padding="15" 
+                   Margin="0,0,0,0"
+                   HasShadow="True"
+                   CornerRadius="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <Entry Grid.Column="0" 
+                           Placeholder="Nhập tên hàng hoặc nhóm..." 
+                           Text="{Binding TuKhoaTimKiem}"
+                           ClearButtonVisibility="WhileEditing"
+                           ReturnCommand="{Binding ThucHienTimKiemCommand}"/>
+                    <Button Grid.Column="1" 
+                            Text="Tìm" 
+                            Command="{Binding ThucHienTimKiemCommand}" 
+                            BackgroundColor="#007AFF"
+                            Margin="10,0,0,0"
+                            WidthRequest="100"/>
+                </Grid>
+            </Frame>
+
+            <!-- Thông tin debug và trạng thái -->
+            <StackLayout Grid.Row="2" 
+                         IsVisible="{Binding DebugInfo, Converter={StaticResource StringNotEmptyConverter}}"
+                         Margin="0,0,0,0"
+                         Orientation="Horizontal">
+                <Label Text="{Binding DebugInfo}" 
+                       FontSize="Small" 
+                       HorizontalOptions="StartAndExpand"
+                       VerticalOptions="Center"/>
+                <Button Text="Lọc" 
+                        Command="{Binding ShowFilterPopupCommand}" 
+                        BackgroundColor="#5856D6"
+                        HorizontalOptions="End"
+                        WidthRequest="100"
+                        HeightRequest="35"
+                        FontSize="Small"
+                        Padding="5"/>
+            </StackLayout>
+
+            <!-- Danh sách kho vàng mua vào -->
+            <Grid Grid.Row="3">
+                <!-- Chỉ báo loading -->
+                <ActivityIndicator IsRunning="{Binding IsLoading}" 
+                                  IsVisible="{Binding IsLoading}" 
+                                  HorizontalOptions="Center" 
+                                  VerticalOptions="Center"/>
+
+                <Label Text="{Binding LoadingMessage}" 
+                       IsVisible="{Binding IsLoading}"
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center"
+                       Margin="0,50,0,0"/>
+
+                <!-- Danh sách kho vàng mua vào -->
+                <CollectionView ItemsSource="{Binding DanhSachHienThi}" 
+                                IsVisible="{Binding IsLoading, Converter={StaticResource InvertedBoolConverter}}"
+                                Margin="0,5">
+                    <CollectionView.EmptyView>
+                        <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                            <Label Text="Không có dữ liệu kho vàng mua vào" 
+                                   FontSize="18" 
+                                   HorizontalTextAlignment="Center"/>
+                            <Label Text="Hãy điều chỉnh bộ lọc hoặc thử tìm kiếm khác"
+                                   FontSize="14"
+                                   HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding TuKhoaTimKiem, Converter={StaticResource StringNotEmptyConverter}}"/>
+                        </StackLayout>
+                    </CollectionView.EmptyView>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:KhoVangMuaVaoModel">
+                            <Frame Margin="0,5" Padding="15" BorderColor="LightGray" HasShadow="True">
+                                <Grid RowDefinitions="Auto,Auto,Auto">
+                                    <!-- Dòng đầu tiên: Tên hàng và nhóm -->
+                                    <Grid Grid.Row="0" ColumnDefinitions="*,*" Margin="0,0,0,5">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Tên hàng:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding TEN_HANG_HOA}" LineBreakMode="WordWrap"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Nhóm:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding NHOM_TEN}" LineBreakMode="WordWrap"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <!-- Dòng thứ hai: Trọng lượng -->
+                                    <Grid Grid.Row="1" ColumnDefinitions="*,*" Margin="0,5,0,0">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Cân tổng:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding CAN_TONG, StringFormat='{0:N3}'}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="TL Lọc:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding TL_LOC, StringFormat='{0:N3}'}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="TL Hột:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding TL_HOT, StringFormat='{0:N3}'}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="TL Thực:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding TL_THUC, StringFormat='{0:N3}'}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Số lượng:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding SO_LUONG}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+                                    </Grid>
+
+                                    <!-- Dòng thứ ba: Giá -->
+                                    <Grid Grid.Row="2" ColumnDefinitions="*,*" Margin="0,5,0,0">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Đơn giá:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding DON_GIA, StringFormat='{0:N0} VNĐ'}" LineBreakMode="NoWrap"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1" Spacing="5">
+                                            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="5">
+                                                <Label Grid.Column="0" Text="Thành tiền:" FontAttributes="Bold" WidthRequest="80"/>
+                                                <Label Grid.Column="1" Text="{Binding THANH_TIEN, StringFormat='{0:N0} VNĐ'}" LineBreakMode="NoWrap" TextColor="#FF5722"/>
+                                            </Grid>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+
+            <!-- Điều hướng phân trang -->
+            <Grid Grid.Row="4" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0">
+                <Button Grid.Column="0" 
+                        Text="Trang trước" 
+                        Command="{Binding GoPreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}"
+                        BackgroundColor="#34C759"
+                        WidthRequest="120"/>
+
+                <Label Grid.Column="1" 
+                       Text="{Binding CurrentPage, StringFormat='Trang {0}/{1}', ConverterParameter={Binding TotalPages}}" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center"/>
+
+                <Button Grid.Column="2" 
+                        Text="Trang sau" 
+                        Command="{Binding GoNextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        BackgroundColor="#34C759"
+                        WidthRequest="120"/>
+            </Grid>
+        </Grid>
+
+        <!-- Popup lọc theo nhóm vàng -->
+        <Grid ZIndex="999" 
+              IsVisible="{Binding IsFilterPopupVisible}" 
+              BackgroundColor="#80000000" 
+              InputTransparent="False">
+            <Frame VerticalOptions="Center" 
+                   HorizontalOptions="Center" 
+                   WidthRequest="320" 
+                   Padding="20" 
+                   CornerRadius="10" 
+                   BackgroundColor="White"
+                   HasShadow="True"
+                   BorderColor="#ccc">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Lọc dữ liệu" 
+                           FontSize="18" 
+                           FontAttributes="Bold" 
+                           HorizontalOptions="Center" />
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Nhóm vàng:" FontSize="14" FontAttributes="Bold" />
+                        <Picker Title="Chọn nhóm vàng" 
+                                ItemsSource="{Binding DanhSachNhomVang}" 
+                                SelectedItem="{Binding SelectedNhomVang}" 
+                                Margin="0,0,0,10" />
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Tên hàng:" FontSize="14" FontAttributes="Bold" />
+                        <Picker Title="Chọn tên hàng" 
+                                ItemsSource="{Binding DanhSachTenHangHoa}" 
+                                SelectedItem="{Binding SelectedTenHangHoa}"
+                                IsEnabled="{Binding DanhSachTenHangHoa.Count, Converter={StaticResource IntToBoolConverter}}"
+                                Margin="0,0,0,10" />
+                    </VerticalStackLayout>
+
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                        <Button Text="Hủy" 
+                                Command="{Binding HideFilterPopupCommand}" 
+                                BackgroundColor="#FF3B30" 
+                                WidthRequest="100" />
+
+                        <Button Text="Áp dụng" 
+                                Command="{Binding ApplyFilterCommand}" 
+                                BackgroundColor="#007AFF" 
+                                WidthRequest="100" />
+                    </StackLayout>
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+    </Grid>
+</ContentPage>

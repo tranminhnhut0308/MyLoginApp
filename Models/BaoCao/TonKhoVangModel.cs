@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyLoginApp.Models.BaoCao
+{
+    public class TonKhoVangModel
+    {
+        public string NHOM_TEN { get; set; }
+        public decimal CAN_TONG { get; set; }
+        public decimal TL_HOT { get; set; }
+        public decimal CONG_GOC { get; set; }
+        public decimal GIA_CONG { get; set; }
+        public decimal DON_GIA_BAN { get; set; }
+        public int SL_TON { get; set; }
+        public decimal TL_THUC => CAN_TONG - TL_HOT;
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}

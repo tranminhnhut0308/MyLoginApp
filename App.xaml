@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:MyLoginApp.Converters"
+             xmlns:converter="clr-namespace:MyLoginApp.Converter"
+             x:Class="MyLoginApp.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <local:NullToBooleanConverter x:Key="NullToBooleanConverter" />
+            <local:NullToBooleanConverter x:Key="NullToBoolConverter" />
+            <local:IntToBoolConverter x:Key="IntToBoolConverter" />
+            <local:NullToBooleanConverter x:Key="BoolToCheckConverter" />
+            <local:NullToBooleanConverter x:Key="SelectedItemToBoolConverter" />
+            <local:SuDungToColorConverter x:Key="SuDungToColorConverter" />
+            <local:StringToBooleanConverter x:Key="StringToBooleanConverter" />
+            <converter:InverseBoolConverter x:Key="InverseBoolConverter" />
+
+            <local:IsGreaterThanOneConverter x:Key="IsGreaterThanOne" />
+            <local:IsLessThanTongSoTrangConverter x:Key="IsLessThanTongSoTrang" />
+            <converter:NullableValueConverter x:Key="NullableValueConverter" />
+            <converter:DisplayPriceConverter x:Key="DisplayPriceConverter" />
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

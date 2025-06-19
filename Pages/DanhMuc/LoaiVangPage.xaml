@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             x:Class="MyLoginApp.Pages.LoaiVangPage"
+             Title="Quản lý Loại Vàng">
+
+    <ContentPage.BindingContext>
+        <viewmodels:LoaiVangViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10">
+        <!-- KHU VỰC NÚT ĐIỀU KHIỂN -->
+        <HorizontalStackLayout Grid.Row="0" 
+                              Spacing="18" 
+                              HorizontalOptions="FillAndExpand" 
+                              Margin="0,0,0,15">
+            <Button Text="➕Thêm" 
+                    Command="{Binding ShowAddFormCommand}"
+                    BackgroundColor="#4CAF50" 
+                    TextColor="Black" 
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="{OnPlatform Android=60, iOS=55, Default=60}"
+                    CornerRadius="{OnPlatform Android=35, iOS=28, Default=25}"
+                    FontSize="20"
+                    FontAttributes="Bold" />
+
+            <Button Text="✏️ Sửa" 
+                    Command="{Binding ShowEditFormCommand}"
+                    IsEnabled="{Binding SelectedLoaiVang, Converter={StaticResource NullToBooleanConverter}}"
+                    BackgroundColor="#FFCF07" 
+                    TextColor="Black" 
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="{OnPlatform Android=60, iOS=55, Default=60}"
+                    CornerRadius="{OnPlatform Android=40, iOS=28, Default=25}"
+                    FontSize="20"
+                    FontAttributes="Bold">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#FFCF07" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+
+            <Button Text="🗑️ Xóa" 
+                    Command="{Binding DeleteCommand}"
+                    IsEnabled="{Binding SelectedLoaiVang, Converter={StaticResource NullToBooleanConverter}}"
+                    BackgroundColor="#F44336" 
+                    TextColor="Black" 
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="{OnPlatform Android=60, iOS=55, Default=60}"
+                    CornerRadius="{OnPlatform Android=40, iOS=28, Default=25}"
+                    FontSize="20"
+                    FontAttributes="Bold">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#F44336" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+        </HorizontalStackLayout>
+
+        <!-- Thông báo hướng dẫn -->
+        <Label Grid.Row="1" 
+               Text="👆 Chọn một loại vàng từ danh sách dưới đây trước khi sửa hoặc xóa" 
+               FontSize="14" 
+               TextColor="#555" 
+               HorizontalOptions="Center"
+               Margin="0,0,0,10"
+               IsVisible="False"/>
+
+        <!-- KHU VỰC FORM + DANH SÁCH -->
+        <ScrollView Grid.Row="2">
+            <VerticalStackLayout Spacing="15">
+
+                <!-- FORM THÊM -->
+                <Frame BorderColor="Green" CornerRadius="15" Padding="10" IsVisible="{Binding IsAdding}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="➕ Thêm loại vàng mới" FontAttributes="Bold" FontSize="{OnPlatform Android=18, iOS=18, Default=20}" TextColor="Green" HorizontalOptions="Center" />
+                        <Entry Placeholder="Tên loại vàng" Text="{Binding FormLoaiVang.TenLoaiVang}" />
+                        <Entry Placeholder="Đơn giá vốn" Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry Placeholder="Đơn giá mua" Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry Placeholder="Đơn giá bán" Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry Placeholder="Đơn giá cầm" Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                            <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
+                            <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- FORM SỬA -->
+             
+                <Frame BorderColor="Orange" CornerRadius="15" Padding="10" IsVisible="{Binding IsEditing}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="✏️ Cập nhật loại vàng" FontAttributes="Bold" FontSize="{OnPlatform Android=18, iOS=18, Default=20}" TextColor="Orange" HorizontalOptions="Center" />
+
+                        <Label Text="Tên loại vàng:" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập tên loại vàng" Text="{Binding FormLoaiVang.TenLoaiVang}" />
+
+                        <Label Text="Giá vốn (VNĐ):" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập giá vốn" Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" ClearButtonVisibility="WhileEditing" MaxLength="20" />
+
+                        <Label Text="Giá mua (VNĐ):" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập giá mua" Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" ClearButtonVisibility="WhileEditing" MaxLength="20" />
+
+                        <Label Text="Giá bán (VNĐ):" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập giá bán" Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" ClearButtonVisibility="WhileEditing" MaxLength="20" />
+
+                        <Label Text="Giá cầm (VNĐ):" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập giá cầm" Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" ClearButtonVisibility="WhileEditing" MaxLength="20" />
+
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,10,0,0">
+                            <Button Text="💾 Lưu" Command="{Binding SaveEditCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
+                            <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- DANH SÁCH LOẠI VÀNG -->
+                <Frame BackgroundColor="#FFCF07" 
+                       BorderColor="#FF9800" 
+                       CornerRadius="10" 
+                       Padding="15" 
+                       Margin="0,0,0,10"
+                       HasShadow="True">
+                    <Label Text="📋 Danh sách loại vàng" 
+                           FontAttributes="Bold" 
+                           FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
+                           HorizontalOptions="Center" 
+                           TextColor="#333333" />
+                </Frame>
+
+                <CollectionView ItemsSource="{Binding ListLoaiVang}"
+                SelectionMode="Single"
+                SelectedItem="{Binding SelectedLoaiVang, Mode=TwoWay}"
+                IsVisible="{Binding IsShowingList}">
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" 
+                                       Span="{OnPlatform Android=2, iOS=2, Default=2}" 
+                                       HorizontalItemSpacing="10" 
+                                       VerticalItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" Padding="10" HasShadow="True" Margin="2">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:LoaiVangViewModel}}, Path=SelectItemCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Frame.Style>
+                                    <Style TargetType="Frame">
+                                        <Setter Property="BackgroundColor" Value="#E8E8E8" />
+                                        <Setter Property="BorderColor" Value="#DDD" />
+                                        <Setter Property="HasShadow" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Frame"
+                                                Binding="{Binding IsSelected}" 
+                                                Value="True">
+                                                <Setter Property="BackgroundColor" Value="#E8E8E8"/>
+                                                <Setter Property="BorderColor" Value="#FF9800"/>
+                                                <Setter Property="HasShadow" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Frame.Style>
+
+                                <!-- Thông tin loại vàng -->
+                                <VerticalStackLayout Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" 
+                                               Text="{Binding TenLoaiVang}" 
+                                               FontAttributes="Bold" 
+                                               FontSize="{OnPlatform Android=15, iOS=15, Default=16}" 
+                                               LineBreakMode="TailTruncation" 
+                                               TextColor="#333333" />
+                                        <!-- Biểu tượng đánh dấu đang sử dụng -->
+                                        <Label Grid.Column="1" 
+                                               Text="✓" 
+                                               TextColor="Green" 
+                                               FontSize="{OnPlatform Android=15, iOS=15, Default=16}" 
+                                               IsVisible="{Binding SuDung, Converter={StaticResource IntToBoolConverter}}" />
+                                    </Grid>
+                                    <Label Text="{Binding DonGiaVon, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá vốn: {0:N0}'}" 
+                                           FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
+                                           TextColor="#444444" />
+                                    <Label Text="{Binding DonGiaMua, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá mua: {0:N0}'}" 
+                                           FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
+                                           TextColor="#444444" />
+                                    <Label Text="{Binding DonGiaBan, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá bán: {0:N0}'}" 
+                                           FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
+                                           TextColor="#444444" />
+                                    <Label Text="{Binding DonGiaCam, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá cầm: {0:N0}'}" 
+                                           FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
+                                           TextColor="#444444" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- KHU VỰC PHÂN TRANG - ĐẶT Ở DƯỚI CÙNG -->
+        <Frame Grid.Row="3" 
+               BackgroundColor="White" 
+               BorderColor="#FF9800" 
+               CornerRadius="10" 
+               Padding="10" 
+               Margin="0,10,0,0"
+               HasShadow="True">
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                <Button Text="⏮️" 
+                        Command="{Binding PreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Label Text="{Binding CurrentPage, StringFormat='Trang {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Label Text="{Binding TotalPages, StringFormat='/ {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Button Text="⏭️"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Button Text="🔄"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

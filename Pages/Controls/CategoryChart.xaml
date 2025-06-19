@@ -1,0 +1,15 @@
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:chart="clr-namespace:Syncfusion.Maui.Toolkit.Charts;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:controls="clr-namespace:MyLoginApp.Pages.Controls" 
+             xmlns:shimmer="clr-namespace:Syncfusion.Maui.Toolkit.Shimmer;assembly=Syncfusion.Maui.Toolkit"
+             xmlns:pageModels="clr-namespace:MyLoginApp.PageModels"
+             x:Class="MyLoginApp.Pages.Controls.CategoryChart"
+
+             HeightRequest="{OnIdiom 300, Phone=200}"
+             Margin="0, 12"
+             Style="{StaticResource CardStyle}">
+
+    <!-- Your Chart and other content here -->
+
+</ContentView>

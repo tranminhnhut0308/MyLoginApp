@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Pages.MainMenuPage"
+              Title="Trang chủ"
+             BackgroundColor="#2F2F1F">
+
+    <!-- Background với gradient vàng sang trọng -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#3E3E1F" Offset="0.0" />
+            <GradientStop Color="#4A3F1C" Offset="0.3" />
+            <GradientStop Color="#5C4420" Offset="0.7" />
+            <GradientStop Color="#6E4F24" Offset="1.0" />
+
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="25">
+
+            <!-- Logo Container với hiệu ứng đẹp -->
+            <!-- Professional Logo Frame Design -->
+            <Frame BackgroundColor="Transparent" 
+       CornerRadius="25" 
+       Padding="0" 
+       
+       BorderColor="Transparent"
+       HorizontalOptions="Center"
+       WidthRequest="520"
+       HeightRequest="180">
+
+                <!-- Main Container with Gradient Background -->
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FFFFFF" Offset="0.0" />
+                            <GradientStop Color="#FFF9EC" Offset="0.3" />
+                            <GradientStop Color="#FFFACD" Offset="0.7" />
+                            <GradientStop Color="#F5F5DC" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <!-- Golden Border Effect -->
+                    <Border StrokeThickness="3" 
+                Stroke="#FFD700"
+                BackgroundColor="Transparent">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="22"/>
+                        </Border.StrokeShape>
+
+                        <!-- Inner Content -->
+                        <Grid Padding="25" RowSpacing="15">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Logo Container with Elegant Circle Background -->
+                            <Grid Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center">
+                                <!-- Circular Background for Logo -->
+                                <Ellipse Fill="#FFD700" 
+                             WidthRequest="130" 
+                             HeightRequest="130"
+                             HorizontalOptions="Center"
+                             VerticalOptions="Center"
+                             Opacity="0.15"/>
+
+                                  <!-- Logo Image -->
+                                <Image Source="logo.png"
+                           HeightRequest="100"
+                           WidthRequest="100"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"
+                           Aspect="AspectFill"
+                           Margin="0,0,0,0" />
+                            </Grid>
+
+                            <!-- Company Info Section -->
+                            <VerticalStackLayout Grid.Row="1" 
+                                   HorizontalOptions="Center" 
+                                   Spacing="5">
+
+                                <!-- Company Name -->
+                              
+
+                                <!-- Separator Line -->
+                                <BoxView BackgroundColor="#FFD700"
+                             HeightRequest="2"
+                             WidthRequest="100"
+                             HorizontalOptions="Center"
+                             Margin="0,5" />
+
+                               
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Decorative Corner Elements -->
+                    <Grid>
+                        <!-- Top Left Corner -->
+                        <Label Text="◆" 
+                   FontSize="12" 
+                   TextColor="#FFD700"
+                   HorizontalOptions="Start"
+                   VerticalOptions="Start"
+                   Margin="15,15,0,0" />
+
+                        <!-- Top Right Corner -->
+                        <Label Text="◆" 
+                   FontSize="12" 
+                   TextColor="#FFD700"
+                   HorizontalOptions="End"
+                   VerticalOptions="Start"
+                   Margin="0,15,15,0" />
+
+                        <!-- Bottom Left Corner -->
+                        <Label Text="◆" 
+                   FontSize="12" 
+                   TextColor="#FFD700"
+                   HorizontalOptions="Start"
+                   VerticalOptions="End"
+                   Margin="15,0,0,15" />
+
+                        <!-- Bottom Right Corner -->
+                        <Label Text="◆" 
+                   FontSize="12" 
+                   TextColor="#FFD700"
+                   HorizontalOptions="End"
+                   VerticalOptions="End"
+                   Margin="0,0,15,15" />
+                    </Grid>
+
+                </Grid>
+            </Frame>
+
+            <!-- Tiêu đề chính -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text="✨ QUẢN LÝ TIỆM VÀNG ✨"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="White"
+                       />
+            </VerticalStackLayout>
+
+            <!-- Thêm 2 nút bán vàng và cầm vàng -->
+            <Grid ColumnSpacing="15" Margin="0,5,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <!-- Nút Bán Vàng -->
+                <Button Grid.Column="0" 
+                        Text="BÁN VÀNG" 
+                        BackgroundColor="#FFD700" 
+                        TextColor="#8B4513" 
+                        FontAttributes="Bold"
+                        Clicked="OnBanVangButtonClicked"
+                        HeightRequest="45"
+                        CornerRadius="10"/>
+                
+                <!-- Nút Cầm Vàng -->
+                <Button Grid.Column="1" 
+                        Text="CẦM VÀNG" 
+                        BackgroundColor="#FFD700" 
+                        TextColor="#8B4513" 
+                        FontAttributes="Bold"
+                        Clicked="OnCamVangButtonClicked"
+                        HeightRequest="45"
+                        CornerRadius="10"/>
+            </Grid>
+
+            <!-- Lưới Menu với thiết kế cao cấp -->
+            <Grid ColumnSpacing="18" RowSpacing="18" Margin="0,10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- DANH MỤC - Với gradient và shadow -->
+                <Frame Grid.Row="0" Grid.Column="0"
+                       CornerRadius="20"
+                       Padding="0"
+                       HeightRequest="130"
+                       
+                       BorderColor="Transparent">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="White" Offset="0.0" />
+                            <GradientStop Color="#FFFACD" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📁" FontSize="30"/>
+                        <Label Text="DANH MỤC" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
+                        <Label Text="Quản lý sản phẩm" FontSize="10" TextColor="#DAA520" />
+                    </VerticalStackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnDanhMucTapped" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- HỆ THỐNG -->
+                <Frame Grid.Row="0" Grid.Column="1"
+                       CornerRadius="20"
+                       Padding="0"
+                       HeightRequest="130"
+                       
+                       BorderColor="Transparent">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="White" Offset="0.0" />
+                            <GradientStop Color="#FFFACD" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="⚙️" FontSize="30"/>
+                        <Label Text="HỆ THỐNG" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
+                        <Label Text="Cài đặt và cấu hình" FontSize="10" TextColor="#DAA520" />
+                    </VerticalStackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHeThongTapped" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- CẦM VÀNG -->
+                <Frame Grid.Row="1" Grid.Column="0"
+                       CornerRadius="20"
+                       Padding="0"
+                       HeightRequest="130"
+                      
+                       BorderColor="Transparent">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="White" Offset="0.0" />
+                            <GradientStop Color="#FFFACD" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="🏆" FontSize="30" />
+                        <Label Text="BÁO CÁO CẦM VÀNG" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
+                        <Label Text="Dịch vụ thế chấp" FontSize="10" TextColor="#DAA520" />
+                    </VerticalStackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnCamVangTapped" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- BÁO CÁO -->
+                <Frame Grid.Row="1" Grid.Column="1"
+                       CornerRadius="20"
+                       Padding="0"
+                       HeightRequest="130"
+                       
+                       BorderColor="Transparent">
+                    <Frame.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="White" Offset="0.0" />
+                            <GradientStop Color="#FFFACD" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Frame.Background>
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                        <Label Text="📊" FontSize="30" />
+                        <Label Text="BÁO CÁO MUA BÁN" FontSize="13" TextColor="#B8860B" FontAttributes="Bold" />
+                        <Label Text="Thống kê doanh thu" FontSize="10" TextColor="#DAA520" />
+                    </VerticalStackLayout>
+                    <Frame.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBaoCaoTapped" />
+                    </Frame.GestureRecognizers>
+                </Frame>
+
+                <!-- GIAO DIỆN -->
+                
+
+            </Grid>
+
+
+            <!-- Đăng Xuất với thiết kế đặc biệt -->
+            <Frame BackgroundColor="Transparent" 
+                   BorderColor="#FFD700" 
+                   CornerRadius="25" 
+                   Padding="2">
+
+                <Button Text="🚪 ĐĂNG XUẤT"
+                        BackgroundColor="#DC143C"
+                        TextColor="White"
+                        CornerRadius="23"
+                        Padding="15"
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        HorizontalOptions="FillAndExpand"
+                        Clicked="OnLogoutClicked"
+                         />
+            </Frame>
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

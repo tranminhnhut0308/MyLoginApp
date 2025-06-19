@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Pages.BaoCao.PhieuDoiPage"
+             Title="PhieuDoiPage">
+    <ScrollView Padding="10">
+        <VerticalStackLayout Spacing="20">
+
+            <!-- Tiêu đề báo cáo Phiếu Đổi -->
+            <Label Text="Báo Cáo Phiếu Đổi"
+                   FontAttributes="Bold"
+                   FontSize="22"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,20" />
+
+            <!-- Tìm kiếm theo mã phiếu -->
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Tìm kiếm theo mã phiếu" FontAttributes="Bold" FontSize="18"/>
+                    <Entry x:Name="SearchEntry" Placeholder="Nhập mã phiếu..." Keyboard="Default" TextChanged="OnSearchTextChanged"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Danh sách phiếu đổi -->
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Danh sách phiếu đổi" FontAttributes="Bold" FontSize="18"/>
+
+                    <!-- CollectionView để hiển thị danh sách phiếu đổi -->
+                    <CollectionView x:Name="PhieuDoiCollectionView"
+                ItemsSource="{Binding DanhSachPhieuDoi}">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame BorderColor="Gray" CornerRadius="10" Padding="10" Margin="5">
+                                    <VerticalStackLayout Spacing="10">
+                                        <Label Text="{Binding PhieuDoiMa}" FontAttributes="Bold" FontSize="16"/>
+
+                                        <HorizontalStackLayout>
+                                            <Label Text="Giá trị bán:" VerticalOptions="Center"/>
+                                            <Label Text="{Binding TriGiaBan, StringFormat='{}{0:N0}'}" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+
+                                        <HorizontalStackLayout>
+                                            <Label Text="Giá trị mua:" VerticalOptions="Center"/>
+                                            <Label Text="{Binding TriGiaMua, StringFormat='{}{0:N0}'}" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+
+                                        <HorizontalStackLayout>
+                                            <Label Text="Thanh toán:" VerticalOptions="Center"/>
+                                            <Label Text="{Binding ThanhToan, StringFormat='{}{0:N0}'}" VerticalOptions="Center"/>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

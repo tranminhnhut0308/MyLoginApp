@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Pages.LoginPage"
+             Title="Quản Lý Tiệm Vàng"
+             BackgroundColor="#3E2F1C">
+
+    <!-- Background với gradient vàng sang trọng -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#4B3621" Offset="0.0" />
+            <GradientStop Color="#5C4422" Offset="0.3" />
+            <GradientStop Color="#6F4E37" Offset="0.7" />
+            <GradientStop Color="#7E5A3C" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="25" VerticalOptions="Center">
+
+            <!-- Logo Container với thiết kế chuyên nghiệp -->
+            <Frame BackgroundColor="Transparent" 
+                   CornerRadius="25" 
+                   Padding="0" 
+                   BorderColor="Transparent"
+                   HorizontalOptions="Center"
+                   WidthRequest="350"
+                   HeightRequest="160">
+
+                <!-- Main Container with Gradient Background -->
+                <Grid>
+                    <Grid.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#FFFFFF" Offset="0.0" />
+                            <GradientStop Color="#FFF9EC" Offset="0.3" />
+                            <GradientStop Color="#FFFACD" Offset="0.7" />
+                            <GradientStop Color="#F5F5DC" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Grid.Background>
+
+                    <!-- Golden Border Effect -->
+                    <Border StrokeThickness="3" 
+                            Stroke="#FFD700"
+                            BackgroundColor="Transparent">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="22"/>
+                        </Border.StrokeShape>
+
+                        <!-- Inner Content -->
+                        <Grid Padding="10" RowSpacing="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+
+                            <!-- Logo Container -->
+                            <Grid Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Center">
+                                <!-- Circular Background for Logo -->
+                                <Ellipse Fill="#FFD700" 
+                                         WidthRequest="100" 
+                                         HeightRequest="100"
+                                         HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Opacity="0.1"/>
+
+                                <!-- Logo Image -->
+                                <Image Source="avatar.png"
+                                       HeightRequest="70"
+                                       WidthRequest="70"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       Aspect="AspectFit" />
+                            </Grid>
+
+                            <!-- Company Info Section -->
+                            <VerticalStackLayout Grid.Row="1" 
+                                                 HorizontalOptions="Center" 
+                                                 Spacing="2">
+
+                                <!-- Company Name -->
+                                <Label Text="HUY MINH PRO"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       TextColor="#B8860B"
+                                       HorizontalOptions="Center"
+                                       HorizontalTextAlignment="Center" />
+                                
+                                <Label Text="43, đường số 9, Thới Nhựt 2, P.An Khánh"
+                                          FontSize="10"
+                                          FontAttributes="Bold"
+                                          TextColor="#B8860B"
+                                          HorizontalOptions="Center"
+                                          HorizontalTextAlignment="Center" />
+
+                                <Label Text="Q.Ninh Kiều, TP.Cần Thơ - 0345 77 1234"
+                                         FontSize="10"
+                                         FontAttributes="Bold"
+                                         TextColor="#B8860B"
+                                         HorizontalOptions="Center"
+                                         HorizontalTextAlignment="Center" />
+
+                                <!-- Separator Line -->
+                                <BoxView BackgroundColor="#FFD700"
+                                         HeightRequest="2"
+                                         WidthRequest="80"
+                                         HorizontalOptions="Center"
+                                         Margin="0,3" />
+                                
+                            </VerticalStackLayout>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Decorative Corner Elements -->
+                    <Grid>
+                        <!-- Top Left Corner -->
+                        <Label Text="◆" 
+                               FontSize="10" 
+                               TextColor="#FFD700"
+                               HorizontalOptions="Start"
+                               VerticalOptions="Start"
+                               Margin="12,12,0,0" />
+
+                        <!-- Top Right Corner -->
+                        <Label Text="◆" 
+                               FontSize="10" 
+                               TextColor="#FFD700"
+                               HorizontalOptions="End"
+                               VerticalOptions="Start"
+                               Margin="0,12,12,0" />
+
+                        <!-- Bottom Left Corner -->
+                        <Label Text="◆" 
+                               FontSize="10" 
+                               TextColor="#FFD700"
+                               HorizontalOptions="Start"
+                               VerticalOptions="End"
+                               Margin="12,0,0,12" />
+
+                        <!-- Bottom Right Corner -->
+                        <Label Text="◆" 
+                               FontSize="10" 
+                               TextColor="#FFD700"
+                               HorizontalOptions="End"
+                               VerticalOptions="End"
+                               Margin="0,0,12,12" />
+                    </Grid>
+
+                </Grid>
+            </Frame>
+
+            <!-- Tiêu đề chính -->
+            <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                <Label Text=" ĐĂNG NHẬP HỆ THỐNG "
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="White" />
+                <Label Text="Vui lòng nhập thông tin để tiếp tục"
+                       FontSize="14"
+                       HorizontalOptions="Center"
+                       TextColor="#FFFACD"
+                       FontAttributes="Italic" />
+            </VerticalStackLayout>
+
+            <!-- Form đăng nhập với thiết kế cao cấp -->
+            <VerticalStackLayout Spacing="15">
+
+                <!-- Username Entry -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="15" 
+                       Padding="0" 
+                       BorderColor="#FFD700"
+                       HasShadow="True">
+                    <Entry x:Name="usernameEntry" 
+                           Placeholder="👤 Tên đăng nhập"
+                           PlaceholderColor="#DAA520"
+                           TextColor="#B8860B"
+                           FontSize="16"
+                           BackgroundColor="Transparent"
+                           Margin="15,0" />
+                </Frame>
+
+                <!-- Password Entry -->
+                <Frame BackgroundColor="White" 
+                       CornerRadius="15" 
+                       Padding="0" 
+                       BorderColor="#FFD700"
+                       HasShadow="True">
+                    <Entry x:Name="passwordEntry" 
+                           Placeholder="🔒 Mật khẩu"
+                           PlaceholderColor="#DAA520"
+                           TextColor="#B8860B"
+                           FontSize="16"
+                           IsPassword="True"
+                           BackgroundColor="Transparent"
+                           Margin="15,0" />
+                </Frame>
+
+                <!-- Login Button với gradient -->
+                <Frame BackgroundColor="Transparent" 
+                       BorderColor="#FFD700" 
+                       CornerRadius="25" 
+                       Padding="2"
+                       Margin="0,10,0,0">
+                    <Button Text="ĐĂNG NHẬP"
+                            Clicked="OnLoginClicked"
+                            TextColor="White"
+                            CornerRadius="23"
+                            Padding="15"
+                            FontAttributes="Bold"
+                            FontSize="18"
+                            HorizontalOptions="FillAndExpand">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#FFD700" Offset="0.0" />
+                                <GradientStop Color="#FFA500" Offset="0.5" />
+                                <GradientStop Color="#FF8C00" Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </Frame>
+
+                <!-- Forgot Password -->
+                <Label Text="📧 Quên mật khẩu?"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       FontSize="14"
+                       TextDecorations="Underline"
+                       Margin="0,5" />
+
+            </VerticalStackLayout>
+
+            <!-- Nút Kết Nối Database -->
+            <Frame BackgroundColor="Transparent" 
+                   BorderColor="White" 
+                   CornerRadius="20" 
+                   Padding="2"
+                   Margin="0,20,0,0">
+                <Button Text="KẾT NỐI DATABASE"
+                        x:Name="btnKetNoi"
+                        Clicked="OnShowConnectFieldsClicked"
+                        BackgroundColor="Transparent"
+                        TextColor="White"
+                        CornerRadius="18"
+                        Padding="12"
+                        FontAttributes="Bold"
+                        FontSize="14"
+                        HorizontalOptions="FillAndExpand" />
+            </Frame>
+
+            <!-- Frame chứa các ô nhập thông tin CSDL -->
+            <Frame x:Name="connectFieldsLayout"
+                   IsVisible="False"
+                   Padding="20"
+                   CornerRadius="20"
+                   BorderColor="#FFD700"
+                   HasShadow="True"
+                   Margin="0,10">
+                <Frame.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FFFFFF" Offset="0.0" />
+                        <GradientStop Color="#FFFACD" Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Header -->
+                    <VerticalStackLayout Spacing="5" HorizontalOptions="Center">
+                        <Label Text="🔧 CẤU HÌNH CSDL"
+                               FontAttributes="Bold"
+                               FontSize="18"
+                               TextColor="#B8860B"
+                               HorizontalOptions="Center" />
+                        <BoxView BackgroundColor="#FFD700"
+                                 HeightRequest="2"
+                                 WidthRequest="120"
+                                 HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+
+                    <!-- Database User Entry -->
+                    <Frame BackgroundColor="White" 
+                           CornerRadius="12" 
+                           Padding="0" 
+                           BorderColor="#DAA520">
+                        <Entry x:Name="dbUserEntry" 
+                               Placeholder="👨‍💼 Tên User Database"
+                               PlaceholderColor="#DAA520"
+                               TextColor="#B8860B"
+                               BackgroundColor="Transparent"
+                               Margin="12,0" />
+                    </Frame>
+
+                    <!-- Database Password Entry -->
+                    <Frame BackgroundColor="White" 
+                           CornerRadius="12" 
+                           Padding="0" 
+                           BorderColor="#DAA520">
+                        <Entry x:Name="dbPasswordEntry" 
+                               Placeholder="🔐 Mật khẩu Database"
+                               PlaceholderColor="#DAA520"
+                               TextColor="#B8860B"
+                               IsPassword="True"
+                               BackgroundColor="Transparent"
+                               Margin="12,0" />
+                    </Frame>
+
+                    <!-- Database Name Entry -->
+                    <Frame BackgroundColor="White" 
+                           CornerRadius="12" 
+                           Padding="0" 
+                           BorderColor="#DAA520">
+                        <Entry x:Name="dbNameEntry" 
+                               Placeholder="🗄️ Tên Database"
+                               PlaceholderColor="#DAA520"
+                               TextColor="#B8860B"
+                               BackgroundColor="Transparent"
+                               Margin="12,0" />
+                    </Frame>
+
+                    <!-- Connect Button -->
+                    <Frame BackgroundColor="Transparent" 
+                           BorderColor="#32CD32" 
+                           CornerRadius="20" 
+                           Padding="2"
+                           Margin="0,10,0,0">
+                        <Button Text="✅ XÁC NHẬN KẾT NỐI"
+                                Clicked="OnConnectClicked"
+                                BackgroundColor="#32CD32"
+                                TextColor="White"
+                                CornerRadius="18"
+                                Padding="12"
+                                FontAttributes="Bold"
+                                FontSize="16"
+                                HorizontalOptions="FillAndExpand" />
+                    </Frame>
+
+                </VerticalStackLayout>
+            </Frame>
+           
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

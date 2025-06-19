@@ -1,0 +1,127 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MyLoginApp.Pages.PhieuQuaHanPage"
+             BackgroundColor="#f5f5f5">
+
+    <ScrollView Padding="5">
+        <VerticalStackLayout Spacing="16">
+
+            <!-- Tiêu đề -->
+            <Frame BackgroundColor="#FF6347"
+                   Padding="15"
+                   Margin="0,10,0,10"
+                   CornerRadius="10"
+                   HasShadow="True">
+                <Label Text="📚 Danh Sách Quá Hạn"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       TextColor="White" />
+            </Frame>
+
+            <!-- Thanh tìm kiếm -->
+            <Frame CornerRadius="20"
+                   Padding="0"
+                   Margin="12,10,12,0"
+                   BackgroundColor="White"
+                   HasShadow="True"
+                   BorderColor="#cccccc">
+                <SearchBar 
+                    Placeholder="Tìm kiếm theo mã phiếu hoặc tên khách hàng"
+                    Text="{Binding SearchKeyword}"
+                    TextChanged="OnSearchTextChanged"
+                    BackgroundColor="#f0f0f0"
+                    FontSize="16"
+                    HeightRequest="48"
+                    TextColor="#222"
+                    PlaceholderColor="#888"
+                    CancelButtonColor="#888" />
+            </Frame>
+
+            <!-- Danh sách quá hạn -->
+            <CollectionView ItemsSource="{Binding DanhSachPhieuQuaHan}">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Span="1"
+                                     Orientation="Vertical"
+                                     HorizontalItemSpacing="8"
+                                     VerticalItemSpacing="16" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="#ddd"
+                               BackgroundColor="White"
+                               Padding="12"
+                               CornerRadius="12"
+                               Margin="4"
+                               HasShadow="True">
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+                                  ColumnDefinitions="*, *"
+                                  ColumnSpacing="12"
+                                  RowSpacing="6">
+
+                                <!-- Tên Khách Hàng -->
+                                <Label Text="{Binding Ten_KH}" 
+                                       FontAttributes="Bold"
+                                       FontSize="20"
+                                       TextColor="#333"
+                                       Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
+
+                                <!-- Mã phiếu -->
+                                <Label Text="Mã Phiếu:" 
+                                       FontSize="16"
+                                       FontAttributes="Italic"
+                                       TextColor="Gray"
+                                       Grid.Row="1" Grid.Column="0" />
+                                <Label Text="{Binding Ma_Phieu}" 
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="Red"
+                                       Grid.Row="1" Grid.Column="1" />
+
+                                <!-- Ngày cầm -->
+                                <Label Text="Ngày Cầm:" Grid.Row="2" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding TU_NGAY, StringFormat='{0:dd/MM/yyyy}'}" Grid.Row="2" Grid.Column="1" FontSize="18"/>
+
+                                <!-- Ngày quá hạn -->
+                                <Label Text="Ngày Quá Hạn:" Grid.Row="3" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding DEN_NGAY, StringFormat='{0:dd/MM/yyyy}'}" Grid.Row="3" Grid.Column="1" FontSize="18"/>
+
+                                <!-- Số ngày quá hạn -->
+                                <Label Text="Số Ngày QH:" Grid.Row="4" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding SONGAY}" Grid.Row="4" Grid.Column="1" FontSize="18"/>
+
+                                <!-- TL Thực -->
+                                <Label Text="TL Thực:" Grid.Row="5" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding TL_Thuc, StringFormat='{0:N0}'}" Grid.Row="5" Grid.Column="1" FontSize="18"/>
+
+                                <!-- Định giá -->
+                                <Label Text="Định Giá:" Grid.Row="6" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding Dinh_Gia, StringFormat='{0:N0}'}" Grid.Row="6" Grid.Column="1" FontSize="18"/>
+
+                                <!-- Tiền khách nhận -->
+                                <Label Text="Tiền Nhận:" Grid.Row="7" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding TIEN_KHACH_NHAN, StringFormat='{0:N0}'}" Grid.Row="7" Grid.Column="1" FontSize="18"/>
+
+                                <!-- Lãi suất -->
+                                <Label Text="Lãi Suất (%):" Grid.Row="8" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding LAI_XUAT}" Grid.Row="8" Grid.Column="1" FontSize="18"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Phân trang -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="30" Margin="0,20,0,10">
+                <Button Text="Trước"
+                        Command="{Binding GoPreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}" />
+                <Button Text="Sau"
+                        Command="{Binding GoNextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

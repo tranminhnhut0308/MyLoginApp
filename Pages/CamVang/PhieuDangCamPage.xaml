@@ -1,0 +1,179 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MyLoginApp.Pages"
+             xmlns:converters="clr-namespace:MyLoginApp.Converters"
+             x:Class="MyLoginApp.Pages.PhieuDangCamPage"
+             BackgroundColor="#f5f5f5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:GramToLuongConverter x:Key="GramToLuongConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView Padding="5">
+        <StackLayout Spacing="16">
+            <!-- Tiêu đề với nền màu riêng biệt -->
+            <Frame BackgroundColor="#FF6347"  
+                   Padding="15"
+                   Margin="0,10,0,10"
+                   CornerRadius="10"
+                   HasShadow="True">
+                <Label Text="💷 Phiếu Đang Cầm"
+                       FontSize="24"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"
+                       TextColor="White" />
+            </Frame>
+
+            <!-- Frame tìm kiếm -->
+            <Frame BackgroundColor="White"
+                   Padding="15"
+                   Margin="0,0,0,10"
+                   CornerRadius="10"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <!-- Nhập mã tìm kiếm -->
+                   
+                    <SearchBar 
+                            Placeholder="Tìm kiếm theo mã phiếu"
+                            TextChanged="OnSearchTextChanged"
+                            Text="{Binding SearchKeyword}"
+                            BackgroundColor="#f0f0f0"
+                            FontSize="16"
+                            HeightRequest="48"
+                            TextColor="#222"
+                            PlaceholderColor="#888"
+                            CancelButtonColor="#888"
+                            HorizontalTextAlignment="Start"
+                            Margin="0,0,0,10" />
+
+                    <!-- Hoặc -->
+                    <Label Text="HOẶC"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#666"
+                           HorizontalOptions="Center"
+                           Margin="0,10"/>
+
+                    <Button Text="📷 Chụp mã để tìm phiếu"
+                            Clicked="OnChupVaQuetQRClicked"
+                            BackgroundColor="#2196F3"
+                            TextColor="White"
+                            HeightRequest="48"
+                            CornerRadius="24"
+                            FontSize="16"
+                            FontAttributes="Bold"/>
+
+                    <!-- Loading indicator -->
+                    <Grid x:Name="loadingGrid" 
+                          IsVisible="False"
+                          BackgroundColor="#80000000"
+                          HorizontalOptions="Fill"
+                          VerticalOptions="Fill">
+                        <StackLayout HorizontalOptions="Center" 
+                                   VerticalOptions="Center">
+                            <ActivityIndicator IsRunning="True"
+                                             Color="White"
+                                             HeightRequest="50"
+                                             WidthRequest="50"/>
+                            <Label x:Name="lblLoadingText"
+                                   Text="Đang tìm kiếm phiếu..."
+                                   TextColor="White"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   Margin="0,10,0,0"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <Label x:Name="lblKhongTimThay"
+                           Text=""
+                           FontSize="14"
+                           TextColor="#FF0000"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           Margin="0,10,0,0"
+                           IsVisible="False"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Search Bar -->
+           
+            
+            <!-- CollectionView -->
+            <CollectionView ItemsSource="{Binding DanhSachPhieuDangCam}">
+                <CollectionView.ItemsLayout>
+                    <!-- Sắp xếp theo một cột -->
+                    <LinearItemsLayout Orientation="Vertical"
+                                       ItemSpacing="16" />
+                </CollectionView.ItemsLayout>
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BorderColor="#ddd"
+                               BackgroundColor="White"
+                               Padding="12"
+                               CornerRadius="12"
+                               Margin="4"
+                               HasShadow="True">
+                            <!-- Grid layout với 2 cột cho nội dung trong thẻ -->
+                            <Grid RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+                                  ColumnDefinitions="*, *"
+                                  ColumnSpacing="12"
+                                  RowSpacing="6">
+
+                                <!-- Tên khách hàng và mã phiếu nằm cùng một dòng -->
+                                <Label Text="{Binding TenKhachHang}" 
+                                       FontAttributes="Bold"
+                                       FontSize="20"
+                                       TextColor="#333"
+                                       Grid.Row="0" Grid.Column="0" />
+                                <Label Text="{Binding MaPhieu}" 
+                                       FontSize="18"
+                                       FontAttributes="Bold"
+                                       TextColor="Red"
+                                       Grid.Row="0" Grid.Column="1" />
+
+                                <!-- Ngày cầm và ngày quá hạn -->
+                                <Label Text="Ngày Cầm:" FontSize="18" FontAttributes="Italic" Grid.Row="1" Grid.Column="0"/>
+                                <Label Text="{Binding NgayCam, StringFormat='{0:dd/MM/yyyy}'}" FontSize="18" Grid.Row="1" Grid.Column="1"/>
+
+                                <Label Text="Quá Hạn:" FontSize="18" FontAttributes="Italic" Grid.Row="2" Grid.Column="0"/>
+                                <Label Text="{Binding NgayQuaHan, StringFormat='{0:dd/MM/yyyy}'}" FontSize="18" Grid.Row="2" Grid.Column="1"/>
+
+                                <!-- Cân tổng và TL thực -->
+                                <Label Text="Cân Tổng:" FontSize="18" FontAttributes="Italic" Grid.Row="3" Grid.Column="0"/>
+                                <Label Text="{Binding CanTong, Converter={StaticResource GramToLuongConverter}}" FontSize="18" Grid.Row="3" Grid.Column="1"/>
+
+                                <Label Text="TL Thực:" FontSize="18" FontAttributes="Italic" Grid.Row="4" Grid.Column="0"/>
+                                <Label Text="{Binding TLThuc, Converter={StaticResource GramToLuongConverter}}" FontSize="18" Grid.Row="4" Grid.Column="1"/>
+
+                                <!-- Tiền nhận và Tiền cầm mới -->
+                                <Label Text="Tiền Nhận:" FontSize="18" FontAttributes="Italic" Grid.Row="5" Grid.Column="0"/>
+                                <Label Text="{Binding TienKhachNhan, StringFormat='{0:N0} VND'}" FontSize="18" Grid.Row="5" Grid.Column="1"/>
+
+                                <Label Text="Tiền Cầm Mới:" FontSize="18" FontAttributes="Italic" Grid.Row="6" Grid.Column="0"/>
+                                <Label Text="{Binding TienCamMoi, StringFormat='{0:N0} VND'}" FontSize="18" Grid.Row="6" Grid.Column="1"/>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <!-- Pagination Buttons -->
+            <StackLayout Orientation="Horizontal"
+                         HorizontalOptions="Center"
+                         Spacing="30"
+                         Margin="0,20,0,10">
+                <Button Text="Trước" 
+                        Command="{Binding GoPreviousPageCommand}" 
+                        IsEnabled="{Binding CanGoPrevious}" />
+                <Button Text="Sau" 
+                        Command="{Binding GoNextPageCommand}" 
+                        IsEnabled="{Binding CanGoNext}" />
+            </StackLayout>
+
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

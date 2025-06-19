@@ -1,0 +1,92 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Pages.MuaVangPage"
+             BackgroundColor="White"
+             Title="Mua Vàng">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Tiêu đề Mua Vàng -->
+            <Label Text="🛒 Mua Vàng"
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="Black"
+                   HorizontalOptions="Center"/>
+
+            <!-- THÔNG TIN KHÁCH HÀNG -->
+            <Border BackgroundColor="#F0F0F0"
+                    Stroke="Gray"
+                    StrokeThickness="1"
+                    Padding="15">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <VerticalStackLayout>
+                    <Label Text="👤 Tên khách hàng" TextColor="Black" FontAttributes="Bold"/>
+                    <Entry x:Name="entryTenKhach"
+                           Placeholder="Nhập tên khách hàng"
+                           TextColor="Black"
+                           PlaceholderColor="Gray"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- THÔNG TIN CHI TIẾT -->
+            <Grid ColumnDefinitions="*,*" RowSpacing="10" ColumnSpacing="20">
+
+                <!-- Cột trái -->
+                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                    <Label Text="📦 Tên hàng hóa" TextColor="Black"/>
+                    <Entry x:Name="entryTenHang" Placeholder="Nhập tên hàng" TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="🏷️ Loại vàng" TextColor="Black"/>
+                    <Picker x:Name="pickerLoaiVang" 
+                            TextColor="Black" 
+                            Title="Chọn loại vàng"
+                            ItemsSource="{Binding LoaiVangList}" 
+                            SelectedItem="{Binding SelectedLoaiVang}"/>
+
+                    <Label Text="⚖️ Cân tổng" TextColor="Black"/>
+                    <Entry x:Name="entryCanTong" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="💎 TL Hột" TextColor="Black"/>
+                    <Entry x:Name="entryTLHot" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="➖ Trừ hột" TextColor="Black"/>
+                    <Entry x:Name="entryTruHot" Keyboard="Numeric" Placeholder="gram" TextColor="Black" PlaceholderColor="Gray"/>
+                </VerticalStackLayout>
+
+                <!-- Cột phải -->
+                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                    <Label Text="💵 Đơn giá" TextColor="Black"/>
+                    <Entry x:Name="entryDonGia" Keyboard="Numeric" Placeholder="VNĐ" TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="💰 Tiền mua" TextColor="Black"/>
+                    <Entry x:Name="entryTienMua" Keyboard="Numeric" Placeholder="VNĐ" TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="📅 Ngày mua" TextColor="Black"/>
+                    <DatePicker x:Name="dateNgayMua" TextColor="Black"/>
+
+                    <Label Text="📝 Ghi chú" TextColor="Black" />
+                    <Entry x:Name="entryGhiChu" Placeholder="Ghi chú thêm..." TextColor="Black" PlaceholderColor="Gray"/>
+
+                    <Label Text="🧾 Thành tiền" TextColor="Black"/>
+                    <Entry x:Name="entryThanhTien" IsReadOnly="True" TextColor="LightGreen"/>
+                </VerticalStackLayout>
+
+            </Grid>
+
+            <Button x:Name="btnMuaVang"
+                    Text="🛒 Mua vàng"
+                    Clicked="OnMuaVangClicked"
+                    BackgroundColor="DodgerBlue"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="30"
+                    Padding="15"
+                    HorizontalOptions="FillAndExpand"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

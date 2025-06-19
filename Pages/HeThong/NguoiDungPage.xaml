@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             x:Class="MyLoginApp.Pages.NguoiDungPage"
+             Title="Quản lý Người Dùng">
+
+    <ContentPage.BindingContext>
+        <viewmodels:NguoiDungViewModel />
+    </ContentPage.BindingContext>
+
+    <StackLayout Padding="10" Spacing="10">
+        <!-- Ô tìm kiếm -->
+        <SearchBar Placeholder="Tìm kiếm người dùng..." 
+                   Text="{Binding SearchKeyword}" 
+                   TextChanged="OnSearchTextChanged" />
+
+        <!-- Danh sách người dùng -->
+        <CollectionView ItemsSource="{Binding DanhSachNguoiDung}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+
+                    <Frame BorderColor="LightGray" CornerRadius="10" Padding="10" Margin="0,5">
+                        <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
+                            <!-- Cột 1: Tiêu đề -->
+                            <Label Text="Tên người dùng" FontAttributes="Bold" FontSize="17" Grid.Row="0" Grid.Column="0" Padding="5"/>
+                            <Label Text="Mật khẩu" FontSize="17" Grid.Row="1" Grid.Column="0" Padding="5"/>
+                            <Label Text="Lý do khóa" FontSize="17" Grid.Row="2" Grid.Column="0" Padding="5"/>
+                            <Label Text="Ngày tạo" FontSize="17" Grid.Row="3" Grid.Column="0" Padding="5"/>
+                            <Label Text="Người dùng" FontSize="17" Grid.Row="4" Grid.Column="0" Padding="5"/>
+                            <Label Text="Bị khóa" FontSize="17" Grid.Row="5" Grid.Column="0" Padding="5" VerticalOptions="Center"/>
+
+                            <!-- Cột 2: Dữ liệu -->
+                            <Label Text="{Binding UserName}" FontSize="17" Grid.Row="0" Grid.Column="1" Padding="5" />
+                            <Label Text="********" FontSize="17" Grid.Row="1" Grid.Column="1" Padding="5" />
+                            <Label Text="{Binding LyDoKhoa}" FontSize="17" Grid.Row="2" Grid.Column="1" Padding="5" />
+                            <Label Text="{Binding NgayTao, StringFormat='{0:dd/MM/yyyy}'}" FontSize="17" Grid.Row="3" Grid.Column="1" Padding="5" />
+                            <Label Text="{Binding NhomUserId}" FontSize="17" Grid.Row="4" Grid.Column="1" Padding="5" />
+
+                            <!-- CheckBox nằm cùng hàng và giữa theo chiều dọc -->
+                            <CheckBox IsChecked="{Binding BiKhoa}" 
+                  IsEnabled="False" 
+                  Grid.Row="5" Grid.Column="1" 
+                  VerticalOptions="Center"
+                  HorizontalOptions="Start"/>
+                        </Grid>
+                    </Frame>
+
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </StackLayout>
+</ContentPage>

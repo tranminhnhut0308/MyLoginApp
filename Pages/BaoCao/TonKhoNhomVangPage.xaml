@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:MyLoginApp.ViewModels"
+             xmlns:model="clr-namespace:MyLoginApp.Models.BaoCao"
+             x:Class="MyLoginApp.Pages.BaoCao.TonKhoNhomVangPage"
+             Title="Báo cáo tồn kho theo nhóm vàng">
+
+    <ContentPage.BindingContext>
+        <vm:TonKhoNhomVangViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="15" RowSpacing="15">
+        <!-- Tiêu đề -->
+        <Label Grid.Row="0" 
+               Text="Báo cáo tồn kho theo nhóm vàng" 
+               FontSize="24" 
+               FontAttributes="Bold" 
+               HorizontalOptions="Center"
+               Margin="0,10,0,5"/>
+
+        <!-- Form tìm kiếm -->
+        <Frame Grid.Row="1" 
+               BorderColor="#007AFF" 
+               Padding="15" 
+               Margin="0,0,0,0"
+               HasShadow="True"
+               CornerRadius="8">
+            <Grid ColumnDefinitions="*,Auto">
+                <Entry Grid.Column="0" 
+                       Placeholder="Nhập mã loại, tên loại, mã hàng hoặc tên hàng..." 
+                       Text="{Binding TuKhoaTimKiem}"
+                       ClearButtonVisibility="WhileEditing"
+                       ReturnCommand="{Binding ThucHienTimKiemCommand}"/>
+                <Button Grid.Column="1" 
+                        Text="Tìm" 
+                        Command="{Binding ThucHienTimKiemCommand}" 
+                        BackgroundColor="#007AFF"
+                        Margin="10,0,0,0"
+                        WidthRequest="100"/>
+            </Grid>
+        </Frame>
+
+        <!-- Danh sách tồn kho -->
+        <CollectionView Grid.Row="2" 
+                       ItemsSource="{Binding DanhSachHienThi}"
+                       EmptyView="Không có dữ liệu">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Margin="0,5" 
+                           Padding="10" 
+                           BorderColor="#DDDDDD"
+                           CornerRadius="8"
+                           HasShadow="True">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto" 
+                              ColumnDefinitions="Auto,*"
+                              ColumnSpacing="10"
+                              RowSpacing="5">
+                            
+                            <!-- Loại vàng -->
+                            <Label Grid.Row="0" 
+                                   Grid.Column="0" 
+                                   Text="Loại vàng:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="0" 
+                                   Grid.Column="1" 
+                                   Text="{Binding LOAI_TEN}"/>
+
+                            <!-- Mã hàng -->
+                            <Label Grid.Row="1" 
+                                   Grid.Column="0" 
+                                   Text="Mã hàng:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="1" 
+                                   Grid.Column="1" 
+                                   Text="{Binding HANGHOAMA}"/>
+
+                            <!-- Tên hàng -->
+                            <Label Grid.Row="2" 
+                                   Grid.Column="0" 
+                                   Text="Tên hàng:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="2" 
+                                   Grid.Column="1" 
+                                   Text="{Binding HANG_HOA_TEN}"/>
+
+                            <!-- Cân tổng -->
+                            <Label Grid.Row="3" 
+                                   Grid.Column="0" 
+                                   Text="Cân tổng:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="3" 
+                                   Grid.Column="1" 
+                                   Text="{Binding CAN_TONG, StringFormat='{0:N2}'}"/>
+
+                            <!-- TL hột -->
+                            <Label Grid.Row="4" 
+                                   Grid.Column="0" 
+                                   Text="TL hột:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="4" 
+                                   Grid.Column="1" 
+                                   Text="{Binding TL_HOT, StringFormat='{0:N2}'}"/>
+
+                            <!-- TL vàng -->
+                            <Label Grid.Row="5" 
+                                   Grid.Column="0" 
+                                   Text="TL vàng:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="5" 
+                                   Grid.Column="1" 
+                                   Text="{Binding TL_VANG, StringFormat='{0:N2}'}"/>
+
+                            <!-- Công gốc -->
+                            <Label Grid.Row="6" 
+                                   Grid.Column="0" 
+                                   Text="Công gốc:" 
+                                   FontAttributes="Bold"/>
+                            <Label Grid.Row="6" 
+                                   Grid.Column="1" 
+                                   Text="{Binding CONG_GOC, StringFormat='{0:N0}'}"/>
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Phân trang -->
+        <HorizontalStackLayout Grid.Row="3" 
+                              HorizontalOptions="Center" 
+                              Spacing="20"
+                              Margin="0,10,0,0">
+            <Button Text="Trước"
+                    Command="{Binding GoPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoPrevious}"
+                    BackgroundColor="#007AFF"
+                    TextColor="White"
+                    WidthRequest="100"/>
+            <Button Text="Sau"
+                    Command="{Binding GoNextPageCommand}"
+                    IsEnabled="{Binding CanGoNext}"
+                    BackgroundColor="#007AFF"
+                    TextColor="White"
+                    WidthRequest="100"/>
+        </HorizontalStackLayout>
+
+        <!-- Loading indicator -->
+        <ActivityIndicator Grid.Row="0" 
+                          Grid.RowSpan="4"
+                          IsRunning="{Binding IsLoading}"
+                          IsVisible="{Binding IsLoading}"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+    </Grid>
+</ContentPage>

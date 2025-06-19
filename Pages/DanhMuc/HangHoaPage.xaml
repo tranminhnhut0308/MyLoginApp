@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             x:Class="MyLoginApp.Pages.HangHoaPage"
+             Title="Quản lý Hàng Hóa">
+
+    <ContentPage.BindingContext>
+        <viewmodels:HangHoaViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+        <!-- KHU VỰC NÚT ĐIỀU KHIỂN -->
+        <Grid Grid.Row="0" RowDefinitions="Auto,Auto,Auto" Margin="0,0,0,10">
+            <!-- Khu vực buttons điều khiển -->
+            <HorizontalStackLayout Grid.Row="0" Spacing="15" HorizontalOptions="CenterAndExpand">
+                <Button Text="➕ Thêm" Command="{Binding ShowAddFormCommand}"
+                        BackgroundColor="#4CAF50" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20" />
+
+                <Button Text="✏️ Sửa" Command="{Binding ShowEditFormCommand}"
+                        IsEnabled="{Binding SelectedHangHoa, Converter={StaticResource NullToBooleanConverter}}"
+                        BackgroundColor="#FFCF07" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20">
+                    <Button.Triggers>
+                        <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                            <Setter Property="BackgroundColor" Value="#FFCF07" />
+                            <Setter Property="Opacity" Value="0.7" />
+                        </Trigger>
+                    </Button.Triggers>
+                </Button>
+
+                <Button Text="🗑️ Xóa" Command="{Binding DeleteCommand}"
+                        IsEnabled="{Binding SelectedHangHoa, Converter={StaticResource NullToBooleanConverter}}"
+                        BackgroundColor="#F44336" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20">
+                    <Button.Triggers>
+                        <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                            <Setter Property="BackgroundColor" Value="#F44336" />
+                            <Setter Property="Opacity" Value="0.7" />
+                        </Trigger>
+                    </Button.Triggers>
+                </Button>
+            </HorizontalStackLayout>
+
+            <!-- Thanh tìm kiếm -->
+            <Grid Grid.Row="1" Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                <Frame Grid.Column="0" 
+                       Padding="5" 
+                       CornerRadius="10" 
+                       BorderColor="#CCCCCC" 
+                       BackgroundColor="White"
+                       HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                        <Label Grid.Column="0" 
+                               Text="🔍" 
+                               VerticalOptions="Center" 
+                               Margin="5,0,0,0"
+                               FontSize="18" />
+                        <Entry Grid.Column="1" 
+                               Text="{Binding SearchKeyword}" 
+                               Placeholder="Tìm kiếm theo mã hoặc tên hàng hóa..."
+                               VerticalOptions="Center"
+                               ReturnCommand="{Binding SearchCommand}"
+                               Completed="OnSearchCompleted"
+                               TextChanged="OnSearchTextChanged"
+                               Margin="5,0,0,0" />
+                        <Button Grid.Column="2"
+                                Text="❌"
+                                IsVisible="{Binding SearchKeyword, Converter={StaticResource StringToBooleanConverter}}"
+                                BackgroundColor="Transparent"
+                                Clicked="OnClearSearchClicked"
+                                WidthRequest="40" 
+                                HeightRequest="40" 
+                                Padding="0"
+                                Margin="0"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center" />
+                        <ActivityIndicator Grid.Column="3" 
+                                          IsRunning="{Binding IsRefreshing}" 
+                                          IsVisible="{Binding IsRefreshing}"
+                                          Color="#2196F3"
+                                          WidthRequest="20"
+                                          HeightRequest="20"
+                                          Margin="5,0,0,0" />
+                    </Grid>
+                </Frame>
+                <Button Grid.Column="1" 
+                        Text="Tìm" 
+                        Command="{Binding SearchCommand}" 
+                        BackgroundColor="#2196F3" 
+                        TextColor="White"
+                        CornerRadius="10"
+                        IsEnabled="{Binding IsRefreshing, Converter={StaticResource InverseBoolConverter}}"
+                        Margin="5,0,0,0"
+                        HeightRequest="50"
+                        WidthRequest="80" />
+            </Grid>
+
+            <!-- Thông báo mục đã chọn -->
+            <Label Grid.Row="2" 
+                   Text="{Binding SelectedHangHoa.TenHangHoa, StringFormat='✅ Đã chọn: {0}'}" 
+                   TextColor="#2E7D32" 
+                   FontAttributes="Bold"
+                   FontSize="16"
+                   HorizontalOptions="Center"
+                   IsVisible="False"
+                   Margin="0,5,0,0"/>
+        </Grid>
+
+        <!-- FORM THÊM HÀNG HÓA -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsAdding}" BackgroundColor="#f9f9f9" Padding="20" RowDefinitions="Auto,*,Auto">
+            <Label Text="📝 THÊM HÀNG HÓA MỚI" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
+
+            <ScrollView Grid.Row="1" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
+                        <!-- Tên hàng -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
+
+                        <!-- Nhóm -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Loại Vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
+
+                        <!-- Loại vàng -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
+
+                        <!-- Cân tổng -->
+                        <Label Grid.Row="3" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Trọng lượng hột -->
+                        <Label Grid.Row="4" Grid.Column="0" Text="TL Hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Công gốc -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="5" Grid.Column="1" Text="{Binding FormHangHoa.CongGoc}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Giá công -->
+                        <Label Grid.Row="6" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="6" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Đơn giá gốc -->
+                        <Label Grid.Row="7" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" Placeholder="0.000" />
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" Spacing="15">
+                <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" 
+                        BackgroundColor="#4CAF50" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+                <Button Text="❌ Hủy" Command="{Binding CancelFormCommand}" 
+                        BackgroundColor="#9E9E9E" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- FORM SỬA HÀNG HÓA -->
+        <Grid Grid.Row="1" IsVisible="{Binding IsEditing}" BackgroundColor="#f9f9f9" Padding="20" RowDefinitions="Auto,*,Auto">
+            <Label Text="✏️ SỬA THÔNG TIN HÀNG HÓA" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
+
+            <ScrollView Grid.Row="1" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
+                        <!-- Mã hàng -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Mã hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.HangHoaID}" IsReadOnly="True" BackgroundColor="#f0f0f0" />
+
+                        <!-- Tên hàng -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
+
+                        <!-- Nhóm -->
+                        <Label Grid.Row="2" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
+
+                        <!-- Loại vàng -->
+                        <Label Grid.Row="3" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
+
+                        <!-- Cân tổng -->
+                        <Label Grid.Row="4" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Trọng lượng hột -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="TL Hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="5" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Công gốc -->
+                        <Label Grid.Row="6" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="6" Grid.Column="1" Text="{Binding FormHangHoa.CongGoc}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Giá công -->
+                        <Label Grid.Row="7" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" Placeholder="0.000" />
+
+                        <!-- Đơn giá gốc -->
+                        <Label Grid.Row="8" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="8" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" Placeholder="0.000" />
+                    </Grid>
+                </VerticalStackLayout>
+            </ScrollView>
+
+            <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" Spacing="15">
+                <Button Text="💾 Lưu" Command="{Binding SaveEditCommand}" 
+                        BackgroundColor="#FFCF07" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+                <Button Text="❌ Hủy" Command="{Binding CancelFormCommand}" 
+                        BackgroundColor="#9E9E9E" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+            </HorizontalStackLayout>
+        </Grid>
+
+        <!-- KHU VỰC DANH SÁCH HÀNG HÓA -->
+        <ScrollView Grid.Row="1" IsVisible="{Binding IsAdding, Converter={StaticResource InverseBoolConverter}}">
+            <ScrollView.Triggers>
+                <DataTrigger TargetType="ScrollView" Binding="{Binding IsEditing}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </ScrollView.Triggers>
+
+            <VerticalStackLayout Spacing="15">
+                <Frame BackgroundColor="#FFF9C4" 
+                        BorderColor="#FF9800" 
+                        CornerRadius="10" 
+                        Padding="15" 
+                        Margin="0,0,0,10"
+                        HasShadow="True">
+                    <Label Text="📋 Danh sách hàng hóa" 
+                            FontAttributes="Bold" 
+                            FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
+                            HorizontalOptions="Center" 
+                            TextColor="#333333" />  
+                </Frame>
+                
+                <CollectionView ItemsSource="{Binding DanhSachHangHoa}"
+                                SelectionMode="Single"
+                                SelectedItem="{Binding SelectedHangHoa, Mode=TwoWay}">
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" Padding="10" HasShadow="True" BackgroundColor="#E8E8E8" 
+                                   BorderColor="#DDD" Margin="3">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HangHoaViewModel}}, Path=SelectHangHoaCommand}" 
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Frame.Style>
+                                    <Style TargetType="Frame">
+                                        <Setter Property="BackgroundColor" Value="#E8E8E8" />
+                                        <Setter Property="BorderColor" Value="#DDD" />
+                                        <Setter Property="HasShadow" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Frame"
+                                                Binding="{Binding IsSelected}" 
+                                                Value="True">
+                                                <Setter Property="BackgroundColor" Value="#E8E8E8"/>
+                                                <Setter Property="BorderColor" Value="#FF9800"/>
+                                                <Setter Property="HasShadow" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Frame.Style>
+                                <StackLayout Spacing="2">
+                                    <!-- Header - Tên hàng và ID -->
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" Text="{Binding TenHangHoa}" FontAttributes="Bold" FontSize="16" LineBreakMode="TailTruncation" TextColor="#333333" />
+                                        <!-- Biểu tượng đánh dấu đang sử dụng -->
+                                        <Label Grid.Column="1" 
+                                               Text="✓" 
+                                               TextColor="Green" 
+                                               FontSize="16" 
+                                               IsVisible="{Binding SuDung, Converter={StaticResource IntToBoolConverter}}" />
+                                    </Grid>
+                                    <Label Text="{Binding HangHoaID, StringFormat='Mã: {0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding Nhom, StringFormat='Nhóm vàng: {0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding LoaiVang, StringFormat='Loại vàng: {0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding CanTong, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Cân tổng: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding TrongLuongHot, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='TL.Hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding CongGoc, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Công gốc: {0:N0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding GiaCong, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá công: {0:N0}'}" FontSize="13" TextColor="#444444" />
+                                </StackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- KHU VỰC PHÂN TRANG - ĐẶT Ở DƯỚI CÙNG -->
+        <Frame Grid.Row="2" 
+               BackgroundColor="White" 
+               BorderColor="#FF9800" 
+               CornerRadius="10" 
+               Padding="10" 
+               Margin="0,10,0,0"
+               HasShadow="True"
+               IsVisible="{Binding IsAdding, Converter={StaticResource InverseBoolConverter}}">
+            <Frame.Triggers>
+                <DataTrigger TargetType="Frame" Binding="{Binding IsEditing}" Value="True">
+                    <Setter Property="IsVisible" Value="False" />
+                </DataTrigger>
+            </Frame.Triggers>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                <Button Text="◀ Trước" 
+                        Command="{Binding GoToPreviousPageCommand}" 
+                        IsEnabled="{Binding CanGoPrevious}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="100"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Label Text="{Binding CurrentPage, StringFormat='Trang {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Label Text="{Binding TotalPages, StringFormat='/ {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Button Text="Sau ▶"
+                        Command="{Binding GoToNextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="100"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Button Text="🔄"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

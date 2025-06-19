@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MyLoginApp.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:pages="clr-namespace:MyLoginApp.Pages"
+   
+    xmlns:baocao="clr-namespace:MyLoginApp.Pages.BaoCao"
+    BackgroundColor="#3949ab"
+    ForegroundColor="White"
+    TitleColor="White"
+    NavBarHasShadow="True">
+
+    <!-- Trang Login -->
+    <ShellContent Route="LoginPage" ContentTemplate="{DataTemplate pages:LoginPage}" />
+
+    <!-- Main Menu -->
+    <ShellContent Route="MainMenuPage" ContentTemplate="{DataTemplate pages:MainMenuPage}" />
+
+    <!-- Các route cho Danh Mục -->
+    <ShellContent Route="LoaiVangPage" ContentTemplate="{DataTemplate pages:LoaiVangPage}" />
+    <ShellContent Route="NhomVangPage" ContentTemplate="{DataTemplate pages:NhomVangPage}" />
+    <ShellContent Route="HangHoaPage" ContentTemplate="{DataTemplate pages:HangHoaPage}" />
+    <ShellContent Route="KhoPage" ContentTemplate="{DataTemplate pages:KhoPage}" />
+    <ShellContent Route="NCCPage" ContentTemplate="{DataTemplate pages:NCCPage}" />
+    <ShellContent Route="KhachHangPage" ContentTemplate="{DataTemplate pages:KhachHangPage}" />
+    <ShellContent Route="DonViPage" ContentTemplate="{DataTemplate pages:DonViPage}" />
+
+    <!-- Các route cho Giao dịch -->
+    <ShellContent Route="BanVangPage" ContentTemplate="{DataTemplate pages:BanVangPage}" />
+
+    <ShellContent Route="CamVangPage" ContentTemplate="{DataTemplate pages:CamVangPage}" />
+
+    <!-- Các route cho Hệ thống -->
+    <ShellContent Route="NguoiDungPage" ContentTemplate="{DataTemplate pages:NguoiDungPage}" />
+    <ShellContent Route="LaiTinhKhachPage" ContentTemplate="{DataTemplate pages:LaiTinhKhachPage}" />
+
+    <!-- Các route cho Cầm vàng -->
+    <ShellContent Route="PhieuDangCamPage" ContentTemplate="{DataTemplate pages:PhieuDangCamPage}" />
+    <ShellContent Route="PhieuDongLaiPage" ContentTemplate="{DataTemplate pages:PhieuDongLaiPage}" />
+    <ShellContent Route="PhieuQuaHanPage" ContentTemplate="{DataTemplate pages:PhieuQuaHanPage}" />
+    <ShellContent Route="KhoVangCamPage" ContentTemplate="{DataTemplate pages:KhoVangCamPage}" />
+
+    <!-- Các route cho Báo Cáo -->
+    <ShellContent Route="PhieuXuatPage" ContentTemplate="{DataTemplate baocao:PhieuXuatPage}" />
+    <ShellContent Route="TonKhoLoaiVangPage" ContentTemplate="{DataTemplate baocao:TonKhoLoaiVangPage}" />
+    <ShellContent Route="TonKhoVangPage" ContentTemplate="{DataTemplate baocao:TonKhoVangPage}" />
+    <ShellContent Route="TonKhoNhomVangPage" ContentTemplate="{DataTemplate baocao:TonKhoNhomVangPage}" />
+    <ShellContent Route="PhieuDoiPage" ContentTemplate="{DataTemplate baocao:PhieuDoiPage}" />
+
+</Shell>

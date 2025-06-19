@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             x:Class="MyLoginApp.Pages.DonViPage"
+             Title="Quản lý Đơn Vị">
+
+    <ContentPage.BindingContext>
+        <viewmodels:DonViViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+
+        <!-- Các nút Thêm, Sửa, Xóa -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="15" HorizontalOptions="CenterAndExpand" Margin="0,0,0,10">
+            <Button Text="➕Thêm" Command="{Binding ShowAddFormCommand}" BackgroundColor="#4CAF50" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20" />
+            <Button Text="✏️ Sửa" Command="{Binding ShowEditFormCommand}" IsEnabled="{Binding SelectedDonVi, Converter={StaticResource NullToBooleanConverter}}" BackgroundColor="#FFCF07" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#FFCF07" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+            <Button Text="🗑️ Xóa" Command="{Binding DeleteCommand}" IsEnabled="{Binding SelectedDonVi, Converter={StaticResource NullToBooleanConverter}}" BackgroundColor="#F44336" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#F44336" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+        </HorizontalStackLayout>
+
+        <!-- Danh sách Đơn Vị -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="15">
+                <Label Text="📋 Danh sách đơn vị" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
+
+                <CollectionView ItemsSource="{Binding DanhSachDonVi}" SelectionMode="Single" SelectedItem="{Binding SelectedDonVi, Mode=TwoWay}">
+                    <!-- CHỈ HIỂN THỊ 1 CỘT -->
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" Padding="10" HasShadow="True" BackgroundColor="#F5F5F5">
+                                <VerticalStackLayout Spacing="5">
+                                    <Label Text="{Binding MaDV, StringFormat='🏢 Mã: {0}'}" FontAttributes="Bold" FontSize="16" />
+                                    <Label Text="{Binding TenDV, StringFormat='📛 Tên: {0}'}" FontSize="14" TextColor="#555" />
+                                    <Label Text="{Binding DiaChi, StringFormat='📍 Địa chỉ: {0}'}" FontSize="14" TextColor="#777" />
+                                    <Label Text="{Binding DienThoai, StringFormat='📞 Điện thoại: {0}'}" FontSize="14" TextColor="#777" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

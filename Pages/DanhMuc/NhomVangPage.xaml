@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             x:Class="MyLoginApp.Pages.NhomVangPage"
+             Title="Quản lý Nhóm Vàng">
+
+    <ContentPage.BindingContext>
+        <viewmodels:NhomVangViewModel />
+    </ContentPage.BindingContext>
+
+    <!-- Tổng Layout chia theo Grid -->
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+
+        <!-- KHU VỰC NÚT ĐIỀU KHIỂN -->
+        <HorizontalStackLayout Grid.Row="0" Spacing="15" HorizontalOptions="CenterAndExpand" Margin="0,0,0,10">
+
+            <Button Text="➕ Thêm" Command="{Binding ShowAddFormCommand}"
+                    BackgroundColor="#4CAF50" TextColor="Black" WidthRequest="110" HeightRequest="50" CornerRadius="20" />
+
+            <Button Text="✏️ Sửa"
+                    Command="{Binding ShowEditFormCommand}"
+                    IsEnabled="{Binding SelectedNhomVang, Converter={StaticResource NullToBoolConverter}}"
+                    BackgroundColor="#FFCF07"
+                    TextColor="Black"
+                    WidthRequest="110"
+                    HeightRequest="50"
+                    CornerRadius="20">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#FFCF07" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+
+            <Button Text="🗑️ Xóa"
+                    Command="{Binding DeleteCommand}" 
+                    IsEnabled="{Binding SelectedNhomVang, Converter={StaticResource SelectedItemToBoolConverter}}"
+                    BackgroundColor="#F44336"
+                    TextColor="Black"
+                    WidthRequest="110"
+                    HeightRequest="50"
+                    CornerRadius="20">
+                <Button.Triggers>
+                    <Trigger TargetType="Button" Property="IsEnabled" Value="False">
+                        <Setter Property="BackgroundColor" Value="#F44336" />
+                        <Setter Property="Opacity" Value="0.7" />
+                    </Trigger>
+                </Button.Triggers>
+            </Button>
+        </HorizontalStackLayout>
+
+        <!-- KHU VỰC FORM + DANH SÁCH -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Spacing="15">
+
+                <!-- FORM THÊM -->
+                <Frame BorderColor="Green" CornerRadius="15" Padding="10" IsVisible="{Binding IsAdding}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="➕ Thêm nhóm vàng mới" FontAttributes="Bold" FontSize="20" TextColor="Green" HorizontalOptions="Center" />
+                        <Entry Placeholder="Tên nhóm vàng" Text="{Binding FormNhomVang.TenNhom}" />
+                        <Entry Placeholder="Ký hiệu" Text="{Binding FormNhomVang.KyHieu}" />
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                            <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
+                            <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- FORM SỬA -->
+               
+                <Frame BorderColor="Orange" CornerRadius="15" Padding="10" IsVisible="{Binding IsEditing}">
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="✏️ Cập nhật nhóm vàng" FontAttributes="Bold" FontSize="{OnPlatform Android=18, iOS=18, Default=20}" TextColor="Orange" HorizontalOptions="Center" />
+
+                        <Label Text="Tên nhóm vàng:" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập tên nhóm vàng" Text="{Binding FormNhomVang.TenNhom}" />
+
+                        <Label Text="Ký hiệu:" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Entry Placeholder="Nhập ký hiệu" Text="{Binding FormNhomVang.KyHieu}" />
+
+                        <Label Text="Sử dụng:" FontAttributes="Bold" TextColor="#333333" Margin="0,5,0,0"/>
+                        <Switch IsToggled="{Binding FormNhomVang.SuDung, Converter={StaticResource IntToBoolConverter}}" 
+OnColor="Green" ThumbColor="White" HorizontalOptions="Start" />
+
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="15" Margin="0,10,0,0">
+                            <Button Text="💾 Lưu" Command="{Binding SaveEditCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
+                            <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
+                        </HorizontalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- DANH SÁCH NHÓM VÀNG -->
+                <Frame BackgroundColor="#FF9800" 
+                        BorderColor="#FF9800" 
+                        CornerRadius="10" 
+                        Padding="15" 
+                        Margin="0,0,0,10"
+                        HasShadow="True">
+                    <Label Text="📋 Danh sách nhóm vàng" 
+                            FontAttributes="Bold" 
+                            FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
+                            HorizontalOptions="Center" 
+                            TextColor="#333333" />
+                </Frame>
+
+                <CollectionView 
+                        ItemsSource="{Binding ListNhomVang}"
+                        SelectionMode="None"
+                        IsVisible="{Binding IsShowingList}" 
+                        Margin="0,0,0,10">
+
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout Orientation="Vertical" Span="2" HorizontalItemSpacing="10" VerticalItemSpacing="10" />
+                    </CollectionView.ItemsLayout>
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame CornerRadius="10" Padding="10" HasShadow="True" BackgroundColor="#E8E8E8" BorderColor="#DDD" Margin="3">
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:NhomVangViewModel}}, Path=SelectItemCommand}" 
+                                                          CommandParameter="{Binding .}" />
+                                </Frame.GestureRecognizers>
+                                <Frame.Style>
+                                    <Style TargetType="Frame">
+                                        <Setter Property="BackgroundColor" Value="#E8E8E8" />
+                                        <Setter Property="BorderColor" Value="#DDD" />
+                                        <Setter Property="HasShadow" Value="True" />
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Frame"
+                                                Binding="{Binding IsSelected}" 
+                                                Value="True">
+                                                <Setter Property="BackgroundColor" Value="#E8E8E8"/>
+                                                <Setter Property="BorderColor" Value="#FF9800"/>
+                                                <Setter Property="HasShadow" Value="True" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Frame.Style>
+
+                                <!-- Thông tin nhóm vàng -->
+                                <VerticalStackLayout Spacing="5">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0" Text="{Binding TenNhom}" FontAttributes="Bold" FontSize="16" LineBreakMode="TailTruncation" TextColor="Black" />
+                                        <!-- Biểu tượng đánh dấu đang sử dụng -->
+                                        <Label Grid.Column="1" 
+                                               Text="✓" 
+                                               TextColor="Green" 
+                                               FontSize="16" 
+                                               IsVisible="{Binding SuDung, Converter={StaticResource IntToBoolConverter}}" />
+                                    </Grid>
+                                    <Label Text="{Binding KyHieu}" FontSize="13" TextColor="Black" />
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- KHU VỰC PHÂN TRANG - ĐẶT Ở DƯỚI CÙNG -->
+        <Frame Grid.Row="2" 
+               BackgroundColor="White" 
+               BorderColor="#FF9800" 
+               CornerRadius="10" 
+               Padding="10" 
+               Margin="0,10,0,0"
+               HasShadow="True">
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
+                <Button Text="⏮️" 
+                        Command="{Binding PreviousPageCommand}"
+                        IsEnabled="{Binding CanGoPrevious}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Label Text="{Binding CurrentPage, StringFormat='Trang {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Label Text="{Binding TotalPages, StringFormat='/ {0}'}"
+                       VerticalOptions="Center"
+                       FontSize="16"/>
+
+                <Button Text="⏭️"
+                        Command="{Binding NextPageCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+
+                <Button Text="🔄"
+                        Command="{Binding RefreshCommand}"
+                        BackgroundColor="#FF9800"
+                        TextColor="White"
+                        WidthRequest="50"
+                        HeightRequest="40"
+                        CornerRadius="20"/>
+            </HorizontalStackLayout>
+        </Frame>
+    </Grid>
+</ContentPage>

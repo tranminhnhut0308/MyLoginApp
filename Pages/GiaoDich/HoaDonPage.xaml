@@ -1,0 +1,49 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Views.HoaDonPage"
+             Title="Hóa Đơn"
+             BackgroundColor="#f0f8ff">
+    <ScrollView>
+        <VerticalStackLayout Padding="25" Spacing="20">
+
+            <Label Text="✅ THANH TOÁN THÀNH CÔNG"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="#228B22" />
+            <BoxView HeightRequest="2" BackgroundColor="LightGray" Margin="0,10,0,10" />
+
+            <Frame BorderColor="#d3d3d3"
+                   Background="AntiqueWhite"
+                   CornerRadius="15"
+                   Padding="20"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="--- CHI TIẾT HÓA ĐƠN ---"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="#333" />
+                    <Label x:Name="lblNoiDungHoaDon" FontSize="16" TextColor="#333" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <BoxView HeightRequest="15" BackgroundColor="Transparent" />
+
+            <Button Text="⬅️ Quay lại Trang Bán Hàng"
+                    Clicked="OnBackClicked"
+                    BackgroundColor="#007bff" TextColor="White"
+                    FontSize="18"
+                    CornerRadius="10"
+                    Padding="12"
+                    HorizontalOptions="FillAndExpand" />
+
+            <Label Text="Cảm ơn quý khách!"
+                   FontSize="14"
+                   HorizontalOptions="Center"
+                   TextColor="Gray"
+                   Margin="0,20,0,0" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

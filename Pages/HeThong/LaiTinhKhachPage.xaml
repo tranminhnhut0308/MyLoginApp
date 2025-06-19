@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MyLoginApp.Pages.LaiTinhKhachPage"
+             Title="Lãi tính khách">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10" Spacing="20">
+
+            <!-- Điều kiện lãi theo ngày -->
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label Text="Điều kiện lãi theo ngày" FontAttributes="Bold" FontSize="18"/>
+
+                    <!-- Sử dụng Grid thay vì HorizontalStackLayout với các dòng được phân chia hợp lý -->
+                    <Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto, Auto">
+                        <Label Text="Lãi mặc định" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="100" Grid.Row="0" Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &lt;=" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="ngày thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &gt;" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="ngày và &lt;=" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                        <Label Text="ngày thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="4"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="5"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &gt;" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="ngày và &lt;=" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                        <Label Text="ngày thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="4"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="5"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &gt;" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="ngày thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Điều kiện lãi theo tiền cầm -->
+            <Frame BorderColor="Gray" CornerRadius="10" Padding="10">
+                <VerticalStackLayout Spacing="10">
+
+                    <Label Text="Điều kiện lãi theo tiền cầm" FontAttributes="Bold" FontSize="18"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &lt;=" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="triệu thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &gt;" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="triệu và &lt;=" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                        <Label Text="triệu thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="4"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="5"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto" RowDefinitions="Auto">
+                        <Label Text="Nếu &gt;" VerticalOptions="Center" Grid.Row="0" Grid.Column="0"/>
+                        <Entry Placeholder="0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="1"/>
+                        <Label Text="thì lãi cộng thêm (%)" VerticalOptions="Center" Grid.Row="0" Grid.Column="2"/>
+                        <Entry Placeholder="0.0" Keyboard="Numeric" WidthRequest="70" Grid.Row="0" Grid.Column="3"/>
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Nút lưu -->
+            <Button Text="Lưu" BackgroundColor="#4CAF50" TextColor="White" CornerRadius="10" HeightRequest="50"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

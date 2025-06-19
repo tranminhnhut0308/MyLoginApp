@@ -1,0 +1,269 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls"
+             x:Class="MyLoginApp.Pages.CamVangPage"
+             BackgroundColor="White"
+             Title="Cầm Vàng">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Tiêu đề Cầm Vàng -->
+            <Border BackgroundColor="Black"
+                    Stroke="#9370DB"
+                    StrokeThickness="3"
+                    Padding="25,15"
+                    Margin="0,0,0,20">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Label Text="🔒 Cầm Vàng"
+                       FontSize="35"
+                       FontAttributes="Bold"
+                       TextColor="#FFD700"
+                       HorizontalOptions="Center"/>
+            </Border>
+
+            <!-- THÔNG TIN KHÁCH HÀNG -->
+            <Button x:Name="btnChonKhachHang"
+                    Text="👤 Chọn khách hàng"
+                    Clicked="OnChonKhachHangClicked"
+                    BackgroundColor="#FF8C00"
+                    TextColor="White"/>
+
+            <!-- Bao gồm cả nhập tên và quét CCCD -->
+            <Border x:Name="frameCustomerSelectionArea"
+                    BackgroundColor="#1E1E1E"
+                    Stroke="White"
+                    StrokeThickness="1"
+                    Padding="15"
+                    IsVisible="False">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <!-- Nhập tên khách -->
+                    <Border x:Name="frameNhapTenKhach" BackgroundColor="#2C2C2C" Stroke="LightGray" StrokeThickness="1" Padding="10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="10" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout>
+                            <Label Text="👤 Nhập tên khách hàng" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Entry x:Name="entryTenKhach"
+                                   Placeholder="Nhập họ tên khách hàng"
+                                   TextChanged="OnTenKhachHangChanged"
+                                   TextColor="White"
+                                   FontSize="13"
+                                   PlaceholderColor="Gray"/>
+                            <Label x:Name="lblThongTinKH"
+                                   TextColor="LightGreen"
+                                   FontSize="13"
+                                   IsVisible="False" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Button x:Name="btnXacNhanKhach"
+                            Text="✅ Xác nhận khách này"
+                            Clicked="OnXacNhanKhachClicked"
+                            BackgroundColor="Green"
+                            TextColor="White"
+                            IsVisible="False"/>
+
+                    <Label x:Name="lblHoac" Text="Hoặc" TextColor="White" HorizontalOptions="Center" Margin="0,5,0,5"/>
+
+                    <!-- Nút Quét CCCD mới -->
+                    <Button x:Name="btnQuetCCCD"
+                            Text="📷 Quét CCCD"
+                            Clicked="OnQuetCCCDClicked"
+                            BackgroundColor="#4682B4"
+                            TextColor="White"
+                            Margin="0,10,0,0"/>
+
+                    <!-- Thêm khách mới -->
+                    <Border x:Name="frameThemKhach"
+                            BackgroundColor="#1E1E1E"
+                            Stroke="White"
+                            StrokeThickness="1"
+                            Padding="15"
+                            IsVisible="False">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout>
+                            <Label Text="📞 Nhập số điện thoại" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Entry x:Name="entrySoDienThoai"
+                                   Placeholder="Nhập số điện thoại"
+                                   FontSize="13"
+                                   TextColor="White" PlaceholderColor="Gray"/>
+                            <Label Text="🏠 Địa chỉ" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Entry x:Name="entryDiaChi"
+                                   Placeholder="Nhập địa chỉ"
+                                   FontSize="13"
+                                   TextColor="White" PlaceholderColor="Gray"/>
+                            <Label Text="🪪 CCCD" TextColor="White" FontSize="13" FontAttributes="Bold"/>
+                            <Entry x:Name="entryCCCD"
+                                   Placeholder="Nhập số CCCD"
+                                   FontSize="13"
+                                   TextColor="White" PlaceholderColor="Gray"/>
+                            <Button x:Name="btnThemKhachHang"
+                                    Text="Thêm khách hàng mới"
+                                    Clicked="OnThemKhachHangClicked"
+                                    BackgroundColor="#1E90FF"
+                                    TextColor="White"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Quét CCCD (khung hiển thị kết quả) -->
+                    <Border x:Name="frameQuetCCCD"
+                            BackgroundColor="#1E1E1E"
+                            Stroke="White"
+                            StrokeThickness="1"
+                            Padding="15"
+                            IsVisible="False">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="15" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout>
+                            <Label Text="🪪 Thông tin CCCD đã quét" 
+                                   TextColor="White" 
+                                   FontSize="13" 
+                                   FontAttributes="Bold"
+                                   IsVisible="False"/>
+                            <Label x:Name="lblCCCDInfo"
+                                   TextColor="LightGreen"
+                                   FontSize="13"
+                                   IsVisible="False"
+                                   Margin="0,10,0,0"/>
+                            <Button x:Name="btnXacNhanCCCD"
+                                    Text="✅ Xác nhận"
+                                    Clicked="OnXacNhanCCCDClicked"
+                                    BackgroundColor="Green"
+                                    TextColor="White"
+                                    IsVisible="False"
+                                    Margin="0,10,0,0"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Label x:Name="lblKhachHangDaChon"
+                   Text=""
+                   FontSize="14"
+                   TextColor="Black"
+                   FontAttributes="Bold"
+                   IsVisible="False"
+                   HorizontalOptions="Center"/>
+
+            <!-- THÔNG TIN CHI TIẾT -->
+            <Grid ColumnDefinitions="*,*" RowSpacing="10" ColumnSpacing="20">
+
+                <!-- Cột trái -->
+                <VerticalStackLayout Grid.Column="0" Spacing="10">
+                    <Label Text="📦 Tên hàng hóa" TextColor="Black"/>
+                    <Entry x:Name="entryTenHang" 
+                           Placeholder="Nhập tên hàng" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding TenHang, Mode=TwoWay}"/>
+
+                    <Label Text="🏷️ Loại vàng" TextColor="Black"/>
+                    <Picker x:Name="pickerLoaiVang" 
+                            TextColor="Black" 
+                            Title="Chọn loại vàng"
+                            ItemsSource="{Binding LoaiVangList}" 
+                            SelectedItem="{Binding SelectedLoaiVang, Mode=TwoWay}"/>
+
+                    <Label Text="⚖️ Cân tổng" TextColor="Black"/>
+                    <Entry x:Name="entryCanTong" 
+                           Keyboard="Numeric" 
+                           Placeholder="gram" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding CanTong, Mode=TwoWay}"/>
+
+                    <Label Text="💎 TL Hột" TextColor="Black"/>
+                    <Entry x:Name="entryTLHot" 
+                           Keyboard="Numeric" 
+                           Placeholder="gram" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding TlHot, Mode=TwoWay}"/>
+
+                    <Label Text="➖ Trừ hột" TextColor="Black"/>
+                    <Entry x:Name="entryTruHot" 
+                           IsReadOnly="True" 
+                           TextColor="Black" 
+                           Placeholder="Tự động tính"
+                           BackgroundColor="#F0F0F0"
+                           Text="{Binding TruHotDisplay}"/>
+
+                    <Label Text="💵 Đơn giá" TextColor="Black"/>
+                    <Entry x:Name="entryDonGia" 
+                           IsReadOnly="True"
+                           TextColor="Black" 
+                           Placeholder="Tự động từ loại vàng"
+                           BackgroundColor="#F0F0F0"
+                           Text="{Binding DonGia, StringFormat='{0:N0} VNĐ'}"/>
+                </VerticalStackLayout>
+
+                <!-- Cột phải -->
+                <VerticalStackLayout Grid.Column="1" Spacing="10">
+                    <Label Text="💰 Tiền cầm" TextColor="Black"/>
+                    <Entry x:Name="entryTienCam" 
+                           Keyboard="Numeric" 
+                           Placeholder="VNĐ" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding TienCam, Mode=TwoWay}"/>
+
+                    <Label Text="📈 Lãi suất (%)" TextColor="Black"/>
+                    <Entry x:Name="entryLaiSuat" 
+                           Keyboard="Numeric" 
+                           Placeholder="%" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding LaiSuat, Mode=TwoWay}"/>
+
+                    <Label Text="📅 Ngày cầm" TextColor="Black"/>
+                    <DatePicker x:Name="dateNgayCam" TextColor="Black" IsEnabled="False" Date="{Binding NgayCam}"/>
+
+                    <Label Text="📅 Ngày hết hạn" TextColor="Black"/>
+                    <DatePicker x:Name="dateNgayHetHan" 
+                                TextColor="Black" 
+                                Date="{Binding NgayHetHan}"/>
+
+                    <!-- Ghi chú -->
+                    <Label Text="📝 Ghi chú: " TextColor="Black" />
+                    <Entry x:Name="entryGhiChu" 
+                           Placeholder="Nhập ghi chú" 
+                           TextColor="Black" 
+                           PlaceholderColor="Gray"
+                           Text="{Binding GhiChu, Mode=TwoWay}"/>
+
+                    <!-- Thành tiền -->
+                    <Label Text="🧾 Thành tiền" TextColor="Black"/>
+                    <Entry x:Name="entryThanhTien" 
+                           IsReadOnly="True" 
+                           TextColor="Black"
+                           FontAttributes="Bold"
+                           BackgroundColor="#F0F0F0"
+                           Text="{Binding ThanhTien, StringFormat='{0:N0} VNĐ'}"/>
+                </VerticalStackLayout>
+
+            </Grid>
+
+            <Button x:Name="btnThanhToan"
+                    Text="💰 Thanh toán"
+                    Command="{Binding OnThanhToanClickedAsyncCommand}"
+                    Clicked="OnThanhToanClicked"
+                    BackgroundColor="LimeGreen"
+                    TextColor="White"
+                    FontAttributes="Bold"
+                    CornerRadius="30"
+                    Padding="15"
+                    HorizontalOptions="FillAndExpand"
+                    Margin="0,20,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
