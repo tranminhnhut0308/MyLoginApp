@@ -97,15 +97,15 @@
 
                                 <!-- Định giá -->
                                 <Label Text="Định Giá:" Grid.Row="6" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
-                                <Label Text="{Binding Dinh_Gia, StringFormat='{0:N0}'}" Grid.Row="6" Grid.Column="1" FontSize="18"/>
+                                <Label Text="{Binding Dinh_Gia, StringFormat='{0:N0} VND'}" Grid.Row="6" Grid.Column="1" FontSize="18"/>
 
                                 <!-- Tiền khách nhận -->
                                 <Label Text="Tiền Nhận:" Grid.Row="7" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
-                                <Label Text="{Binding TIEN_KHACH_NHAN, StringFormat='{0:N0}'}" Grid.Row="7" Grid.Column="1" FontSize="18"/>
+                                <Label Text="{Binding TIEN_KHACH_NHAN, StringFormat='{0:N0} VND'}" Grid.Row="7" Grid.Column="1" FontSize="18"/>
 
                                 <!-- Lãi suất -->
-                                <Label Text="Lãi Suất (%):" Grid.Row="8" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
-                                <Label Text="{Binding LAI_XUAT}" Grid.Row="8" Grid.Column="1" FontSize="18"/>
+                                <Label Text="Lãi Suất :" Grid.Row="8" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="{Binding LAI_XUAT, StringFormat='{0} %'}" Grid.Row="8" Grid.Column="1" FontSize="18"/>
                             </Grid>
                         </Frame>
                     </DataTemplate>
