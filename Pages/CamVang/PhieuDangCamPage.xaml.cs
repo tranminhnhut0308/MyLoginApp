@@ -119,7 +119,7 @@ namespace MyLoginApp.Pages
             }
         }
 
-        private async void OnChupVaQuetQRClicked(object sender, EventArgs e)
+        private async Task OnChupVaQuetQRClicked(object sender, EventArgs e)
         {
             try
             {
@@ -206,11 +206,48 @@ namespace MyLoginApp.Pages
             }
         }
 
+        private async void OnTimKiemPhieuClicked(object sender, EventArgs e)
+        {
+            string action = await DisplayActionSheet("Chọn cách tìm kiếm", "Huỷ", null, "Nhập mã phiếu", "Quét mã QR");
+            if (action == "Nhập mã phiếu")
+            {
+                string result = await DisplayPromptAsync("Nhập mã phiếu", "Vui lòng nhập mã phiếu cần tìm:");
+                if (!string.IsNullOrWhiteSpace(result))
+                {
+                    if (BindingContext is PhieuDangCamViewModel viewModel)
+                    {
+                        loadingGrid.IsVisible = true;
+                        lblLoadingText.Text = $"Đang tìm kiếm phiếu với mã: {result}";
+                        await viewModel.OnSearchTextChanged(result);
+                        lblKhongTimThay.IsVisible = false;
+                        loadingGrid.IsVisible = false;
+                    }
+                }
+            }
+            else if (action == "Quét mã QR")
+            {
+                await OnChupVaQuetQRClicked(sender, e);
+            }
+        }
+
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
             _searchTokenSource?.Cancel();
             _searchTokenSource?.Dispose();
+        }
+
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is PhieuDangCamViewModel viewModel)
+            {
+                loadingGrid.IsVisible = true;
+                lblLoadingText.Text = "Đang tải danh sách phiếu...";
+                await viewModel.OnSearchTextChanged("");
+                lblKhongTimThay.IsVisible = false;
+                loadingGrid.IsVisible = false;
+            }
         }
     }
 }

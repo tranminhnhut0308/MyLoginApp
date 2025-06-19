@@ -27,76 +27,16 @@
                        TextColor="White" />
             </Frame>
 
-            <!-- Frame tìm kiếm -->
-            <Frame BackgroundColor="White"
-                   Padding="15"
-                   Margin="0,0,0,10"
-                   CornerRadius="10"
-                   HasShadow="True">
-                <VerticalStackLayout Spacing="10">
-                    <!-- Nhập mã tìm kiếm -->
-                   
-                    <SearchBar 
-                            Placeholder="Tìm kiếm theo mã phiếu"
-                            TextChanged="OnSearchTextChanged"
-                            Text="{Binding SearchKeyword}"
-                            BackgroundColor="#f0f0f0"
-                            FontSize="16"
-                            HeightRequest="48"
-                            TextColor="#222"
-                            PlaceholderColor="#888"
-                            CancelButtonColor="#888"
-                            HorizontalTextAlignment="Start"
-                            Margin="0,0,0,10" />
-
-                    <!-- Hoặc -->
-                    <Label Text="HOẶC"
-                           FontSize="14"
-                           FontAttributes="Bold"
-                           TextColor="#666"
-                           HorizontalOptions="Center"
-                           Margin="0,10"/>
-
-                    <Button Text="📷 Chụp mã để tìm phiếu"
-                            Clicked="OnChupVaQuetQRClicked"
-                            BackgroundColor="#2196F3"
-                            TextColor="White"
-                            HeightRequest="48"
-                            CornerRadius="24"
-                            FontSize="16"
-                            FontAttributes="Bold"/>
-
-                    <!-- Loading indicator -->
-                    <Grid x:Name="loadingGrid" 
-                          IsVisible="False"
-                          BackgroundColor="#80000000"
-                          HorizontalOptions="Fill"
-                          VerticalOptions="Fill">
-                        <StackLayout HorizontalOptions="Center" 
-                                   VerticalOptions="Center">
-                            <ActivityIndicator IsRunning="True"
-                                             Color="White"
-                                             HeightRequest="50"
-                                             WidthRequest="50"/>
-                            <Label x:Name="lblLoadingText"
-                                   Text="Đang tìm kiếm phiếu..."
-                                   TextColor="White"
-                                   FontSize="16"
-                                   FontAttributes="Bold"
-                                   Margin="0,10,0,0"/>
-                        </StackLayout>
-                    </Grid>
-
-                    <Label x:Name="lblKhongTimThay"
-                           Text=""
-                           FontSize="14"
-                           TextColor="#FF0000"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Center"
-                           Margin="0,10,0,0"
-                           IsVisible="False"/>
-                </VerticalStackLayout>
-            </Frame>
+            <!-- Nút tìm kiếm nhỏ gọn ở góc phải -->
+            <HorizontalStackLayout HorizontalOptions="End" Margin="0,0,10,0">
+                <Button Text="🔍"
+                        Clicked="OnTimKiemPhieuClicked"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        CornerRadius="20"/>
+            </HorizontalStackLayout>
 
             <!-- Search Bar -->
            
@@ -160,6 +100,37 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <!-- Loading indicator -->
+            <Grid x:Name="loadingGrid" 
+                  IsVisible="False"
+                  BackgroundColor="#80000000"
+                  HorizontalOptions="Fill"
+                  VerticalOptions="Fill"
+                  RowSpacing="0"
+                  Margin="0,10,0,0">
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <ActivityIndicator IsRunning="True"
+                                       Color="White"
+                                       HeightRequest="50"
+                                       WidthRequest="50"/>
+                    <Label x:Name="lblLoadingText"
+                           Text="Đang tìm kiếm phiếu..."
+                           TextColor="White"
+                           FontSize="16"
+                           FontAttributes="Bold"
+                           Margin="0,10,0,0"/>
+                </StackLayout>
+            </Grid>
+
+            <Label x:Name="lblKhongTimThay"
+                   Text=""
+                   FontSize="14"
+                   TextColor="#FF0000"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,0"
+                   IsVisible="False"/>
 
             <!-- Pagination Buttons -->
             <StackLayout Orientation="Horizontal"
