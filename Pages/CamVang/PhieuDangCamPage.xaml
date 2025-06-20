@@ -58,7 +58,7 @@
                     </VerticalStackLayout>
                     <!-- Tổng giá trị -->
                     <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
-                        <Label Text="Tổng giá trị" TextColor="#888" FontSize="13"/>
+                        <Label Text="Tổng định giá " TextColor="#888" FontSize="13"/>
                         <Label Text="{Binding TongGiaTri, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="18" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng tiền nhận -->
