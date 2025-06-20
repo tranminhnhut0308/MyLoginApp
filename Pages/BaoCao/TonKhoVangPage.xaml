@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.BaoCao.TonKhoVangPage"
              BackgroundColor="#f5f5f5">
+             
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:GramToLuongConverter x:Key="GramToLuongConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ScrollView Padding="5">
         <VerticalStackLayout Spacing="16">
@@ -67,15 +74,15 @@
 
                                 <!-- TL Thực -->
                                 <Label Text="TL Thực:" Grid.Row="1" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding TL_THUC, StringFormat='{0:N2}'}" Grid.Row="1" Grid.Column="1"/>
+                                <Label Text="{Binding TL_THUC, Converter={StaticResource GramToLuongConverter}}" Grid.Row="1" Grid.Column="1"/>
 
                                 <!-- TL Hột -->
                                 <Label Text="TL Hột:" Grid.Row="2" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding TL_HOT, StringFormat='{0:N2}'}" Grid.Row="2" Grid.Column="1"/>
+                                <Label Text="{Binding TL_HOT, Converter={StaticResource GramToLuongConverter}}" Grid.Row="2" Grid.Column="1"/>
 
                                 <!-- Cân Tổng -->
                                 <Label Text="Cân Tổng:" Grid.Row="3" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding CAN_TONG, StringFormat='{0:N2}'}" Grid.Row="3" Grid.Column="1"/>
+                                <Label Text="{Binding CAN_TONG, Converter={StaticResource GramToLuongConverter}}" Grid.Row="3" Grid.Column="1"/>
 
                                 <!-- Công gốc -->
                                 <Label Text="Công Gốc:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>

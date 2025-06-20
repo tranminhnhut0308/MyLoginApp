@@ -6,7 +6,7 @@ namespace MyLoginApp.Converters
 {
     public class GramToLuongConverter : IValueConverter
     {
-        private const decimal GRAM_PER_LUONG = 37.5m;
+        private const decimal PHAN_PER_LUONG = 10m;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -16,39 +16,39 @@ namespace MyLoginApp.Converters
                 if (value == null) 
                     return "0.00 Lượng";
                 
-                decimal gramValue;
+                decimal phanValue;
                 
-                // Xử lý chuyên biệt cho decimal - kiểu dữ liệu chính của CanTong và TLThuc
+                // Xử lý chuyên biệt cho các kiểu dữ liệu
                 if (value is decimal decimalValue)
                 {
-                    gramValue = decimalValue;
+                    phanValue = decimalValue;
                 }
                 else if (value is double doubleValue)
                 {
-                    gramValue = (decimal)doubleValue;
+                    phanValue = (decimal)doubleValue;
                 }
                 else if (value is int intValue)
                 {
-                    gramValue = intValue;
+                    phanValue = intValue;
                 }
                 else if (value is string stringValue && decimal.TryParse(stringValue, out decimal parsedDecimal))
                 {
-                    gramValue = parsedDecimal;
+                    phanValue = parsedDecimal;
                 }
                 else
                 {
                     return "0.00 Lượng"; // Trả về giá trị mặc định nếu không convert được
                 }
                 
-                // Tính giá trị lượng từ gram
-                decimal luongValue = gramValue / GRAM_PER_LUONG;
+                // Tính giá trị lượng từ phân (1 lượng = 10 phân)
+                decimal luongValue = phanValue / PHAN_PER_LUONG;
                 
                 // Định dạng số lượng với 2 số thập phân
                 return $"{luongValue:0.00} Lượng";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi chuyển đổi gram sang lượng: {ex.Message}");
+                Console.WriteLine($"Lỗi chuyển đổi phân sang lượng: {ex.Message}");
                 return "0.00 Lượng"; // Giá trị mặc định nếu có lỗi
             }
         }
@@ -57,13 +57,13 @@ namespace MyLoginApp.Converters
         {
             if (value is string luongString)
             {
-                // Xóa ký tự "L" và parse giá trị
+                // Xóa ký tự "Lượng" và parse giá trị
                 luongString = luongString.Replace("Lượng", "").Trim();
                 
                 if (decimal.TryParse(luongString, out decimal luongValue))
                 {
-                    // Đã sửa để nhân giữa 2 decimal
-                    return luongValue * GRAM_PER_LUONG;
+                    // Chuyển từ lượng sang phân (nhân với 10)
+                    return luongValue * PHAN_PER_LUONG;
                 }
             }
             
