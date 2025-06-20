@@ -8,6 +8,7 @@ namespace MyLoginApp.Models
 {
     public class PhieuQuaHanModel
     {
+        public int PHIEU_CAM_VANG_ID { get; set; }
         public string Ma_Phieu { get; set; }
         public string Ten_KH { get; set; }
         public DateTime? TU_NGAY { get; set; } 

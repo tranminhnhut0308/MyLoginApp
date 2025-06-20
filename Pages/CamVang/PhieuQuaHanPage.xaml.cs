@@ -17,12 +17,12 @@ namespace MyLoginApp.Pages
             Loaded += async (s, e) => await viewModel.LoadPhieuQuaHanAsync();
         }
 
-        private async void OnSearchTextChanged(object sender, TextChangedEventArgs e)
+        private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
         {
             if (viewModel != null)
             {
                 viewModel.SearchKeyword = e.NewTextValue;
-                await viewModel.LoadPhieuQuaHanAsync();  // Make sure this matches the method in ViewModel
+                // Không cần gọi LoadPhieuQuaHanAsync() ở đây vì OnSearchKeywordChanged trong ViewModel sẽ tự động gọi
             }
         }
 

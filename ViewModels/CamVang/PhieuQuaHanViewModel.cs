@@ -109,7 +109,7 @@ namespace MyLoginApp.ViewModels
 
                 if (!string.IsNullOrWhiteSpace(SearchKeyword))
                 {
-                    query += " AND phx_khach_hang.KH_TEN LIKE @Search";
+                    query += " AND (phx_khach_hang.KH_TEN LIKE @Search OR cam_phieu_cam_vang.PHIEU_MA LIKE @Search)";
                 }
 
                 query += " ORDER BY cam_phieu_cam_vang.PHIEU_CAM_VANG_ID DESC LIMIT @PageSize OFFSET @Offset";
@@ -130,6 +130,7 @@ namespace MyLoginApp.ViewModels
                 {
                     list.Add(new PhieuQuaHanModel
                     {
+                        PHIEU_CAM_VANG_ID = reader.GetInt32("PHIEU_CAM_VANG_ID"),
                         Ma_Phieu = reader["PHIEU_MA"].ToString(),
                         Ten_KH = reader["KH_TEN"].ToString(),
                         TU_NGAY = reader.IsDBNull(reader.GetOrdinal("TU_NGAY")) ? null : reader.GetDateTime("TU_NGAY"),
