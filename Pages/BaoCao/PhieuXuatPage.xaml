@@ -92,23 +92,13 @@
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
-                                        <Label Text="TL Hot : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TlHot, StringFormat='{0:N3}'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Giá gốc : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding GiaGoc, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Đơn giá : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding DonGia, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
                                         <Label Text="Cân tổng : " FontAttributes="Bold" FontSize="16"/>
                                         <Label Text="{Binding CanTong, StringFormat='{0:N3}'}" FontSize="16"/>
+                                    </StackLayout>
+
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="TL Hot : " FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding TlHot, StringFormat='{0:N3}'}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
@@ -119,6 +109,16 @@
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="Lãi/Lỗ : " FontAttributes="Bold" FontSize="16"/>
                                         <Label Text="{Binding LaiLo, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
+                                    </StackLayout>
+
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Giá gốc : " FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding GiaGoc, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
+                                    </StackLayout>
+
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Đơn giá : " FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding DonGia, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
