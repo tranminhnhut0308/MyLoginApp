@@ -20,23 +20,9 @@
             <!-- Danh sách -->
             <RowDefinition Height="Auto"/>
             <!-- Phân trang -->
+            <RowDefinition Height="Auto"/>
+            <!-- Thống kê tổng số liệu -->
         </Grid.RowDefinitions>
-
-        <!-- Tiêu đề -->
-        <Frame Grid.Row="0"
-               BackgroundColor="#FF8C00"
-               Padding="15"
-               CornerRadius="10"
-               HasShadow="True">
-            <Grid>
-                <Label Text="📦 Danh Sách Phiếu Xuất"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       HorizontalOptions="FillAndExpand"
-                       HorizontalTextAlignment="Center"
-                       TextColor="White" />
-            </Grid>
-        </Frame>
 
         <!-- Tìm kiếm -->
         <Frame Grid.Row="1"
@@ -93,17 +79,17 @@
 
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="Cân tổng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding CanTong, StringFormat='{0:N3}'}" FontSize="16"/>
+                                        <Label Text="{Binding CanTong, StringFormat='{0:0.##}'}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="TL Hot : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TlHot, StringFormat='{0:N3}'}" FontSize="16"/>
+                                        <Label Text="{Binding TlHot, StringFormat='{0:0.##}'}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
-                                        <Label Text="Trừ Hot : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TruHot, StringFormat='{0:N3}'}" FontSize="16"/>
+                                        <Label Text="TL Vàng : " FontAttributes="Bold" FontSize="16"/>
+                                        <Label Text="{Binding TruHot, StringFormat='{0:0.##}'}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
@@ -163,5 +149,46 @@
                     CornerRadius="10"
                     WidthRequest="100"/>
         </Grid>
+
+        <!-- Card thống kê tổng số liệu kiểu đẹp -->
+        <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="0,0,0,14" HasShadow="True">
+            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
+                <!-- Tổng số phiếu -->
+                <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                    <Label Text="Tổng số phiếu" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongSoPhieu}" TextColor="#1976D2" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng cân -->
+                <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
+                    <Label Text="Tổng cân" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongCanTongAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng TL hột -->
+                <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
+                    <Label Text="Tổng TL hột" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongTLHotAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng TL thực -->
+                <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
+                    <Label Text="Tổng TL thực" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongTruHotAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng giá gốc -->
+                <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
+                    <Label Text="Tổng giá gốc" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongGiaGocAll, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng thành tiền -->
+                <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
+                    <Label Text="Tổng thành tiền" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongThanhTienAll, StringFormat='{0:N0} VNĐ'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+                <!-- Tổng lãi/lỗ -->
+                <VerticalStackLayout Grid.Column="0" Grid.Row="3" Spacing="2">
+                    <Label Text="Tổng lãi/lỗ" TextColor="#888" FontSize="12"/>
+                    <Label Text="{Binding TongLaiLoAll, StringFormat='{0:N0} VNĐ'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
     </Grid>
 </ContentPage>

@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System;
+using System.Collections.Generic;
+using MySql.Data.MySqlClient;
 
 namespace MyLoginApp.Models.BaoCao
 {
@@ -150,19 +153,10 @@ namespace MyLoginApp.Models.BaoCao
             }
         }
 
-        private decimal _truHot;
         public decimal TruHot
         {
-            get => _truHot;
-            set
-            {
-                if (_truHot != value)
-                {
-                    _truHot = value;
-                    OnPropertyChanged();
-                    CalculateGiaGocAndLaiLo();
-                }
-            }
+            get => CanTong - TlHot;
+            set { OnPropertyChanged(); CalculateGiaGocAndLaiLo(); }
         }
 
         private decimal _congGoc;

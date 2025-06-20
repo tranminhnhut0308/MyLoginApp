@@ -30,6 +30,13 @@ namespace MyLoginApp.ViewModels.BaoCao
         [ObservableProperty]
         private int _totalPages = 1; // Tổng số trang
 
+        private int _tongSoPhieu;
+        public int TongSoPhieu
+        {
+            get => _tongSoPhieu;
+            set => SetProperty(ref _tongSoPhieu, value);
+        }
+
         // Các property để xác định khả năng chuyển trang
         public bool CanGoNext => CurrentPage < _totalPages;
         public bool CanGoPrevious => CurrentPage > 1;
@@ -45,6 +52,26 @@ namespace MyLoginApp.ViewModels.BaoCao
                 _ = LoadPhieuXuatAsync(_searchKeyword);
             }
         }
+
+        private bool _isRefreshing;
+        public bool IsRefreshing
+        {
+            get => _isRefreshing;
+            set => SetProperty(ref _isRefreshing, value);
+        }
+
+        private decimal _tongCanTongAll;
+        public decimal TongCanTongAll { get => _tongCanTongAll; set => SetProperty(ref _tongCanTongAll, value); }
+        private decimal _tongTLHotAll;
+        public decimal TongTLHotAll { get => _tongTLHotAll; set => SetProperty(ref _tongTLHotAll, value); }
+        private decimal _tongTruHotAll;
+        public decimal TongTruHotAll { get => _tongTruHotAll; set => SetProperty(ref _tongTruHotAll, value); }
+        private decimal _tongThanhTienAll;
+        public decimal TongThanhTienAll { get => _tongThanhTienAll; set => SetProperty(ref _tongThanhTienAll, value); }
+        private decimal _tongGiaGocAll;
+        public decimal TongGiaGocAll { get => _tongGiaGocAll; set => SetProperty(ref _tongGiaGocAll, value); }
+        private decimal _tongLaiLoAll;
+        public decimal TongLaiLoAll { get => _tongLaiLoAll; set => SetProperty(ref _tongLaiLoAll, value); }
 
         [RelayCommand]
         private async Task GoNextPage()
@@ -72,6 +99,7 @@ namespace MyLoginApp.ViewModels.BaoCao
             try
             {
                 IsLoading = true;
+                IsRefreshing = true;
                 DanhSachPhieuXuat.Clear();
 
                 using var conn = await DatabaseHelper.GetOpenConnectionAsync();
@@ -84,102 +112,95 @@ namespace MyLoginApp.ViewModels.BaoCao
                     return;
                 }
 
-                // Đếm tổng số bản ghi
-                string countQuery = @"
-                    SELECT COUNT(*) 
-                    FROM phx_phieu_xuat
+                // 1. Load toàn bộ danh sách phiếu xuất (không phân trang)
+                var allPhieuXuat = new List<PhieuXuatModel>();
+                string queryAll = @"
+                    SELECT 
+                        phx_chi_tiet_phieu_xuat.PHIEU_XUAT_ID, 
+                        phx_phieu_xuat.PHIEU_XUAT_MA, 
+                        danh_muc_hang_hoa.HANGHOAMA, 
+                        phx_chi_tiet_phieu_xuat.HANG_HOA_TEN, 
+                        phx_chi_tiet_phieu_xuat.DON_GIA, 
+                        phx_phieu_xuat.NGAY_XUAT, 
+                        phx_chi_tiet_phieu_xuat.THANH_TIEN, 
+                        danh_muc_hang_hoa.DON_GIA_GOC, 
+                        danh_muc_hang_hoa.CAN_TONG, 
+                        danh_muc_hang_hoa.TL_HOT, 
+                        (danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT) AS 'TRU_HOT', 
+                        danh_muc_hang_hoa.CONG_GOC, 
+                        phx_chi_tiet_phieu_xuat.LOAIVANG 
+                    FROM 
+                        phx_phieu_xuat
                     JOIN phx_chi_tiet_phieu_xuat ON phx_phieu_xuat.PHIEU_XUAT_ID = phx_chi_tiet_phieu_xuat.PHIEU_XUAT_ID
                     JOIN danh_muc_hang_hoa ON danh_muc_hang_hoa.HANGHOAID = phx_chi_tiet_phieu_xuat.HANGHOAID";
-
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    countQuery += " WHERE phx_phieu_xuat.PHIEU_XUAT_MA LIKE @Search";
+                    queryAll += " WHERE phx_phieu_xuat.PHIEU_XUAT_MA LIKE @Search";
                 }
-
-                using var countCmd = new MySqlCommand(countQuery, conn);
-                if (!string.IsNullOrEmpty(searchKeyword))
+                using (var cmdAll = new MySqlCommand(queryAll, conn))
                 {
-                    countCmd.Parameters.AddWithValue("@Search", $"%{searchKeyword}%");
-                }
-
-                var totalRecords = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
-                _totalPages = (int)Math.Ceiling(totalRecords / (double)PageSize);
-
-                // Log database query
-                string query = @"
-            SELECT 
-                phx_chi_tiet_phieu_xuat.PHIEU_XUAT_ID, 
-                phx_phieu_xuat.PHIEU_XUAT_MA, 
-                danh_muc_hang_hoa.HANGHOAMA, 
-                phx_chi_tiet_phieu_xuat.HANG_HOA_TEN, 
-                phx_chi_tiet_phieu_xuat.DON_GIA, 
-                phx_phieu_xuat.NGAY_XUAT, 
-                phx_chi_tiet_phieu_xuat.THANH_TIEN, 
-                danh_muc_hang_hoa.DON_GIA_GOC, 
-                danh_muc_hang_hoa.CAN_TONG, 
-                danh_muc_hang_hoa.TL_HOT, 
-                (danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT) AS 'TRU_HOT', 
-                danh_muc_hang_hoa.CONG_GOC, 
-                phx_chi_tiet_phieu_xuat.LOAIVANG 
-            FROM 
-                phx_phieu_xuat
-            JOIN phx_chi_tiet_phieu_xuat ON phx_phieu_xuat.PHIEU_XUAT_ID = phx_chi_tiet_phieu_xuat.PHIEU_XUAT_ID
-            JOIN danh_muc_hang_hoa ON danh_muc_hang_hoa.HANGHOAID = phx_chi_tiet_phieu_xuat.HANGHOAID";
-
-                if (!string.IsNullOrEmpty(searchKeyword))
-                {
-                    query += " WHERE phx_phieu_xuat.PHIEU_XUAT_MA LIKE @Search";
-                }
-
-                query += " ORDER BY phx_phieu_xuat.PHIEU_XUAT_ID DESC LIMIT @PageSize OFFSET @Offset";
-
-                using var cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@PageSize", PageSize);
-                cmd.Parameters.AddWithValue("@Offset", (CurrentPage - 1) * PageSize);
-
-                if (!string.IsNullOrEmpty(searchKeyword))
-                {
-                    cmd.Parameters.AddWithValue("@Search", $"%{searchKeyword}%");
-                }
-
-                using var reader = await cmd.ExecuteReaderAsync();
-                var list = new List<PhieuXuatModel>();
-
-                while (await reader.ReadAsync())
-                {
-                    list.Add(new PhieuXuatModel
+                    if (!string.IsNullOrEmpty(searchKeyword))
                     {
-                        PhieuXuatId = reader.GetInt32("PHIEU_XUAT_ID"),
-                        PhieuXuatMa = reader.GetString("PHIEU_XUAT_MA"),
-                        HangHoaMa = reader.GetString("HANGHOAMA"),
-                        HangHoaTen = reader.GetString("HANG_HOA_TEN"),
-                        DonGia = reader.GetDecimal("DON_GIA"),
-                        NgayXuat = reader.GetDateTime("NGAY_XUAT"),
-                        ThanhTien = reader.GetDecimal("THANH_TIEN"),
-                        DonGiaGoc = reader.GetDecimal("DON_GIA_GOC"),
-                        CanTong = reader.GetDecimal("CAN_TONG"),
-                        TlHot = reader.GetDecimal("TL_HOT"),
-                        TruHot = reader.GetDecimal("TRU_HOT"),
-                        CongGoc = reader.GetDecimal("CONG_GOC"),
-                        LoaiVang = reader.GetString("LOAIVANG")
-                    });
-                }
-
-                if (list.Count == 0)
-                {
-                    if (Shell.Current != null)
+                        cmdAll.Parameters.AddWithValue("@Search", $"%{searchKeyword}%");
+                    }
+                    using (var readerAll = await cmdAll.ExecuteReaderAsync())
                     {
-                        await Shell.Current.DisplayAlert("Thông báo", "Không có phiếu xuất nào", "OK");
+                        while (await readerAll.ReadAsync())
+                        {
+                            var canTong = readerAll.GetDecimal("CAN_TONG");
+                            var tlHot = readerAll.GetDecimal("TL_HOT");
+                            var congGoc = readerAll.GetDecimal("CONG_GOC");
+                            var donGiaGoc = readerAll.GetDecimal("DON_GIA_GOC");
+                            var thanhTien = readerAll.GetDecimal("THANH_TIEN");
+                            decimal tinhTruHot = canTong - tlHot;
+                            string bien1 = ((int)tinhTruHot).ToString();
+                            if (bien1.Length >= 1 && bien1.Length <= 4)
+                            {
+                                tinhTruHot = tinhTruHot / 100;
+                            }
+                            decimal giaGoc = donGiaGoc * tinhTruHot + congGoc;
+                            decimal laiLo = thanhTien - giaGoc;
+                            allPhieuXuat.Add(new PhieuXuatModel
+                            {
+                                PhieuXuatId = readerAll.GetInt32("PHIEU_XUAT_ID"),
+                                PhieuXuatMa = readerAll.GetString("PHIEU_XUAT_MA"),
+                                HangHoaMa = readerAll.GetString("HANGHOAMA"),
+                                HangHoaTen = readerAll.GetString("HANG_HOA_TEN"),
+                                DonGia = readerAll.GetDecimal("DON_GIA"),
+                                NgayXuat = readerAll.GetDateTime("NGAY_XUAT"),
+                                ThanhTien = thanhTien,
+                                DonGiaGoc = donGiaGoc,
+                                CanTong = canTong,
+                                TlHot = tlHot,
+                                TruHot = tinhTruHot,
+                                CongGoc = congGoc,
+                                LoaiVang = readerAll.GetString("LOAIVANG"),
+                                GiaGoc = giaGoc,
+                                LaiLo = laiLo
+                            });
+                        }
                     }
                 }
 
-                foreach (var item in list)
+                // 2. Tính tổng trên allPhieuXuat
+                TongCanTongAll = allPhieuXuat.Sum(x => x.CanTong);
+                TongTLHotAll = allPhieuXuat.Sum(x => x.TlHot);
+                TongTruHotAll = allPhieuXuat.Sum(x => x.TruHot);
+                TongThanhTienAll = allPhieuXuat.Sum(x => x.ThanhTien);
+                TongGiaGocAll = allPhieuXuat.Sum(x => x.GiaGoc);
+                TongLaiLoAll = allPhieuXuat.Sum(x => x.LaiLo);
+
+                // 3. Hiển thị trang hiện tại
+                DanhSachPhieuXuat.Clear();
+                foreach (var item in allPhieuXuat.Skip((CurrentPage - 1) * PageSize).Take(PageSize))
                 {
                     DanhSachPhieuXuat.Add(item);
                 }
 
                 OnPropertyChanged(nameof(CanGoNext));
                 OnPropertyChanged(nameof(CanGoPrevious));
+
+                TongSoPhieu = allPhieuXuat.Count;
             }
             catch (Exception ex)
             {
@@ -191,7 +212,15 @@ namespace MyLoginApp.ViewModels.BaoCao
             finally
             {
                 IsLoading = false;
+                IsRefreshing = false;
             }
         }
+
+        public decimal TongCanTong => DanhSachPhieuXuat.Sum(x => x.CanTong);
+        public decimal TongTLHot => DanhSachPhieuXuat.Sum(x => x.TlHot);
+        public decimal TongTruHot => DanhSachPhieuXuat.Sum(x => x.TruHot);
+        public decimal TongThanhTien => DanhSachPhieuXuat.Sum(x => x.ThanhTien);
+        public decimal TongGiaGoc => DanhSachPhieuXuat.Sum(x => x.GiaGoc);
+        public decimal TongLaiLo => DanhSachPhieuXuat.Sum(x => x.LaiLo);
     }
 }
