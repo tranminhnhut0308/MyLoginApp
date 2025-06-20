@@ -1,15 +1,8 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:MyLoginApp.Pages"
-             xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.PhieuDangCamPage"
              BackgroundColor="#f5f5f5">
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:GramToLuongConverter x:Key="GramToLuongConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <ScrollView Padding="5">
         <StackLayout Spacing="16">
@@ -51,17 +44,17 @@
                     <!-- Tổng cân -->
                     <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
                         <Label Text="Tổng cân" TextColor="#888" FontSize="13"/>
-                        <Label Text="{Binding TongCanTong, Converter={StaticResource GramToLuongConverter}}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng TL hột -->
                     <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
                         <Label Text="Tổng TL hột" TextColor="#888" FontSize="13"/>
-                        <Label Text="{Binding TongTLHot, Converter={StaticResource GramToLuongConverter}}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng TL thực -->
                     <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
                         <Label Text="Tổng TL thực" TextColor="#888" FontSize="13"/>
-                        <Label Text="{Binding TongTLThuc, Converter={StaticResource GramToLuongConverter}}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongTLThuc, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng giá trị -->
                     <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
@@ -146,13 +139,13 @@
                                            Text="Cân tổng:"
                                            TextColor="#666"/>
                                     <Label Grid.Row="1" Grid.Column="1" 
-                                           Text="{Binding CanTong, Converter={StaticResource GramToLuongConverter}}"
+                                           Text="{Binding CanTong, StringFormat='{0:N2}'}"
                                            TextColor="#333"/>
                                     <Label Grid.Row="1" Grid.Column="2" 
                                            Text="TL thực:"
                                            TextColor="#666"/>
                                     <Label Grid.Row="1" Grid.Column="3" 
-                                           Text="{Binding TLThuc, Converter={StaticResource GramToLuongConverter}}"
+                                           Text="{Binding TLThuc, StringFormat='{0:N2}'}"
                                            TextColor="#333"/>
                                 </Grid>
 

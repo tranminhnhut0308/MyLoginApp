@@ -6,7 +6,7 @@
              
     <ContentPage.Resources>
         <ResourceDictionary>
-            <converters:GramToLuongConverter x:Key="GramToLuongConverter"/>
+            <converters:LyToLuongConverter x:Key="LyToLuongConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -91,7 +91,7 @@
                                 <Label Text="{Binding TU_NGAY, StringFormat='{0:dd/MM/yyyy}'}" Grid.Row="2" Grid.Column="1" FontSize="18"/>
 
                                 <!-- Ngày quá hạn -->
-                                <Label Text="Ngày Quá Hạn:" Grid.Row="3" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
+                                <Label Text="Ngày Hết Hạn:" Grid.Row="3" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
                                 <Label Text="{Binding DEN_NGAY, StringFormat='{0:dd/MM/yyyy}'}" Grid.Row="3" Grid.Column="1" FontSize="18"/>
 
                                 <!-- Số ngày quá hạn -->
@@ -100,7 +100,7 @@
 
                                 <!-- TL Thực -->
                                 <Label Text="TL Thực:" Grid.Row="5" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>
-                                <Label Text="{Binding TL_Thuc, Converter={StaticResource GramToLuongConverter}}" Grid.Row="5" Grid.Column="1" FontSize="18"/>
+                                <Label Text="{Binding TL_Thuc, Converter={StaticResource LyToLuongConverter}}" Grid.Row="5" Grid.Column="1" FontSize="18"/>
 
                                 <!-- Định giá -->
                                 <Label Text="Định Giá:" Grid.Row="6" Grid.Column="0" FontSize="18" FontAttributes="Italic"/>

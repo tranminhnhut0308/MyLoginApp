@@ -4,51 +4,64 @@ using Microsoft.Maui.Controls;
 
 namespace MyLoginApp.Converters
 {
-    public class GramToLuongConverter : IValueConverter
+    public class LyToLuongConverter : IValueConverter
     {
-        private const decimal PHAN_PER_LUONG = 10m;
+        private const decimal LY_PER_LUONG = 1000m;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
             {
-                // Xử lý trường hợp CanTong và TLThuc là kiểu decimal từ model
                 if (value == null) 
                     return "0.00 Lượng";
                 
-                decimal phanValue;
+                decimal lyValue;
                 
-                // Xử lý chuyên biệt cho các kiểu dữ liệu
+                // Xử lý các kiểu dữ liệu khác nhau
                 if (value is decimal decimalValue)
                 {
-                    phanValue = decimalValue;
+                    lyValue = decimalValue;
                 }
                 else if (value is double doubleValue)
                 {
-                    phanValue = (decimal)doubleValue;
+                    lyValue = (decimal)doubleValue;
                 }
                 else if (value is int intValue)
                 {
-                    phanValue = intValue;
+                    lyValue = intValue;
                 }
                 else if (value is string stringValue && decimal.TryParse(stringValue, out decimal parsedDecimal))
                 {
-                    phanValue = parsedDecimal;
+                    lyValue = parsedDecimal;
                 }
                 else
                 {
                     return "0.00 Lượng"; // Trả về giá trị mặc định nếu không convert được
                 }
                 
-                // Tính giá trị lượng từ phân (1 lượng = 10 phân)
-                decimal luongValue = phanValue / PHAN_PER_LUONG;
+                // Tính giá trị lượng từ ly (1 lượng = 1000 ly)
+                decimal luongValue = lyValue / LY_PER_LUONG;
                 
-                // Định dạng số lượng với 2 số thập phân
-                return $"{luongValue:0.00} Lượng";
+                // Đầu tiên định dạng với 3 số thập phân
+                string rawValue = luongValue.ToString("0.000", CultureInfo.InvariantCulture);
+                
+                // Kiểm tra và loại bỏ các số 0 không cần thiết ở cuối
+                if (rawValue.EndsWith("00"))
+                {
+                    // Nếu kết thúc bằng 2 số 0, chỉ giữ 1 số thập phân (vd: 0.500 -> 0.5)
+                    rawValue = luongValue.ToString("0.0", CultureInfo.InvariantCulture);
+                }
+                else if (rawValue.EndsWith("0"))
+                {
+                    // Nếu kết thúc bằng 1 số 0, chỉ giữ 2 số thập phân (vd: 0.050 -> 0.05)
+                    rawValue = luongValue.ToString("0.00", CultureInfo.InvariantCulture);
+                }
+                
+                return $"{rawValue} Lượng";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi chuyển đổi phân sang lượng: {ex.Message}");
+                Console.WriteLine($"Lỗi chuyển đổi ly sang lượng: {ex.Message}");
                 return "0.00 Lượng"; // Giá trị mặc định nếu có lỗi
             }
         }
@@ -62,8 +75,8 @@ namespace MyLoginApp.Converters
                 
                 if (decimal.TryParse(luongString, out decimal luongValue))
                 {
-                    // Chuyển từ lượng sang phân (nhân với 10)
-                    return luongValue * PHAN_PER_LUONG;
+                    // Chuyển từ lượng sang ly (nhân với 1000)
+                    return luongValue * LY_PER_LUONG;
                 }
             }
             

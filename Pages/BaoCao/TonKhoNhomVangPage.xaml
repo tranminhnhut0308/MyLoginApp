@@ -3,15 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:MyLoginApp.ViewModels"
              xmlns:model="clr-namespace:MyLoginApp.Models.BaoCao"
-             xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.BaoCao.TonKhoNhomVangPage"
              Title="Báo cáo tồn kho theo nhóm vàng">
-             
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:GramToLuongConverter x:Key="GramToLuongConverter"/>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <ContentPage.BindingContext>
         <vm:TonKhoNhomVangViewModel />
@@ -98,7 +91,7 @@
                                    FontAttributes="Bold"/>
                             <Label Grid.Row="3" 
                                    Grid.Column="1" 
-                                   Text="{Binding CAN_TONG, Converter={StaticResource GramToLuongConverter}}"/>
+                                   Text="{Binding CAN_TONG, StringFormat='{0:N2}'}"/>
 
                             <!-- TL hột -->
                             <Label Grid.Row="4" 
@@ -107,7 +100,7 @@
                                    FontAttributes="Bold"/>
                             <Label Grid.Row="4" 
                                    Grid.Column="1" 
-                                   Text="{Binding TL_HOT, Converter={StaticResource GramToLuongConverter}}"/>
+                                   Text="{Binding TL_HOT, StringFormat='{0:N2}'}"/>
 
                             <!-- TL vàng -->
                             <Label Grid.Row="5" 
@@ -116,7 +109,7 @@
                                    FontAttributes="Bold"/>
                             <Label Grid.Row="5" 
                                    Grid.Column="1" 
-                                   Text="{Binding TL_VANG, Converter={StaticResource GramToLuongConverter}}"/>
+                                   Text="{Binding TL_VANG, StringFormat='{0:N2}'}"/>
 
                             <!-- Công gốc -->
                             <Label Grid.Row="6" 
