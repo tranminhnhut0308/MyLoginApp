@@ -24,6 +24,8 @@ public class PhieuDangCamViewModel : ObservableObject
     private decimal tongTLThuc;
     private decimal tongTienNhan;
     private decimal tongTienCamMoi;
+    private decimal tongGiaTri;
+    private decimal tongTienThem;
 
     public ObservableCollection<PhieuDangCamModel> DanhSachPhieuDangCam { get; set; } = new ObservableCollection<PhieuDangCamModel>();
     public int CurrentPage { get => currentPage; set => SetProperty(ref currentPage, value); }
@@ -61,14 +63,7 @@ public class PhieuDangCamViewModel : ObservableObject
     public decimal TongTLHot
     {
         get => tongTLHot;
-        set
-        {
-            if (SetProperty(ref tongTLHot, value))
-            {
-                // Cập nhật TongTLThuc khi TongTLHot thay đổi
-                TongTLThuc = TongCanTong - value;
-            }
-        }
+        set => SetProperty(ref tongTLHot, value);
     }
     public decimal TongTLThuc
     {
@@ -84,6 +79,16 @@ public class PhieuDangCamViewModel : ObservableObject
     {
         get => tongTienCamMoi;
         set => SetProperty(ref tongTienCamMoi, value);
+    }
+    public decimal TongGiaTri
+    {
+        get => tongGiaTri;
+        set => SetProperty(ref tongGiaTri, value);
+    }
+    public decimal TongTienThem
+    {
+        get => tongTienThem;
+        set => SetProperty(ref tongTienThem, value);
     }
 
     private bool _isLoading;
@@ -149,28 +154,22 @@ public class PhieuDangCamViewModel : ObservableObject
             // Lấy tổng cân tổng của toàn bộ phiếu (không chỉ trang hiện tại)
             string sumQuery = @"
                 SELECT 
-                    SUM(t.CAN_TONG) as TONG_CAN,
-                    SUM(t.TL_HOT) as TONG_TL_HOT,
-                    SUM(t.TIEN_KHACH_NHAN) as TONG_TIEN_NHAN,
-                    SUM(t.TIEN_KHACH_NHAN + IFNULL(t.TIEN_THEM, 0)) as TONG_TIEN_CAM_MOI
-                FROM (
-                    SELECT DISTINCT 
-                        cam_phieu_cam_vang.PHIEU_CAM_VANG_ID,
-                        cam_phieu_cam_vang.CAN_TONG,
-                        cam_phieu_cam_vang.TL_HOT,
-                        cam_phieu_cam_vang.TIEN_KHACH_NHAN,
-                        cam_nhan_tien_them.TIEN_THEM
-                    FROM cam_phieu_cam_vang
-                    LEFT JOIN cam_chi_tiet_phieu_cam_vang ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_chi_tiet_phieu_cam_vang.PHIEU_CAM_VANG_ID
-                    LEFT JOIN phx_khach_hang ON cam_phieu_cam_vang.KH_ID = phx_khach_hang.KH_ID
-                    LEFT JOIN cam_nhan_tien_them ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_nhan_tien_them.PHIEU_CAM_ID
-                    WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL
-                      AND cam_phieu_cam_vang.THANH_LY IS NULL
-                      AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 0
-                ) as t";
+                    SUM(cam_phieu_cam_vang.CAN_TONG) AS TONG_CAN,
+                    SUM(cam_phieu_cam_vang.TL_HOT) AS TONG_TL_HOT,
+                    SUM(cam_phieu_cam_vang.CAN_TONG - cam_phieu_cam_vang.TL_HOT) AS TONG_TL_THUC,
+                    SUM(cam_phieu_cam_vang.TONG_GIA_TRI) AS TONG_GIA_TRI,
+                    SUM(cam_phieu_cam_vang.TIEN_KHACH_NHAN) AS TONG_TIEN_NHAN,
+                    SUM(IF(cam_nhan_tien_them.TIEN_THEM IS NULL, 0, cam_nhan_tien_them.TIEN_THEM)) AS TONG_TIEN_THEM,
+                    SUM(cam_phieu_cam_vang.TIEN_KHACH_NHAN + IF(cam_nhan_tien_them.TIEN_THEM IS NULL, 0, cam_nhan_tien_them.TIEN_THEM)) AS TONG_TIEN_CAM_MOI
+                FROM cam_phieu_cam_vang
+                LEFT JOIN cam_chi_tiet_phieu_cam_vang ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_chi_tiet_phieu_cam_vang.PHIEU_CAM_VANG_ID
+                LEFT JOIN cam_nhan_tien_them ON cam_phieu_cam_vang.PHIEU_CAM_VANG_ID = cam_nhan_tien_them.PHIEU_CAM_ID
+                WHERE cam_phieu_cam_vang.DA_THANH_TOAN IS NULL 
+                  AND cam_phieu_cam_vang.THANH_LY IS NULL
+                  AND cam_chi_tiet_phieu_cam_vang.SU_DUNG = 1";
             if (!string.IsNullOrEmpty(searchText))
             {
-                sumQuery += " AND (cam_phieu_cam_vang.PHIEU_MA LIKE @SearchText OR phx_khach_hang.KH_TEN LIKE @SearchText)";
+                sumQuery += " AND (t.PHIEU_MA LIKE @SearchText OR t.KH_TEN LIKE @SearchText)";
             }
             using (var sumCmd = new MySqlCommand(sumQuery, conn))
             {
@@ -184,7 +183,10 @@ public class PhieuDangCamViewModel : ObservableObject
                     {
                         TongCanTong = sumReader["TONG_CAN"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_CAN"]);
                         TongTLHot = sumReader["TONG_TL_HOT"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TL_HOT"]);
+                        TongTLThuc = sumReader["TONG_TL_THUC"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TL_THUC"]);
+                        TongGiaTri = sumReader["TONG_GIA_TRI"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_GIA_TRI"]);
                         TongTienNhan = sumReader["TONG_TIEN_NHAN"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TIEN_NHAN"]);
+                        TongTienThem = sumReader["TONG_TIEN_THEM"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TIEN_THEM"]);
                         TongTienCamMoi = sumReader["TONG_TIEN_CAM_MOI"] == DBNull.Value ? 0 : Convert.ToDecimal(sumReader["TONG_TIEN_CAM_MOI"]);
                     }
                 }

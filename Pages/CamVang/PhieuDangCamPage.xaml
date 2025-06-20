@@ -38,75 +38,50 @@
 
             <!-- Panel thông tin tổng hợp -->
             <Frame BackgroundColor="White"
-                   Padding="15"
-                   Margin="0,0,0,10"
-                   CornerRadius="10"
+                   Padding="18"
+                   Margin="0,0,0,14"
+                   CornerRadius="16"
                    HasShadow="True">
-                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="10" ColumnSpacing="15">
-                    <!-- Cột 1 -->
-                    <VerticalStackLayout Grid.Column="0" Grid.Row="0">
-                        <Label Text="Tổng số phiếu" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongSoPhieu}"
-                               TextColor="#333"
-                               FontSize="18"
-                               FontAttributes="Bold"/>
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
+                    <!-- Tổng số phiếu -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng số phiếu" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongSoPhieu}" TextColor="#1976D2" FontSize="22" FontAttributes="Bold"/>
                     </VerticalStackLayout>
-
-                    <!-- Cột 2 -->
-                    <VerticalStackLayout Grid.Column="1" Grid.Row="0">
-                        <Label Text="Tổng cân" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}"
-                               TextColor="#333"
-                               FontSize="18"
-                               FontAttributes="Bold"/>
+                    <!-- Tổng cân -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng cân" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
-
-                    <!-- Cột 1 Dòng 2 -->
-                    <VerticalStackLayout Grid.Column="0" Grid.Row="1">
-                        <Label Text="Tổng TL hột" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}"
-                               TextColor="#333"
-                               FontSize="18"
-                               FontAttributes="Bold"/>
+                    <!-- Tổng TL hột -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng TL hột" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
-
-                    <!-- Cột 2 Dòng 2 -->
-                    <VerticalStackLayout Grid.Column="1" Grid.Row="1">
-                        <Label Text="Tổng TL thực" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongTLThuc, StringFormat='{0:N2}'}"
-                               TextColor="#333"
-                               FontSize="18"
-                               FontAttributes="Bold"/>
+                    <!-- Tổng TL thực -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng TL thực" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongTLThuc, StringFormat='{0:N2}'}" TextColor="#222" FontSize="20" FontAttributes="Bold"/>
                     </VerticalStackLayout>
-
-                    <!-- Cột 1 Dòng 3 -->
-                    <VerticalStackLayout Grid.Column="0" Grid.Row="2">
-                        <Label Text="Tổng tiền nhận" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongTienNhan, StringFormat='{0:N0} VNĐ'}"
-                               TextColor="#E74C3C"
-                               FontSize="16"
-                               FontAttributes="Bold"/>
+                    <!-- Tổng giá trị -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng giá trị" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongGiaTri, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="18" FontAttributes="Bold"/>
                     </VerticalStackLayout>
-
-                    <!-- Cột 2 Dòng 3 -->
-                    <VerticalStackLayout Grid.Column="1" Grid.Row="2">
-                        <Label Text="Tổng tiền cầm mới" 
-                               TextColor="#666"
-                               FontSize="14"/>
-                        <Label Text="{Binding TongTienCamMoi, StringFormat='{0:N0} VNĐ'}"
-                               TextColor="#E74C3C"
-                               FontSize="16"
-                               FontAttributes="Bold"/>
+                    <!-- Tổng tiền nhận -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng tiền nhận" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongTienNhan, StringFormat='{0:N0} VNĐ'}" TextColor="#E53935" FontSize="18" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <!-- Tổng tiền thêm -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="3" Spacing="2">
+                        <Label Text="Tổng tiền thêm" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongTienThem, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="18" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <!-- Tổng tiền cầm mới -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="3" Spacing="2">
+                        <Label Text="Tổng tiền cầm mới" TextColor="#888" FontSize="13"/>
+                        <Label Text="{Binding TongTienCamMoi, StringFormat='{0:N0} VNĐ'}" TextColor="#43A047" FontSize="18" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                 </Grid>
             </Frame>
