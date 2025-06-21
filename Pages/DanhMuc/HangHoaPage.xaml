@@ -3,7 +3,27 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
              x:Class="MyLoginApp.Pages.HangHoaPage"
-             Title="Quản lý Hàng Hóa">
+             BackgroundColor="#f5f5f5">
+
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="📦 Hàng Hóa"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.BindingContext>
         <viewmodels:HangHoaViewModel />
@@ -39,60 +59,6 @@
                     </Button.Triggers>
                 </Button>
             </HorizontalStackLayout>
-
-            <!-- Thanh tìm kiếm -->
-            <Grid Grid.Row="1" Margin="0,10,0,0" ColumnDefinitions="*,Auto">
-                <Frame Grid.Column="0" 
-                       Padding="5" 
-                       CornerRadius="10" 
-                       BorderColor="#CCCCCC" 
-                       BackgroundColor="White"
-                       HasShadow="True">
-                    <Grid ColumnDefinitions="Auto,*,Auto,Auto">
-                        <Label Grid.Column="0" 
-                               Text="🔍" 
-                               VerticalOptions="Center" 
-                               Margin="5,0,0,0"
-                               FontSize="18" />
-                        <Entry Grid.Column="1" 
-                               Text="{Binding SearchKeyword}" 
-                               Placeholder="Tìm kiếm theo mã hoặc tên hàng hóa..."
-                               VerticalOptions="Center"
-                               ReturnCommand="{Binding SearchCommand}"
-                               Completed="OnSearchCompleted"
-                               TextChanged="OnSearchTextChanged"
-                               Margin="5,0,0,0" />
-                        <Button Grid.Column="2"
-                                Text="❌"
-                                IsVisible="{Binding SearchKeyword, Converter={StaticResource StringToBooleanConverter}}"
-                                BackgroundColor="Transparent"
-                                Clicked="OnClearSearchClicked"
-                                WidthRequest="40" 
-                                HeightRequest="40" 
-                                Padding="0"
-                                Margin="0"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center" />
-                        <ActivityIndicator Grid.Column="3" 
-                                          IsRunning="{Binding IsRefreshing}" 
-                                          IsVisible="{Binding IsRefreshing}"
-                                          Color="#2196F3"
-                                          WidthRequest="20"
-                                          HeightRequest="20"
-                                          Margin="5,0,0,0" />
-                    </Grid>
-                </Frame>
-                <Button Grid.Column="1" 
-                        Text="Tìm" 
-                        Command="{Binding SearchCommand}" 
-                        BackgroundColor="#2196F3" 
-                        TextColor="White"
-                        CornerRadius="10"
-                        IsEnabled="{Binding IsRefreshing, Converter={StaticResource InverseBoolConverter}}"
-                        Margin="5,0,0,0"
-                        HeightRequest="50"
-                        WidthRequest="80" />
-            </Grid>
 
             <!-- Thông báo mục đã chọn -->
             <Label Grid.Row="2" 
@@ -218,18 +184,7 @@
             </ScrollView.Triggers>
 
             <VerticalStackLayout Spacing="15">
-                <Frame BackgroundColor="#FFF9C4" 
-                        BorderColor="#FF9800" 
-                        CornerRadius="10" 
-                        Padding="15" 
-                        Margin="0,0,0,10"
-                        HasShadow="True">
-                    <Label Text="📋 Danh sách hàng hóa" 
-                            FontAttributes="Bold" 
-                            FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
-                            HorizontalOptions="Center" 
-                            TextColor="#333333" />  
-                </Frame>
+                
                 
                 <CollectionView ItemsSource="{Binding DanhSachHangHoa}"
                                 SelectionMode="Single"
@@ -326,14 +281,6 @@
                         BackgroundColor="#FF9800"
                         TextColor="White"
                         WidthRequest="100"
-                        HeightRequest="40"
-                        CornerRadius="20"/>
-
-                <Button Text="🔄"
-                        Command="{Binding RefreshCommand}"
-                        BackgroundColor="#FF9800"
-                        TextColor="White"
-                        WidthRequest="50"
                         HeightRequest="40"
                         CornerRadius="20"/>
             </HorizontalStackLayout>

@@ -4,31 +4,28 @@
              x:Class="MyLoginApp.Pages.PhieuDangCamPage"
              BackgroundColor="#f5f5f5">
 
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="💷 Phiếu Đang Cầm"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemPhieuClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
+
     <ScrollView Padding="5">
         <StackLayout Spacing="16">
-            <!-- Tiêu đề với nền màu riêng biệt -->
-            <Frame BackgroundColor="#4A5BF6"  
-                   Padding="15"
-                   Margin="0,10,0,10"
-                   CornerRadius="10">
-                <Grid ColumnDefinitions="*,Auto">
-                    <Label Text="💷 Phiếu Đang Cầm"
-                           FontSize="24"
-                           FontAttributes="Bold"
-                           HorizontalOptions="Start"
-                           VerticalOptions="Center"
-                           TextColor="White" />
-                    <!-- Nút tìm kiếm nhỏ gọn ở góc phải -->
-                    <ImageButton Grid.Column="1"
-                            Source="search.png"
-                            Clicked="OnTimKiemPhieuClicked"
-                            WidthRequest="30"
-                            HeightRequest="30"
-                            BackgroundColor="Transparent"
-                            Margin="0,0,5,0"/>
-                </Grid>
-            </Frame>
-
             <!-- Panel thông tin tổng hợp -->
             <Frame BackgroundColor="White"
                    Padding="18"
@@ -44,17 +41,17 @@
                     <!-- Tổng cân -->
                     <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
                         <Label Text="Tổng cân" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongCanTongInLuong, StringFormat='{0:N3} L'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng TL hột -->
                     <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
                         <Label Text="Tổng TL hột" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongTLHotInLuong, StringFormat='{0:N3} L'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng TL thực -->
                     <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
                         <Label Text="Tổng TL thực" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongTLThuc, StringFormat='{0:N2}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongTLThucInLuong, StringFormat='{0:N3} L'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <!-- Tổng giá trị -->
                     <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
@@ -139,13 +136,13 @@
                                            Text="Cân tổng:"
                                            TextColor="#666"/>
                                     <Label Grid.Row="1" Grid.Column="1" 
-                                           Text="{Binding CanTong, StringFormat='{0:N2}'}"
+                                           Text="{Binding CanTongInLuong, StringFormat='{0:N3} L'}"
                                            TextColor="#333"/>
                                     <Label Grid.Row="1" Grid.Column="2" 
                                            Text="TL thực:"
                                            TextColor="#666"/>
                                     <Label Grid.Row="1" Grid.Column="3" 
-                                           Text="{Binding TLThuc, StringFormat='{0:N2}'}"
+                                           Text="{Binding TLThucInLuong, StringFormat='{0:N3} L'}"
                                            TextColor="#333"/>
                                 </Grid>
 

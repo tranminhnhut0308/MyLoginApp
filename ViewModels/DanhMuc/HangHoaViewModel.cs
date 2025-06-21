@@ -57,6 +57,14 @@ namespace MyLoginApp.ViewModels
         [ObservableProperty]
         private bool isRefreshing;
 
+        // Tự động kích hoạt tìm kiếm khi SearchKeyword thay đổi
+        partial void OnSearchKeywordChanged(string value)
+        {
+            // Reset về trang đầu tiên và tải lại dữ liệu
+            CurrentPage = 1;
+            _ = LoadHangHoaAsync();
+        }
+
         public HangHoaViewModel()
         {
             try
@@ -630,26 +638,8 @@ namespace MyLoginApp.ViewModels
         [RelayCommand]
         private async Task Search()
         {
-            if (IsBusy)
-                return;
-
-            IsBusy = true;
-            IsRefreshing = true;
-
-            try
-            {
-                CurrentPage = 1;
-                await LoadHangHoaWithPaginationAsync(CurrentPage, PageSize);
-            }
-            catch (Exception ex)
-            {
-                await Application.Current.MainPage.DisplayAlert("Lỗi", $"Không thể tìm kiếm: {ex.Message}", "OK");
-            }
-            finally
-            {
-                IsBusy = false;
-                IsRefreshing = false;
-            }
+            CurrentPage = 1;
+            await LoadHangHoaAsync();
         }
     }
 }

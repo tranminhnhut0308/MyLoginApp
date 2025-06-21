@@ -24,6 +24,18 @@ public partial class HangHoaPage : ContentPage
         }
     }
 
+    private async void OnTimKiemClicked(object sender, EventArgs e)
+    {
+        if (BindingContext is HangHoaViewModel viewModel)
+        {
+            string keyword = await DisplayPromptAsync("Tìm kiếm", "Nhập mã hoặc tên hàng hóa:", "Tìm", "Hủy", initialValue: viewModel.SearchKeyword);
+            if (keyword != null) // User clicked "Tìm" or "Hủy"
+            {
+                viewModel.SearchKeyword = keyword; // Set keyword (even if empty) and trigger search
+            }
+        }
+    }
+
     private async void OnSearchCompleted(object sender, EventArgs e)
     {
         try

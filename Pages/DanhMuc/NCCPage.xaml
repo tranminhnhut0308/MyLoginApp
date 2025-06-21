@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
              x:Class="MyLoginApp.Pages.NCCPage"
-             Title="Quản lý Nhà Cung Cấp">
+             Title="Nhà cung cấp">
 
     <ContentPage.BindingContext>
         <viewmodels:NhaCungCapViewModel />
@@ -42,7 +42,6 @@
         <!-- KHU VỰC DANH SÁCH NHÀ CUNG CẤP -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="15">
-                <Label Text="📋 Danh sách nhà cung cấp" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
 
                 <CollectionView ItemsSource="{Binding DanhSachNhaCungCap}"
                                 SelectionMode="Single"

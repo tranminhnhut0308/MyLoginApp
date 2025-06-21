@@ -19,19 +19,6 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="10" Spacing="10">
-            <!-- Tiêu đề -->
-            <Frame BackgroundColor="Black"
-                   Padding="15"
-                   CornerRadius="12"
-                   HasShadow="True"
-                   Margin="0,0,0,10">
-                <Label Text="💰 Báo cáo loại vàng"
-                       FontSize="24"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center"
-                       HorizontalTextAlignment="Center"/>
-            </Frame>
 
             <!-- Tìm kiếm -->
             <SearchBar Placeholder="Tìm kiếm..."

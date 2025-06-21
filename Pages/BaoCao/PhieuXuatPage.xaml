@@ -4,7 +4,27 @@
              xmlns:models="clr-namespace:MyLoginApp.Models.BaoCao"
              xmlns:vm="clr-namespace:MyLoginApp.ViewModels.BaoCao"
              x:Class="MyLoginApp.Pages.BaoCao.PhieuXuatPage"
-             Title="Phiếu Xuất">
+             BackgroundColor="#f5f5f5">
+
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="🧾 Phiếu Xuất"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.BindingContext>
         <vm:PhieuXuatViewModel />

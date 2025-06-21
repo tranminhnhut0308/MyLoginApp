@@ -19,6 +19,9 @@ namespace MyLoginApp.Models
         public decimal TienNhanThem { get; set; }
         public decimal TienCamMoi { get; set; }
         public decimal LaiSuat { get; set; }
+
+        public decimal CanTongInLuong => CanTong / 1000m;
+        public decimal TLThucInLuong => TLThuc / 1000m;
     }
 
 

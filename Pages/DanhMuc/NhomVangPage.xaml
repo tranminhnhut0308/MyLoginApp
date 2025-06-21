@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
              x:Class="MyLoginApp.Pages.NhomVangPage"
-             Title="Quản lý Nhóm Vàng">
+             Title="Danh sách nhóm vàng">
+  
 
     <ContentPage.BindingContext>
         <viewmodels:NhomVangViewModel />
@@ -91,19 +92,8 @@ OnColor="Green" ThumbColor="White" HorizontalOptions="Start" />
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- DANH SÁCH NHÓM VÀNG -->
-                <Frame BackgroundColor="#FF9800" 
-                        BorderColor="#FF9800" 
-                        CornerRadius="10" 
-                        Padding="15" 
-                        Margin="0,0,0,10"
-                        HasShadow="True">
-                    <Label Text="📋 Danh sách nhóm vàng" 
-                            FontAttributes="Bold" 
-                            FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
-                            HorizontalOptions="Center" 
-                            TextColor="#333333" />
-                </Frame>
+                
+               
 
                 <CollectionView 
                         ItemsSource="{Binding ListNhomVang}"

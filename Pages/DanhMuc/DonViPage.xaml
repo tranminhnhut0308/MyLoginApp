@@ -35,7 +35,6 @@
         <!-- Danh sách Đơn Vị -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="15">
-                <Label Text="📋 Danh sách đơn vị" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
 
                 <CollectionView ItemsSource="{Binding DanhSachDonVi}" SelectionMode="Single" SelectedItem="{Binding SelectedDonVi, Mode=TwoWay}">
                     <!-- CHỈ HIỂN THỊ 1 CỘT -->

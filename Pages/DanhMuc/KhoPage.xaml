@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
              x:Class="MyLoginApp.Pages.KhoPage"
-             Title="Quản lý Kho">
+             Title="Quản lý kho">
 
     <ContentPage.BindingContext>
         <viewmodels:KhoViewModel />
@@ -39,7 +39,6 @@
         <!-- KHU VỰC DANH SÁCH KHO -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="15">
-                <Label Text="📦 Danh sách kho" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
 
                 <CollectionView ItemsSource="{Binding DanhSachKho}"
                                 SelectionMode="Single"

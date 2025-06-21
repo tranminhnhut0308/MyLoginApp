@@ -42,7 +42,6 @@
         <!-- KHU VỰC DANH SÁCH KHÁCH HÀNG -->
         <ScrollView Grid.Row="1">
             <VerticalStackLayout Spacing="15">
-                <Label Text="📋 Danh sách khách hàng" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
 
                 <CollectionView ItemsSource="{Binding DanhSachKhachHang}"
                                 SelectionMode="Single"

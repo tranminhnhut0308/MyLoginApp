@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
              x:Class="MyLoginApp.Pages.LoaiVangPage"
-             Title="Quản lý Loại Vàng">
+             Title="Danh sách loại vàng">
 
     <ContentPage.BindingContext>
         <viewmodels:LoaiVangViewModel />
@@ -119,19 +119,7 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- DANH SÁCH LOẠI VÀNG -->
-                <Frame BackgroundColor="#FFCF07" 
-                       BorderColor="#FF9800" 
-                       CornerRadius="10" 
-                       Padding="15" 
-                       Margin="0,0,0,10"
-                       HasShadow="True">
-                    <Label Text="📋 Danh sách loại vàng 12318235183257s" 
-                           FontAttributes="Bold" 
-                           FontSize="{OnPlatform Android=20, iOS=20, Default=22}" 
-                           HorizontalOptions="Center" 
-                           TextColor="#333333" />
-                </Frame>
+               
 
                 <CollectionView ItemsSource="{Binding ListLoaiVang}"
                 SelectionMode="Single"

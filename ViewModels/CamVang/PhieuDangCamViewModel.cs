@@ -52,6 +52,7 @@ public class PhieuDangCamViewModel : ObservableObject
             {
                 // Cập nhật TongTLThuc khi TongCanTong thay đổi
                 TongTLThuc = value - TongTLHot;
+                OnPropertyChanged(nameof(TongCanTongInLuong));
             }
         }
     }
@@ -68,12 +69,24 @@ public class PhieuDangCamViewModel : ObservableObject
     public decimal TongTLHot
     {
         get => tongTLHot;
-        set => SetProperty(ref tongTLHot, value);
+        set 
+        {
+            if(SetProperty(ref tongTLHot, value))
+            {
+                OnPropertyChanged(nameof(TongTLHotInLuong));
+            }
+        }
     }
     public decimal TongTLThuc
     {
         get => tongTLThuc;
-        set => SetProperty(ref tongTLThuc, value);
+        set
+        {
+            if(SetProperty(ref tongTLThuc, value))
+            {
+                OnPropertyChanged(nameof(TongTLThucInLuong));
+            }
+        }
     }
     public decimal TongTienNhan
     {
@@ -120,6 +133,10 @@ public class PhieuDangCamViewModel : ObservableObject
         get => _tongTruHotAll;
         set => SetProperty(ref _tongTruHotAll, value);
     }
+
+    public decimal TongCanTongInLuong => TongCanTong / 1000m;
+    public decimal TongTLHotInLuong => TongTLHot / 1000m;
+    public decimal TongTLThucInLuong => TongTLThuc / 1000m;
 
     private bool _isLoading;
     public bool IsLoading
@@ -309,47 +326,6 @@ public class PhieuDangCamViewModel : ObservableObject
             // Đảm bảo reader đã đóng trước khi mở truy vấn mới
             if (!reader.IsClosed) reader.Close();
 
-            string sumQueryAll = @"
-                SELECT 
-                    SUM(danh_muc_hang_hoa.CAN_TONG) AS TongCanTong,
-                    SUM(danh_muc_hang_hoa.TL_HOT) AS TongTLHot,
-                    SUM(danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT) AS TongTruHot,
-                    SUM(phx_chi_tiet_phieu_xuat.THANH_TIEN) AS TongThanhTien,
-                    SUM(danh_muc_hang_hoa.DON_GIA_GOC * (danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT) + danh_muc_hang_hoa.CONG_GOC) AS TongGiaGoc,
-                    SUM(phx_chi_tiet_phieu_xuat.THANH_TIEN - (danh_muc_hang_hoa.DON_GIA_GOC * (danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT) + danh_muc_hang_hoa.CONG_GOC)) AS TongLaiLo
-                FROM phx_phieu_xuat
-                JOIN phx_chi_tiet_phieu_xuat ON phx_phieu_xuat.PHIEU_XUAT_ID = phx_chi_tiet_phieu_xuat.PHIEU_XUAT_ID
-                JOIN danh_muc_hang_hoa ON danh_muc_hang_hoa.HANGHOAID = phx_chi_tiet_phieu_xuat.HANGHOAID";
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                sumQueryAll += " WHERE phx_phieu_xuat.PHIEU_XUAT_MA LIKE @Search";
-            }
-            using (var sumCmdALL = new MySqlCommand(sumQueryAll, conn))
-            {
-                if (!string.IsNullOrEmpty(searchText))
-                {
-                    sumCmdALL.Parameters.AddWithValue("@Search", $"%{searchText}%");
-                }
-                using (var sumReaderALL = await sumCmdALL.ExecuteReaderAsync())
-                {
-                    if (await sumReaderALL.ReadAsync())
-                    {
-                        int idxTongCanTong = sumReaderALL.GetOrdinal("TongCanTong");
-                        int idxTongTLHot = sumReaderALL.GetOrdinal("TongTLHot");
-                        int idxTongTruHot = sumReaderALL.GetOrdinal("TongTruHot");
-                        int idxTongThanhTien = sumReaderALL.GetOrdinal("TongThanhTien");
-                        int idxTongGiaGoc = sumReaderALL.GetOrdinal("TongGiaGoc");
-                        int idxTongLaiLo = sumReaderALL.GetOrdinal("TongLaiLo");
-
-                        TongCanTong = sumReaderALL.IsDBNull(idxTongCanTong) ? 0 : sumReaderALL.GetDecimal(idxTongCanTong);
-                        TongTLHotAll = sumReaderALL.IsDBNull(idxTongTLHot) ? 0 : sumReaderALL.GetDecimal(idxTongTLHot);
-                        TongTruHotAll = sumReaderALL.IsDBNull(idxTongTruHot) ? 0 : sumReaderALL.GetDecimal(idxTongTruHot);
-                        TongThanhTienAll = sumReaderALL.IsDBNull(idxTongThanhTien) ? 0 : sumReaderALL.GetDecimal(idxTongThanhTien);
-                        TongGiaGocAll = sumReaderALL.IsDBNull(idxTongGiaGoc) ? 0 : sumReaderALL.GetDecimal(idxTongGiaGoc);
-                        TongLaiLoAll = sumReaderALL.IsDBNull(idxTongLaiLo) ? 0 : sumReaderALL.GetDecimal(idxTongLaiLo);
-                    }
-                }
-            }
         }
         catch (Exception ex)
         {

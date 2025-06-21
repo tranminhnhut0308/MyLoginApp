@@ -11,13 +11,6 @@
     </ContentPage.BindingContext>
 
     <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="15" RowSpacing="15">
-        <!-- Tiêu đề -->
-        <Label Grid.Row="0" 
-               Text="Báo cáo tồn kho theo nhóm vàng" 
-               FontSize="24" 
-               FontAttributes="Bold" 
-               HorizontalOptions="Center"
-               Margin="0,10,0,5"/>
 
         <!-- Form tìm kiếm -->
         <Frame Grid.Row="1" 
