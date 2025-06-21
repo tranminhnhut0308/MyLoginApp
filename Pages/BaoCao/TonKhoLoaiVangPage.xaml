@@ -3,8 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodel="clr-namespace:MyLoginApp.ViewModels.BaoCao"
              xmlns:converter="clr-namespace:MyLoginApp.Converters"
-             x:Class="MyLoginApp.Pages.BaoCao.TonKhoLoaiVangPage"
-             Title="Danh sách tồn kho loại vàng">
+             x:Class="MyLoginApp.Pages.BaoCao.TonKhoLoaiVangPage">
+
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="Tồn Kho Loại Vàng"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   HorizontalOptions="Center" />
+            <Button Text="🔍"
+                    FontSize="22"
+                    Clicked="OnTimKiemClicked"
+                    HorizontalOptions="End"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"/>
+        </Grid>
+    </Shell.TitleView>
 
     <ContentPage.BindingContext>
         <viewmodel:TonKhoLoaiVangViewModel />
@@ -20,11 +36,53 @@
     <ScrollView>
         <VerticalStackLayout Padding="10" Spacing="10">
 
+            <!-- Summary Section -->
+            <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="0,5,0,10" HasShadow="True">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
+
+                    <!-- Tổng số nhóm vàng -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng số nhóm vàng" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongSoLoaiVang}" TextColor="#1976D2" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    
+                    <!-- Tổng thành tiền -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng thành tiền" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongThanhTien, StringFormat='{0:N0} VNĐ'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+
+                    <!-- Tổng TL Hột -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng TL Hột" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongTLHotFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+
+                    <!-- Tổng cân tổng -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng cân tổng" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongCanTongFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+
+                    <!-- Tổng công gốc -->
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng công gốc" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongCongGoc, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+
+                    <!-- Tổng giá công -->
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng giá công" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongGiaCong, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+
             <!-- Tìm kiếm -->
-            <SearchBar Placeholder="Tìm kiếm..."
+            <!--<SearchBar Placeholder="Tìm kiếm..."
                        Text="{Binding TuKhoaTimKiem, Mode=TwoWay}"
                        SearchCommand="{Binding ThucHienTimKiemCommand}"
-                       Margin="0,0,0,10" />
+                       Margin="0,0,0,10" />-->
 
             <!-- Danh sách dạng card -->
             <CollectionView ItemsSource="{Binding DanhSachHienThiDaPhanTrang}"
@@ -37,21 +95,42 @@
                                Margin="5"
                                HasShadow="True"
                                BorderColor="#cccccc">
-                            <VerticalStackLayout Spacing="6">
-                                <Label Text="{Binding HANGHOAMA, StringFormat='Mã hàng: {0}'}"
-                                       FontAttributes="Bold"
-                                       TextColor="DarkSlateBlue" />
-                                <Label Text="{Binding HANG_HOA_TEN, StringFormat='Tên hàng: {0}'}" />
-                                <Label Text="{Binding NHOM_TEN, StringFormat='Nhóm vàng: {0}'}" />
-                                <Label Text="{Binding LOAI_TEN, StringFormat='Loại vàng: {0}'}" />
-                                <Label Text="{Binding CAN_TONG, StringFormat='Cân tổng: {0:N2}'}" />
-                                <Label Text="{Binding TL_HOT, StringFormat='TL Hột: {0:N2}'}" />
-                                <Label Text="{Binding CONG_GOC, StringFormat='Công gốc: {0:N0}'}" />
-                                <Label Text="{Binding GIA_CONG, StringFormat='Giá công: {0:N0}'}" />
-                                <Label Text="{Binding ThanhTien, StringFormat='Thành tiền: {0:N0}'}"
-                                       FontAttributes="Bold"
-                                       TextColor="Green" />
-                            </VerticalStackLayout>
+                            <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="8" ColumnSpacing="12">
+                                
+                                <!-- Hàng 1: Mã hàng và Tên hàng -->
+                                <Label Grid.Row="0" Grid.Column="0" FontAttributes="Bold" TextColor="DarkSlateBlue">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Mã: "/>
+                                            <Span Text="{Binding HANGHOAMA}"/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding HANG_HOA_TEN}" HorizontalOptions="Start" />
+
+                                <!-- Hàng 2: Nhóm và Loại -->
+                                <Label Grid.Row="1" Grid.Column="0" Text="{Binding NHOM_TEN, StringFormat='Nhóm: {0}'}" />
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding LOAI_TEN, StringFormat='Loại: {0}'}" HorizontalOptions="Start" />
+
+                                <!-- Hàng 3: Cân tổng và TL Hột -->
+                                <Label Grid.Row="2" Grid.Column="0" Text="{Binding CanTongFormatted, StringFormat='Cân tổng: {0}'}" />
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding TlHotFormatted, StringFormat='TL Hột: {0}'}" HorizontalOptions="Start" />
+
+                                <!-- Hàng 4: Công gốc và Giá công -->
+                                <Label Grid.Row="3" Grid.Column="0" Text="{Binding CONG_GOC, StringFormat='Công gốc: {0:N0} VNĐ'}" />
+                                <Label Grid.Row="3" Grid.Column="1" Text="{Binding GIA_CONG, StringFormat='Giá công: {0:N0} VNĐ'}" HorizontalOptions="Start" />
+
+                                <!-- Hàng 5: Thành tiền -->
+                                <Label Grid.Row="4" Grid.ColumnSpan="2" HorizontalOptions="Start" FontAttributes="Bold" TextColor="Green">
+                                     <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Thành tiền: "/>
+                                            <Span Text="{Binding ThanhTien, StringFormat='{0:N0} VNĐ'} "/>
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+
+                            </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

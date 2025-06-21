@@ -144,6 +144,63 @@ namespace MyLoginApp.ViewModels.BaoCao
         public Command GoToPreviousPageCommand { get; }
         public Command GoToNextPageCommand { get; }
 
+        // Summary Properties
+        private int _tongSoLoaiVang;
+        public int TongSoLoaiVang
+        {
+            get => _tongSoLoaiVang;
+            set { _tongSoLoaiVang = value; OnPropertyChanged(); }
+        }
+
+        private double _tongCanTong;
+        public double TongCanTong
+        {
+            get => _tongCanTong;
+            set 
+            { 
+                _tongCanTong = value; 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TongCanTongFormatted));
+            }
+        }
+
+        private double _tongTLHot;
+        public double TongTLHot
+        {
+            get => _tongTLHot;
+            set 
+            { 
+                _tongTLHot = value; 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TongTLHotFormatted));
+            }
+        }
+
+        private decimal _tongThanhTien;
+        public decimal TongThanhTien
+        {
+            get => _tongThanhTien;
+            set { _tongThanhTien = value; OnPropertyChanged(); }
+        }
+
+        private decimal _tongCongGoc;
+        public decimal TongCongGoc
+        {
+            get => _tongCongGoc;
+            set { _tongCongGoc = value; OnPropertyChanged(); }
+        }
+
+        private decimal _tongGiaCong;
+        public decimal TongGiaCong
+        {
+            get => _tongGiaCong;
+            set { _tongGiaCong = value; OnPropertyChanged(); }
+        }
+
+        // Formatted Totals
+        public string TongCanTongFormatted => $"{(TongCanTong / 1000).ToString("0.############################")} L";
+        public string TongTLHotFormatted => $"{(TongTLHot / 1000).ToString("0.############################")} L";
+
         public TonKhoLoaiVangViewModel()
         {
             DanhSachTonKho = new ObservableCollection<TonKhoLoaiVangModel>();
@@ -199,25 +256,25 @@ namespace MyLoginApp.ViewModels.BaoCao
                         DanhSachTonKho.Clear();
                         while (await reader.ReadAsync())
                         {
-                            var model = new TonKhoLoaiVangModel
+                            var item = new TonKhoLoaiVangModel
                             {
-                                NHOM_TEN = reader["NHOM_TEN"] == DBNull.Value ? string.Empty : reader.GetString("NHOM_TEN"),
-                                HANGHOAMA = reader["HANGHOAMA"] == DBNull.Value ? string.Empty : reader.GetString("HANGHOAMA"),
-                                HANG_HOA_TEN = reader["HANG_HOA_TEN"] == DBNull.Value ? string.Empty : reader.GetString("HANG_HOA_TEN"),
-                                LOAI_TEN = reader["LOAI_TEN"] == DBNull.Value ? string.Empty : reader.GetString("LOAI_TEN"),
-                                CAN_TONG = reader["CAN_TONG"] == DBNull.Value ? 0 : reader.GetDouble("CAN_TONG"),
-                                TL_HOT = reader["TL_HOT"] == DBNull.Value ? 0 : reader.GetDouble("TL_HOT"),
-                                CONG_GOC = reader["CONG_GOC"] == DBNull.Value ? 0 : reader.GetDouble("CONG_GOC"),
-                                GIA_CONG = reader["GIA_CONG"] == DBNull.Value ? 0 : reader.GetDouble("GIA_CONG"),
-                                DON_GIA_BAN = reader["DON_GIA_BAN"] == DBNull.Value ? 0 : reader.GetDouble("DON_GIA_BAN"),
+                                NHOM_TEN = reader["NHOM_TEN"].ToString(),
+                                HANGHOAMA = reader["HANGHOAMA"].ToString(),
+                                HANG_HOA_TEN = reader["HANG_HOA_TEN"].ToString(),
+                                LOAI_TEN = reader["LOAI_TEN"].ToString(),
+                                CAN_TONG = Convert.ToDouble(reader["CAN_TONG"]),
+                                TL_HOT = Convert.ToDouble(reader["TL_HOT"]),
+                                CONG_GOC = Convert.ToDecimal(reader["CONG_GOC"]),
+                                GIA_CONG = Convert.ToDecimal(reader["GIA_CONG"]),
+                                DON_GIA_BAN = Convert.ToDecimal(reader["DON_GIA_BAN"])
                             };
-                            double truhot = model.CAN_TONG - model.TL_HOT;
-                            double truhotquydoi = truhot / 100.0;
-                            model.ThanhTien = (decimal)(model.DON_GIA_BAN * truhotquydoi) + (decimal)model.GIA_CONG;
-                            DanhSachTonKho.Add(model);
+                            DanhSachTonKho.Add(item);
                         }
                         // Sau khi load xong toàn bộ dữ liệu, thực hiện phân trang ban đầu
                         PhanTrangDanhSach();
+
+                        // Update summary
+                        CalculateSummary();
                     }
                     else
                     {
@@ -246,6 +303,17 @@ namespace MyLoginApp.ViewModels.BaoCao
             }
         }
 
+        private void CalculateSummary()
+        {
+            var sourceList = string.IsNullOrEmpty(TuKhoaTimKiem) ? DanhSachTonKho : DanhSachHienThi;
+            TongCanTong = sourceList.Sum(x => x.CAN_TONG);
+            TongTLHot = sourceList.Sum(x => x.TL_HOT);
+            TongThanhTien = sourceList.Sum(x => x.ThanhTien);
+            TongSoLoaiVang = sourceList.Select(x => x.NHOM_TEN).Distinct().Count();
+            TongCongGoc = sourceList.Sum(x => x.CONG_GOC);
+            TongGiaCong = sourceList.Sum(x => x.GIA_CONG);
+        }
+
         private void ThucHienTimKiem()
         {
             if (string.IsNullOrWhiteSpace(TuKhoaTimKiem))
@@ -265,6 +333,9 @@ namespace MyLoginApp.ViewModels.BaoCao
             // Sau khi tìm kiếm, thực hiện phân trang trên kết quả
             CurrentPage = 1; // Reset về trang đầu tiên sau khi tìm kiếm
             PhanTrangDanhSach();
+
+            // Update summary after search
+            CalculateSummary();
         }
 
         private void PhanTrangDanhSach()
@@ -281,6 +352,9 @@ namespace MyLoginApp.ViewModels.BaoCao
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public bool CanGoPrevious => CurrentPage > 1;
+        public bool CanGoNext => CurrentPage < TotalPages;
     }
 
     public static class CollectionExtensions

@@ -3,8 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:MyLoginApp.Models.BaoCao"
              xmlns:vm="clr-namespace:MyLoginApp.ViewModels.BaoCao"
+             xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.BaoCao.PhieuXuatPage"
              BackgroundColor="#f5f5f5">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:LaiLoToColorConverter x:Key="LaiLoToColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
@@ -59,64 +66,73 @@
                                    BackgroundColor="White"
                                    CornerRadius="12"
                                    HasShadow="True">
-                                <StackLayout Spacing="10">
+                                <Grid RowSpacing="8" ColumnSpacing="15">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Tên hàng hóa : " FontAttributes="Bold" FontSize="16" TextColor="Blue"/>
-                                        <Label Text="{Binding HangHoaTen}" FontSize="16"/>
-                                    </StackLayout>
+                                    <!-- Tên hàng hóa -->
+                                    <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding HangHoaTen}" FontAttributes="Bold" FontSize="18" TextColor="Blue" />
 
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Mã phiếu : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding PhieuXuatMa}" FontSize="16"/>
-                                    </StackLayout>
+                                    <!-- Mã phiếu & Ngày xuất -->
+                                    <HorizontalStackLayout Grid.Row="1" Grid.Column="0" Spacing="5">
+                                        <Label Text="Mã phiếu:" FontAttributes="Bold" />
+                                        <Label Text="{Binding PhieuXuatMa}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Row="1" Grid.Column="1" Spacing="5">
+                                        <Label Text="Ngày:" FontAttributes="Bold" />
+                                        <Label Text="{Binding NgayXuat, StringFormat='{0:dd/MM/yyyy}'}" />
+                                    </HorizontalStackLayout>
 
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Ngày xuất : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding NgayXuat, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontSize="16"/>
-                                    </StackLayout>
+                                    <!-- Loại & Lãi/Lỗ -->
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="0" Spacing="5">
+                                        <Label Text="Loại:" FontAttributes="Bold" />
+                                        <Label Text="{Binding LoaiVang}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Row="2" Grid.Column="1" Spacing="5">
+                                        <Label Text="Lãi/Lỗ:" FontAttributes="Bold" />
+                                        <Label Text="{Binding LaiLo, StringFormat='{0:N0} VNĐ'}" TextColor="{Binding LaiLo, Converter={StaticResource LaiLoToColorConverter}}" />
+                                    </HorizontalStackLayout>
+                                    
+                                    <!-- Cân tổng & TL Hột -->
+                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="0" Spacing="5">
+                                        <Label Text="Cân tổng:" FontAttributes="Bold" />
+                                        <Label Text="{Binding CanTongFormatted}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Row="3" Grid.Column="1" Spacing="5">
+                                        <Label Text="TL Hột:" FontAttributes="Bold" />
+                                        <Label Text="{Binding TlHotFormatted}" />
+                                    </HorizontalStackLayout>
 
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Loại vàng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding LoaiVang}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Cân tổng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding CanTongFormatted}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="TL Hot : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TlHotFormatted}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="TL Vàng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TruHotFormatted}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Lãi/Lỗ : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding LaiLo, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Giá gốc : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding GiaGoc, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Đơn giá : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding DonGia, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="Thành tiền : " FontAttributes="Bold" FontSize="16" TextColor="DarkGreen"/>
-                                        <Label Text="{Binding ThanhTien, StringFormat='{0:N0} VNĐ'}" FontAttributes="Bold" FontSize="16" TextColor="DarkGreen"/>
-                                    </StackLayout>
-
-                                </StackLayout>
+                                    <!-- TL Vàng & Đơn giá -->
+                                    <HorizontalStackLayout Grid.Row="4" Grid.Column="0" Spacing="5">
+                                        <Label Text="TL Vàng:" FontAttributes="Bold" />
+                                        <Label Text="{Binding TruHotFormatted}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Row="4" Grid.Column="1" Spacing="5">
+                                        <Label Text="Đơn giá:" FontAttributes="Bold" />
+                                        <Label Text="{Binding DonGia, StringFormat='{0:N0} VNĐ'}" />
+                                    </HorizontalStackLayout>
+                                    
+                                    <!-- Giá gốc & Thành tiền -->
+                                    <HorizontalStackLayout Grid.Row="5" Grid.Column="0" Spacing="5">
+                                        <Label Text="Giá gốc:" FontAttributes="Bold" />
+                                        <Label Text="{Binding GiaGoc, StringFormat='{0:N0} VNĐ'}" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Grid.Row="5" Grid.Column="1" Spacing="5">
+                                        <Label Text="Thành tiền:" FontAttributes="Bold" TextColor="DarkGreen"/>
+                                        <Label Text="{Binding ThanhTien, StringFormat='{0:N0} VNĐ'}" FontAttributes="Bold" TextColor="DarkGreen" />
+                                    </HorizontalStackLayout>
+                                </Grid>
                             </Frame>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
