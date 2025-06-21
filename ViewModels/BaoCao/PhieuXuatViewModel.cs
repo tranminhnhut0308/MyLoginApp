@@ -61,17 +61,51 @@ namespace MyLoginApp.ViewModels.BaoCao
         }
 
         private decimal _tongCanTongAll;
-        public decimal TongCanTongAll { get => _tongCanTongAll; set => SetProperty(ref _tongCanTongAll, value); }
+        public decimal TongCanTongAll 
+        { 
+            get => _tongCanTongAll; 
+            set 
+            {
+                if (SetProperty(ref _tongCanTongAll, value))
+                {
+                    OnPropertyChanged(nameof(TongCanTongAllFormatted));
+                }
+            } 
+        }
         private decimal _tongTLHotAll;
-        public decimal TongTLHotAll { get => _tongTLHotAll; set => SetProperty(ref _tongTLHotAll, value); }
+        public decimal TongTLHotAll 
+        { 
+            get => _tongTLHotAll; 
+            set 
+            {
+                if (SetProperty(ref _tongTLHotAll, value))
+                {
+                    OnPropertyChanged(nameof(TongTLHotAllFormatted));
+                }
+            } 
+        }
         private decimal _tongTruHotAll;
-        public decimal TongTruHotAll { get => _tongTruHotAll; set => SetProperty(ref _tongTruHotAll, value); }
+        public decimal TongTruHotAll 
+        { 
+            get => _tongTruHotAll; 
+            set
+            {
+                if (SetProperty(ref _tongTruHotAll, value))
+                {
+                    OnPropertyChanged(nameof(TongTruHotAllFormatted));
+                }
+            }
+        }
         private decimal _tongThanhTienAll;
         public decimal TongThanhTienAll { get => _tongThanhTienAll; set => SetProperty(ref _tongThanhTienAll, value); }
         private decimal _tongGiaGocAll;
         public decimal TongGiaGocAll { get => _tongGiaGocAll; set => SetProperty(ref _tongGiaGocAll, value); }
         private decimal _tongLaiLoAll;
         public decimal TongLaiLoAll { get => _tongLaiLoAll; set => SetProperty(ref _tongLaiLoAll, value); }
+
+        public string TongCanTongAllFormatted => $"{(TongCanTongAll / 1000m):0.####} L";
+        public string TongTLHotAllFormatted => $"{(TongTLHotAll / 1000m):0.####} L";
+        public string TongTruHotAllFormatted => $"{(TongTruHotAll / 1000m):0.####} L";
 
         [RelayCommand]
         private async Task GoNextPage()

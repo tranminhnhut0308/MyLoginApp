@@ -196,6 +196,10 @@ namespace MyLoginApp.Models.BaoCao
             }
         }
 
+        public string CanTongFormatted => $"{(CanTong / 1000m):0.####} L";
+        public string TlHotFormatted => $"{(TlHot / 1000m):0.####} L";
+        public string TruHotFormatted => $"{(TruHot / 1000m):0.####} L";
+
         // Phương thức tính toán Giá gốc và Lãi/Lỗ
         private void CalculateGiaGocAndLaiLo()
         {

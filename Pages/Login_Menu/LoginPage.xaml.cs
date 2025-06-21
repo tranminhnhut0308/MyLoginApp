@@ -4,6 +4,8 @@ using Microsoft.Maui.Controls;
 using MyLoginApp.Helpers; // Import helper
 using MySqlConnector;
 using Microsoft.Maui.Storage; // Thêm dòng này để sử dụng SecureStorage
+using CommunityToolkit.Maui.Alerts; // Thêm using cho Snackbar
+using CommunityToolkit.Maui.Core;   // Thêm using cho ISnackbar
 
 namespace MyLoginApp.Pages
 {
@@ -60,12 +62,12 @@ namespace MyLoginApp.Pages
                     // ✅ Lấy tên database từ DatabaseHelper
                     string dbName = DatabaseHelper.DatabaseName;
 
-                    await DisplayAlert("Thông báo", $"✅ Đã tự động kết nối với CSDL [{dbName}] thành công!", "OK");
+                    await Snackbar.Make($"✅ Đã tự động kết nối với CSDL [{dbName}] thành công!", duration: TimeSpan.FromSeconds(3)).Show();
                     connectFieldsLayout.IsVisible = false; // Ẩn khối nhập vì đã kết nối
                 }
                 else
                 {
-                    await DisplayAlert("Cảnh báo", "⚠️ Không thể kết nối CSDL từ thông tin đã lưu. Vui lòng kiểm tra lại!", "OK");
+                    await Snackbar.Make("⚠️ Không thể kết nối CSDL từ thông tin đã lưu. Vui lòng kiểm tra lại!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.OrangeRed }).Show();
                 }
             }
         }
@@ -85,7 +87,7 @@ namespace MyLoginApp.Pages
 
             if (string.IsNullOrWhiteSpace(dbUser) || string.IsNullOrWhiteSpace(dbPassword) || string.IsNullOrWhiteSpace(dbName))
             {
-                await DisplayAlert("Lỗi", "Vui lòng nhập đầy đủ thông tin kết nối!", "OK");
+                await Snackbar.Make("Vui lòng nhập đầy đủ thông tin kết nối!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
                 return;
             }
 
@@ -96,13 +98,13 @@ namespace MyLoginApp.Pages
             if (await DatabaseHelper.TestConnectionAsync())
             {
                 isConnectedToDatabase = true; // ✅ Đánh dấu đã kết nối thành công
-                await DisplayAlert("Thành công", $"✅ Kết nối CSDL [{dbName}] thành công!", "OK");
+                await Snackbar.Make($"✅ Kết nối CSDL [{dbName}] thành công!", duration: TimeSpan.FromSeconds(3)).Show();
                 connectFieldsLayout.IsVisible = false; // Ẩn khối nhập sau khi thành công
             }
             else
             {
                 isConnectedToDatabase = false; // Kết nối thất bại
-                await DisplayAlert("Lỗi", "❌ Kết nối thất bại, vui lòng kiểm tra lại thông tin!", "OK");
+                await Snackbar.Make("❌ Kết nối thất bại, vui lòng kiểm tra lại thông tin!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
             }
         }
 
@@ -112,7 +114,7 @@ namespace MyLoginApp.Pages
             // ✅ Kiểm tra đã kết nối chưa
             if (!isConnectedToDatabase)
             {
-                await DisplayAlert("Lỗi", "⚠️ Bạn chưa kết nối CSDL. Vui lòng nhấn nút 'Kết Nối' trước khi đăng nhập!", "OK");
+                await Snackbar.Make("⚠️ Bạn chưa kết nối CSDL. Vui lòng nhấn nút 'Kết Nối' trước khi đăng nhập!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.OrangeRed }).Show();
                 return;
             }
 
@@ -127,14 +129,14 @@ namespace MyLoginApp.Pages
 
                 if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
                 {
-                    await DisplayAlert("Lỗi", "Vui lòng nhập tên đăng nhập và mật khẩu!", "OK");
+                    await Snackbar.Make("Vui lòng nhập tên đăng nhập và mật khẩu!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
                     return;
                 }
 
                 // ✅ Kiểm tra đăng nhập
                 if (await CheckLoginAsync(username, password))
                 {
-                    await DisplayAlert("Thông báo", $"🎉 Đăng nhập thành công: {username}", "OK");
+                    await Snackbar.Make($"🎉 Đăng nhập thành công: {username}", duration: TimeSpan.FromSeconds(3)).Show();
 
                     // Lưu tên đăng nhập và mật khẩu
                     await SecureStorage.SetAsync("username", username);
@@ -144,12 +146,12 @@ namespace MyLoginApp.Pages
                 }
                 else
                 {
-                    await DisplayAlert("Lỗi", "❌ Sai tài khoản hoặc mật khẩu!", "OK");
+                    await Snackbar.Make("❌ Sai tài khoản hoặc mật khẩu!", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Lỗi hệ thống", ex.Message, "OK");
+                await Snackbar.Make($"Lỗi hệ thống: {ex.Message}", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
             }
         }
 
@@ -172,7 +174,7 @@ namespace MyLoginApp.Pages
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Lỗi kết nối", ex.Message, "OK");
+                await Snackbar.Make($"Lỗi kết nối: {ex.Message}", duration: TimeSpan.FromSeconds(3), visualOptions: new SnackbarOptions { BackgroundColor = Colors.Red }).Show();
             }
 
             return false;

@@ -83,17 +83,17 @@
 
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="Cân tổng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding CanTong, StringFormat='{0:0.##}'}" FontSize="16"/>
+                                        <Label Text="{Binding CanTongFormatted}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="TL Hot : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TlHot, StringFormat='{0:0.##}'}" FontSize="16"/>
+                                        <Label Text="{Binding TlHotFormatted}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="TL Vàng : " FontAttributes="Bold" FontSize="16"/>
-                                        <Label Text="{Binding TruHot, StringFormat='{0:0.##}'}" FontSize="16"/>
+                                        <Label Text="{Binding TruHotFormatted}" FontSize="16"/>
                                     </StackLayout>
 
                                     <StackLayout Orientation="Horizontal">
@@ -165,17 +165,17 @@
                 <!-- Tổng cân -->
                 <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
                     <Label Text="Tổng cân" TextColor="#888" FontSize="12"/>
-                    <Label Text="{Binding TongCanTongAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    <Label Text="{Binding TongCanTongAllFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                 </VerticalStackLayout>
                 <!-- Tổng TL hột -->
                 <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
                     <Label Text="Tổng TL hột" TextColor="#888" FontSize="12"/>
-                    <Label Text="{Binding TongTLHotAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    <Label Text="{Binding TongTLHotAllFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                 </VerticalStackLayout>
                 <!-- Tổng TL thực -->
                 <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
                     <Label Text="Tổng TL thực" TextColor="#888" FontSize="12"/>
-                    <Label Text="{Binding TongTruHotAll, StringFormat='{0:0.##}'}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    <Label Text="{Binding TongTruHotAllFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
                 </VerticalStackLayout>
                 <!-- Tổng giá gốc -->
                 <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
