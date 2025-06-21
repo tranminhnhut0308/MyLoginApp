@@ -2,9 +2,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.PhieuQuaHanPage"
-             BackgroundColor="#f5f5f5"
-             Title="Danh Sách Quá Hạn">
-             
+             BackgroundColor="#f5f5f5">
+    
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="📜 Phiếu Quá Hạn"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:LyToLuongConverter x:Key="LyToLuongConverter"/>
@@ -13,28 +32,6 @@
 
     <ScrollView Padding="5">
         <VerticalStackLayout Spacing="16">
-
-            
-
-            <!-- Thanh tìm kiếm -->
-            <Frame CornerRadius="20"
-                   Padding="0"
-                   Margin="12,10,12,0"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   BorderColor="#cccccc">
-                <SearchBar 
-                    Placeholder="Tìm kiếm theo mã phiếu hoặc tên khách hàng"
-                    Text="{Binding SearchKeyword}"
-                    TextChanged="OnSearchTextChanged"
-                    BackgroundColor="#f0f0f0"
-                    FontSize="16"
-                    HeightRequest="48"
-                    TextColor="#222"
-                    PlaceholderColor="#888"
-                    CancelButtonColor="#888" />
-            </Frame>
-
             <!-- Danh sách quá hạn -->
             <CollectionView ItemsSource="{Binding DanhSachPhieuQuaHan}">
                 <CollectionView.ItemsLayout>

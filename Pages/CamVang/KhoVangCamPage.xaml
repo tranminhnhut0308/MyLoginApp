@@ -1,32 +1,30 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="MyLoginApp.Pages.KhoVangCamPage"
-             BackgroundColor="#f5f5f5"
-             Title="Kho Vàng Cầm">
+             BackgroundColor="#f5f5f5">
+
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="💰 Kho Vàng Cầm"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
 
     <ScrollView Padding="5">
         <VerticalStackLayout Spacing="16">
-
-          
-
-            <!-- Thanh tìm kiếm -->
-            <Frame CornerRadius="12"
-                   Padding="0"
-                   Margin="12,10,12,0"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   BorderColor="#cccccc">
-                <SearchBar 
-                    Placeholder="Tìm kiếm theo mã phiếu hoặc tên khách hàng"
-                    Text="{Binding SearchKeyword}"
-                    TextChanged="OnSearchTextChanged"
-                    BackgroundColor="#f0f0f0"
-                    FontSize="16"
-                    HeightRequest="48"
-                    TextColor="#222"
-                    PlaceholderColor="#888"
-                    CancelButtonColor="#888" />
-            </Frame>
 
             <!-- Danh sách vàng cầm -->
             <CollectionView ItemsSource="{Binding DanhSachKhoVangCam}">
@@ -71,15 +69,15 @@
 
                                 <!-- Cân tổng -->
                                 <Label Text="Cân Tổng:" Grid.Row="4" Grid.Column="0" FontSize="16" FontAttributes="Italic"/>
-                                <Label Text="{Binding Can_Tong, StringFormat='{0:N0}'}" Grid.Row="4" Grid.Column="1" FontSize="16"/>
+                                <Label Text="{Binding CanTongFormatted}" Grid.Row="4" Grid.Column="1" FontSize="16"/>
 
                                 <!-- TL Hột -->
                                 <Label Text="TL Hột:" Grid.Row="5" Grid.Column="0" FontSize="16" FontAttributes="Italic"/>
-                                <Label Text="{Binding TL_Hot, StringFormat='{0:N0}'}" Grid.Row="5" Grid.Column="1" FontSize="16"/>
+                                <Label Text="{Binding TLHotFormatted}" Grid.Row="5" Grid.Column="1" FontSize="16"/>
 
                                 <!-- Đơn giá -->
                                 <Label Text="Đơn Giá:" Grid.Row="6" Grid.Column="0" FontSize="16" FontAttributes="Italic"/>
-                                <Label Text="{Binding Don_Gia, StringFormat='{0:N0}'}" Grid.Row="6" Grid.Column="1" FontSize="16"/>
+                                <Label Text="{Binding DonGiaFormatted}" Grid.Row="6" Grid.Column="1" FontSize="16"/>
 
                                 <!-- Ngày cầm -->
                                 <Label Text="Ngày Cầm:" Grid.Row="7" Grid.Column="0" FontSize="16" FontAttributes="Italic"/>

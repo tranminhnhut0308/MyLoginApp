@@ -3,38 +3,17 @@ using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace MyLoginApp.Models.BaoCao
 {
-    public class PhieuXuatModel : INotifyPropertyChanged
+    public partial class PhieuXuatModel : ObservableObject
     {
-        private int _phieuXuatId;
-        public int PhieuXuatId
-        {
-            get => _phieuXuatId;
-            set
-            {
-                if (_phieuXuatId != value)
-                {
-                    _phieuXuatId = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        private int phieuXuatId;
 
-        private string _phieuXuatMa;
-        public string PhieuXuatMa
-        {
-            get => _phieuXuatMa;
-            set
-            {
-                if (_phieuXuatMa != value)
-                {
-                    _phieuXuatMa = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
+        [ObservableProperty]
+        private string phieuXuatMa;
 
         private string _hangHoaMa;
         public string HangHoaMa

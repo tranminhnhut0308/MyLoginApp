@@ -44,24 +44,8 @@
             <!-- Thống kê tổng số liệu -->
         </Grid.RowDefinitions>
 
-        <!-- Tìm kiếm -->
-        <Frame Grid.Row="1"
-               Padding="10"
-               BackgroundColor="#F2F2F2"
-               CornerRadius="10"
-               HasShadow="False">
-            <Entry Placeholder="Tìm kiếm theo mã, tên hàng..."
-                   Text="{Binding SearchKeyword}"
-                   FontSize="14"/>
-        </Frame>
-
         <!-- Danh sách phiếu + tổng số -->
-        <StackLayout Grid.Row="2" Spacing="5">
-            <Label Text="{Binding DanhSachPhieuXuat.Count, StringFormat='Tổng số: {0} phiếu'}"
-                   FontSize="14"
-                   TextColor="Gray"
-                   HorizontalOptions="End"/>
-
+        <StackLayout Grid.Row="2" Spacing="0">
             <RefreshView Command="{Binding RefreshCommand}"
                          IsRefreshing="{Binding IsRefreshing}">
                 <CollectionView ItemsSource="{Binding DanhSachPhieuXuat}"

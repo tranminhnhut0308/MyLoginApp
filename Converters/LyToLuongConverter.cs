@@ -13,7 +13,7 @@ namespace MyLoginApp.Converters
             try
             {
                 if (value == null) 
-                    return "0.00 Lượng";
+                    return "0.00 L";
                 
                 decimal lyValue;
                 
@@ -36,7 +36,7 @@ namespace MyLoginApp.Converters
                 }
                 else
                 {
-                    return "0.00 Lượng"; // Trả về giá trị mặc định nếu không convert được
+                    return "0.00 L"; // Trả về giá trị mặc định nếu không convert được
                 }
                 
                 // Tính giá trị lượng từ ly (1 lượng = 1000 ly)
@@ -57,7 +57,7 @@ namespace MyLoginApp.Converters
                     rawValue = luongValue.ToString("0.00", CultureInfo.InvariantCulture);
                 }
                 
-                return $"{rawValue} Lượng";
+                return $"{rawValue} L";
             }
             catch (Exception ex)
             {
@@ -71,7 +71,7 @@ namespace MyLoginApp.Converters
             if (value is string luongString)
             {
                 // Xóa ký tự "Lượng" và parse giá trị
-                luongString = luongString.Replace("Lượng", "").Trim();
+                luongString = luongString.Replace("L", "").Trim();
                 
                 if (decimal.TryParse(luongString, out decimal luongValue))
                 {

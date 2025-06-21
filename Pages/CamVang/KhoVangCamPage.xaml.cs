@@ -31,4 +31,17 @@ public partial class KhoVangCamPage : ContentPage
             await _viewModel.LoadKhoVangCamAsync(_viewModel.SearchKeyword);
         }
     }
+
+    private async void OnTimKiemClicked(object sender, EventArgs e)
+    {
+        if (_viewModel != null)
+        {
+            string keyword = await DisplayPromptAsync("Tìm kiếm", "Nhập mã phiếu hoặc tên khách hàng:", "Tìm", "Hủy", initialValue: _viewModel.SearchKeyword);
+            if (keyword != null)
+            {
+                _viewModel.SearchKeyword = keyword;
+                await _viewModel.LoadKhoVangCamAsync(keyword);
+            }
+        }
+    }
 }
