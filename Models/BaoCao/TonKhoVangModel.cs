@@ -18,7 +18,7 @@ namespace MyLoginApp.Models.BaoCao
         public decimal DON_GIA_BAN { get; set; }
         public int SL_TON { get; set; }
         public decimal TL_THUC => CAN_TONG - TL_HOT;
-
+        public decimal ThanhTien => (DON_GIA_BAN * (TL_THUC / 100)) + GIA_CONG;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -5,27 +5,69 @@
              BackgroundColor="#f5f5f5"
              Title="Báo cáo Vàng">
 
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+            <Label Text="Báo cáo Vàng"
+                   TextColor="White"
+                   FontSize="22"
+                   FontAttributes="Bold"
+                   VerticalTextAlignment="Center" />
+            <Button Text="🔍"
+                    Grid.Column="1"
+                    FontSize="22"
+                    FontAttributes="Bold"
+                    Clicked="OnTimKiemClicked"
+                    BackgroundColor="Transparent"
+                    BorderColor="Transparent"
+                    TextColor="White"
+                    VerticalOptions="Center"
+                    Padding="0,0,10,0"/>
+        </Grid>
+    </Shell.TitleView>
+
     <ScrollView Padding="5">
         <VerticalStackLayout Spacing="16">
+            <!-- Frame thống kê tổng hợp (đặt trên cùng) -->
+            <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="10,10,10,0" HasShadow="True">
+                <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng số nhóm" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongSoNhom}" TextColor="#1976D2" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
+                        <Label Text="Tổng cân tổng" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongCanTongFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng TL hột" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongTLHotFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="1" Spacing="2">
+                        <Label Text="Tổng TL thực" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongTLThucFormatted}" TextColor="#222" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng công gốc" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongCongGoc, StringFormat='{0:N0}'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
+                        <Label Text="Tổng giá công" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongGiaCong, StringFormat='{0:N0}'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="0" Grid.Row="3" Spacing="2">
+                        <Label Text="Tổng số lượng tồn" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongSoLuongTon, StringFormat='{0:N0}'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                    <VerticalStackLayout Grid.Column="1" Grid.Row="3" Spacing="2">
+                        <Label Text="Tổng thành tiền" TextColor="#888" FontSize="12"/>
+                        <Label Text="{Binding TongThanhTien, StringFormat='{0:N0}'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
 
             <!-- Thanh tìm kiếm -->
-            <Frame CornerRadius="12"
-                   Padding="0"
-                   Margin="12,0,12,0"
-                   BackgroundColor="White"
-                   HasShadow="True"
-                   BorderColor="#cccccc">
-                <SearchBar 
-                    Placeholder="Tìm theo nhóm vàng..."
-                    Text="{Binding TuKhoaTimKiem}"
-                    SearchCommand="{Binding ThucHienTimKiemCommand}"
-                    BackgroundColor="#f0f0f0"
-                    FontSize="16"
-                    HeightRequest="48"
-                    TextColor="#222"
-                    PlaceholderColor="#888"
-                    CancelButtonColor="#888" />
-            </Frame>
+            <!-- Đã đưa nút tìm kiếm lên TitleView, có thể bỏ SearchBar này nếu không cần -->
+            <!-- <Frame ...> <SearchBar ... /> </Frame> -->
 
             <!-- Danh sách tồn kho vàng -->
             <CollectionView ItemsSource="{Binding DanhSachHienThi}">
@@ -73,10 +115,11 @@
                                 <Label Text="Giá Công:" Grid.Row="5" Grid.Column="0" FontAttributes="Bold"/>
                                 <Label Text="{Binding GIA_CONG, StringFormat='{0:N0}'}" Grid.Row="5" Grid.Column="1"/>
 
-                                <!-- Đơn giá bán -->
-                                <Label Text="Đơn Giá Bán:" Grid.Row="6" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding DON_GIA_BAN, StringFormat='{0:N0}'}"
-                                       TextColor="Green"
+                                <!-- Thành Tiền -->
+                                <Label Text="Thành Tiền:" Grid.Row="6" Grid.Column="0" FontAttributes="Bold"/>
+                                <Label Text="{Binding ThanhTien, StringFormat='{0:N0}'}"
+                                       TextColor="Black"
+                                       FontAttributes="Bold"
                                        Grid.Row="6" Grid.Column="1"/>
 
                                 <!-- Số lượng tồn -->

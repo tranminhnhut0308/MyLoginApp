@@ -14,4 +14,17 @@ public partial class TonKhoVangPage : ContentPage
         // Load dữ liệu ban đầu
         _ = viewModel.LoadDanhSachTonKhoVang();
     }
+
+    private async void OnTimKiemClicked(object sender, EventArgs e)
+    {
+        string tuKhoa = await DisplayPromptAsync("Tìm kiếm", "Nhập từ khóa nhóm vàng:", "OK", "Hủy", viewModel.TuKhoaTimKiem);
+        if (!string.IsNullOrWhiteSpace(tuKhoa))
+        {
+            viewModel.TuKhoaTimKiem = tuKhoa;
+            if (viewModel.ThucHienTimKiemCommand.CanExecute(null))
+            {
+                viewModel.ThucHienTimKiemCommand.Execute(null);
+            }
+        }
+    }
 }

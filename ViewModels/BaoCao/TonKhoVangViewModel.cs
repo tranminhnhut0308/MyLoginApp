@@ -87,6 +87,59 @@ namespace MyLoginApp.ViewModels.BaoCao
         public Command LoadDanhSachTonKhoVangCommand { get; }
         public Command ThucHienTimKiemCommand { get; }
 
+        // Thống kê tổng hợp
+        private int _tongSoNhom;
+        public int TongSoNhom
+        {
+            get => _tongSoNhom;
+            set { _tongSoNhom = value; OnPropertyChanged(); }
+        }
+        private decimal _tongCanTong;
+        public decimal TongCanTong
+        {
+            get => _tongCanTong;
+            set { _tongCanTong = value; OnPropertyChanged(); OnPropertyChanged(nameof(TongCanTongFormatted)); }
+        }
+        private decimal _tongTLHot;
+        public decimal TongTLHot
+        {
+            get => _tongTLHot;
+            set { _tongTLHot = value; OnPropertyChanged(); OnPropertyChanged(nameof(TongTLHotFormatted)); }
+        }
+        private decimal _tongTLThuc;
+        public decimal TongTLThuc
+        {
+            get => _tongTLThuc;
+            set { _tongTLThuc = value; OnPropertyChanged(); OnPropertyChanged(nameof(TongTLThucFormatted)); }
+        }
+        private decimal _tongCongGoc;
+        public decimal TongCongGoc
+        {
+            get => _tongCongGoc;
+            set { _tongCongGoc = value; OnPropertyChanged(); }
+        }
+        private decimal _tongGiaCong;
+        public decimal TongGiaCong
+        {
+            get => _tongGiaCong;
+            set { _tongGiaCong = value; OnPropertyChanged(); }
+        }
+        private int _tongSoLuongTon;
+        public int TongSoLuongTon
+        {
+            get => _tongSoLuongTon;
+            set { _tongSoLuongTon = value; OnPropertyChanged(); }
+        }
+        private decimal _tongThanhTien;
+        public decimal TongThanhTien
+        {
+            get => _tongThanhTien;
+            set { _tongThanhTien = value; OnPropertyChanged(); }
+        }
+        public string TongCanTongFormatted => $"{TongCanTong:0.##} g";
+        public string TongTLHotFormatted => $"{TongTLHot:0.##} g";
+        public string TongTLThucFormatted => $"{TongTLThuc:0.##} g";
+
         public TonKhoVangViewModel()
         {
             _danhSachTonKhoVang = new ObservableCollection<TonKhoVangModel>();
@@ -110,27 +163,26 @@ namespace MyLoginApp.ViewModels.BaoCao
                 string query = @"
                     SELECT
                         nhom_hang.NHOM_TEN,
-                        SUM(danh_muc_hang_hoa.CAN_TONG) AS CAN_TONG,
-                        SUM(danh_muc_hang_hoa.TL_HOT) AS TL_HOT,
-                        SUM(danh_muc_hang_hoa.CAN_TONG) - SUM(danh_muc_hang_hoa.TL_HOT) AS TL_THUC,
-                        SUM(danh_muc_hang_hoa.CONG_GOC) AS CONG_GOC,
-                        SUM(danh_muc_hang_hoa.GIA_CONG) AS GIA_CONG,
-                        nhom_hang.DON_GIA_BAN AS DON_GIA_BAN,
-                        SUM(ton_kho.SL_TON) AS SL_TON
+                        nhom_hang.GHI_CHU,
+                        ton_kho.SL_TON,
+                        nhom_hang.DON_GIA_BAN,
+                        danh_muc_hang_hoa.HANGHOAID,
+                        danh_muc_hang_hoa.CAN_TONG,
+                        danh_muc_hang_hoa.TL_HOT,
+                        danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT AS TL_THUC,
+                        danh_muc_hang_hoa.CONG_GOC,
+                        danh_muc_hang_hoa.GIA_CONG
                     FROM
-                        danh_muc_hang_hoa,
-                        ton_kho,
-                        nhom_hang,
-                        loai_hang
+                        danh_muc_hang_hoa
+                        JOIN ton_kho ON danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
+                        JOIN nhom_hang ON danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
+                        JOIN loai_hang ON danh_muc_hang_hoa.LOAIID = loai_hang.LOAIID
                     WHERE
-                        danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
-                        AND danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
-                        AND danh_muc_hang_hoa.LOAIID = loai_hang.LOAIID
-                        AND ton_kho.SL_TON = 1
+                        ton_kho.SL_TON >= 1
                         AND danh_muc_hang_hoa.SU_DUNG = 1
                         AND nhom_hang.SU_DUNG = 1
-                    GROUP BY
-                        nhom_hang.NHOM_TEN;";
+                    LIMIT 100
+                ";
 
                 await using var cmd = new MySqlCommand(query, conn);
                 await using var reader = await cmd.ExecuteReaderAsync();
@@ -140,19 +192,36 @@ namespace MyLoginApp.ViewModels.BaoCao
 
                     while (await reader.ReadAsync())
                     {
-                        DanhSachTonKhoVang.Add(new TonKhoVangModel
+                        try
                         {
-                            NHOM_TEN = reader["NHOM_TEN"] == DBNull.Value ? string.Empty : reader.GetString("NHOM_TEN"),
-                            CAN_TONG = reader["CAN_TONG"] == DBNull.Value ? 0 : reader.GetDecimal("CAN_TONG"),
-                            TL_HOT = reader["TL_HOT"] == DBNull.Value ? 0 : reader.GetDecimal("TL_HOT"),
-                            CONG_GOC = reader["CONG_GOC"] == DBNull.Value ? 0 : reader.GetDecimal("CONG_GOC"),
-                            GIA_CONG = reader["GIA_CONG"] == DBNull.Value ? 0 : reader.GetDecimal("GIA_CONG"),
-                            DON_GIA_BAN = reader["DON_GIA_BAN"] == DBNull.Value ? 0 : reader.GetDecimal("DON_GIA_BAN"),
-                            SL_TON = reader["SL_TON"] == DBNull.Value ? 0 : reader.GetInt32("SL_TON")
-                        });
+                            DanhSachTonKhoVang.Add(new TonKhoVangModel
+                            {
+                                NHOM_TEN = reader["NHOM_TEN"] == DBNull.Value ? string.Empty : reader.GetString("NHOM_TEN"),
+                                CAN_TONG = reader["CAN_TONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CAN_TONG"]),
+                                TL_HOT = reader["TL_HOT"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["TL_HOT"]),
+                                CONG_GOC = reader["CONG_GOC"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CONG_GOC"]),
+                                GIA_CONG = reader["GIA_CONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["GIA_CONG"]),
+                                DON_GIA_BAN = reader["DON_GIA_BAN"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["DON_GIA_BAN"]),
+                                SL_TON = reader["SL_TON"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SL_TON"])
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Lỗi đọc dòng dữ liệu: {ex.Message}");
+                        }
                     }
 
                     DanhSachHienThi = DanhSachTonKhoVang;
+
+                    // Tính toán thống kê tổng hợp (sum toàn bộ, không group)
+                    TongSoNhom = DanhSachTonKhoVang.Count; // Số dòng chi tiết
+                    TongCanTong = DanhSachTonKhoVang.Sum(x => x.CAN_TONG);
+                    TongTLHot = DanhSachTonKhoVang.Sum(x => x.TL_HOT);
+                    TongTLThuc = DanhSachTonKhoVang.Sum(x => x.TL_THUC); // Sử dụng property TL_THUC của model
+                    TongCongGoc = DanhSachTonKhoVang.Sum(x => x.CONG_GOC);
+                    TongGiaCong = DanhSachTonKhoVang.Sum(x => x.GIA_CONG);
+                    TongSoLuongTon = DanhSachTonKhoVang.Sum(x => x.SL_TON);
+                    TongThanhTien = DanhSachTonKhoVang.Sum(x => x.ThanhTien);
                 }
                 else
                 {
