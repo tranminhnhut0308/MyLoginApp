@@ -84,23 +84,19 @@ namespace MyLoginApp.ViewModels
         }
 
         [RelayCommand]
-        private async Task ApplyFilterAsync()
+        private async Task ApplyFilter(string loaiVang)
         {
             try
             {
                 // Nếu chọn "Tất cả" thì đặt SelectedLoaiVang về rỗng để xóa bộ lọc
-                if (SelectedLoaiVang == "Tất cả")
-                {
-                    SelectedLoaiVang = string.Empty;
-                }
+                SelectedLoaiVang = loaiVang == "Tất cả" ? string.Empty : loaiVang;
 
                 CurrentPage = 1; // Reset về trang đầu tiên khi lọc
                 await LoadDanhSachTonKhoAsync();
-                IsFilterPopupVisible = false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi ApplyFilterAsync: {ex.Message}");
+                Console.WriteLine($"Lỗi ApplyFilter: {ex.Message}");
                 DebugInfo = $"Lỗi lọc: {ex.Message}";
             }
         }
@@ -276,14 +272,16 @@ namespace MyLoginApp.ViewModels
                         danh_muc_hang_hoa.CAN_TONG,
                         danh_muc_hang_hoa.TL_HOT,
                         danh_muc_hang_hoa.CONG_GOC,
-                        danh_muc_hang_hoa.GIA_CONG 
+                        danh_muc_hang_hoa.GIA_CONG
                     FROM 
-                        danh_muc_hang_hoa, ton_kho, nhom_hang, loai_hang 
+                        danh_muc_hang_hoa, ton_kho, nhom_hang, loai_hang
                     WHERE 
-                        danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID 
-                        and danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID 
-                        and loai_hang.LOAIID = danh_muc_hang_hoa.LOAIID 
-                        and " + whereClause + @"
+                        danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
+                        and danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
+                        and loai_hang.LOAIID = danh_muc_hang_hoa.LOAIID
+                        and ton_kho.sl_ton = 1
+                        and danh_muc_hang_hoa.SU_DUNG = 1
+                        " + (string.IsNullOrWhiteSpace(whereClause) ? "" : " AND " + whereClause) + @"
                     ORDER BY 
                         CAST(danh_muc_hang_hoa.HANGHOAMA AS UNSIGNED) ASC
                     LIMIT @PageSize OFFSET @Offset";

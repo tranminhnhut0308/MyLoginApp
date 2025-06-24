@@ -136,9 +136,9 @@ namespace MyLoginApp.ViewModels.BaoCao
             get => _tongThanhTien;
             set { _tongThanhTien = value; OnPropertyChanged(); }
         }
-        public string TongCanTongFormatted => $"{TongCanTong:0.##} g";
-        public string TongTLHotFormatted => $"{TongTLHot:0.##} g";
-        public string TongTLThucFormatted => $"{TongTLThuc:0.##} g";
+        public string TongCanTongFormatted => $"{TongCanTong / 1000} L";
+        public string TongTLHotFormatted => $"{TongTLHot / 1000} L";
+        public string TongTLThucFormatted => $"{TongTLThuc / 1000} L";
 
         public TonKhoVangViewModel()
         {
@@ -163,25 +163,43 @@ namespace MyLoginApp.ViewModels.BaoCao
                 string query = @"
                     SELECT
                         nhom_hang.NHOM_TEN,
-                        nhom_hang.GHI_CHU,
-                        ton_kho.SL_TON,
-                        nhom_hang.DON_GIA_BAN,
-                        danh_muc_hang_hoa.HANGHOAID,
-                        danh_muc_hang_hoa.CAN_TONG,
-                        danh_muc_hang_hoa.TL_HOT,
-                        danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT AS TL_THUC,
-                        danh_muc_hang_hoa.CONG_GOC,
-                        danh_muc_hang_hoa.GIA_CONG
+                        SUM(danh_muc_hang_hoa.CAN_TONG) AS CAN_TONG,
+                        SUM(danh_muc_hang_hoa.TL_HOT) AS TL_HOT,
+                        SUM(danh_muc_hang_hoa.CAN_TONG) - SUM(danh_muc_hang_hoa.TL_HOT) AS TL_THUC,
+                        SUM(danh_muc_hang_hoa.CONG_GOC) AS CONG_GOC,
+                        SUM(danh_muc_hang_hoa.GIA_CONG) AS GIA_CONG,
+                        nhom_hang.DON_GIA_BAN AS DON_GIA_BAN,
+                        SUM(ton_kho.SL_TON) AS SL_TON
                     FROM
                         danh_muc_hang_hoa
                         JOIN ton_kho ON danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
                         JOIN nhom_hang ON danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
                         JOIN loai_hang ON danh_muc_hang_hoa.LOAIID = loai_hang.LOAIID
                     WHERE
-                        ton_kho.SL_TON >= 1
+                        ton_kho.SL_TON = 1
                         AND danh_muc_hang_hoa.SU_DUNG = 1
                         AND nhom_hang.SU_DUNG = 1
-                    LIMIT 100
+                    GROUP BY
+                        nhom_hang.NHOM_TEN, nhom_hang.DON_GIA_BAN
+                    UNION ALL
+                    SELECT
+                        nhom_hang.NHOM_TEN,
+                        danh_muc_hang_hoa.CAN_TONG,
+                        danh_muc_hang_hoa.TL_HOT,
+                        danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT AS TL_THUC,
+                        danh_muc_hang_hoa.CONG_GOC,
+                        danh_muc_hang_hoa.GIA_CONG,
+                        nhom_hang.DON_GIA_BAN,
+                        ton_kho.SL_TON
+                    FROM
+                        danh_muc_hang_hoa
+                        JOIN ton_kho ON danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
+                        JOIN nhom_hang ON danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
+                        JOIN loai_hang ON danh_muc_hang_hoa.LOAIID = loai_hang.LOAIID
+                    WHERE
+                        ton_kho.SL_TON > 1
+                        AND danh_muc_hang_hoa.SU_DUNG = 1
+                        AND nhom_hang.SU_DUNG = 1
                 ";
 
                 await using var cmd = new MySqlCommand(query, conn);
@@ -192,23 +210,16 @@ namespace MyLoginApp.ViewModels.BaoCao
 
                     while (await reader.ReadAsync())
                     {
-                        try
+                        DanhSachTonKhoVang.Add(new TonKhoVangModel
                         {
-                            DanhSachTonKhoVang.Add(new TonKhoVangModel
-                            {
-                                NHOM_TEN = reader["NHOM_TEN"] == DBNull.Value ? string.Empty : reader.GetString("NHOM_TEN"),
-                                CAN_TONG = reader["CAN_TONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CAN_TONG"]),
-                                TL_HOT = reader["TL_HOT"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["TL_HOT"]),
-                                CONG_GOC = reader["CONG_GOC"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CONG_GOC"]),
-                                GIA_CONG = reader["GIA_CONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["GIA_CONG"]),
-                                DON_GIA_BAN = reader["DON_GIA_BAN"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["DON_GIA_BAN"]),
-                                SL_TON = reader["SL_TON"] == DBNull.Value ? 0 : Convert.ToInt32(reader["SL_TON"])
-                            });
-                        }
-                        catch (Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine($"Lỗi đọc dòng dữ liệu: {ex.Message}");
-                        }
+                            NHOM_TEN = reader["NHOM_TEN"] == DBNull.Value ? string.Empty : reader.GetString("NHOM_TEN"),
+                            CAN_TONG = reader["CAN_TONG"] == DBNull.Value ? 0 : reader.GetDecimal("CAN_TONG"),
+                            TL_HOT = reader["TL_HOT"] == DBNull.Value ? 0 : reader.GetDecimal("TL_HOT"),
+                            CONG_GOC = reader["CONG_GOC"] == DBNull.Value ? 0 : reader.GetDecimal("CONG_GOC"),
+                            GIA_CONG = reader["GIA_CONG"] == DBNull.Value ? 0 : reader.GetDecimal("GIA_CONG"),
+                            DON_GIA_BAN = reader["DON_GIA_BAN"] == DBNull.Value ? 0 : reader.GetDecimal("DON_GIA_BAN"),
+                            SL_TON = reader["SL_TON"] == DBNull.Value ? 0 : reader.GetInt32("SL_TON")
+                        });
                     }
 
                     DanhSachHienThi = DanhSachTonKhoVang;
@@ -221,7 +232,7 @@ namespace MyLoginApp.ViewModels.BaoCao
                     TongCongGoc = DanhSachTonKhoVang.Sum(x => x.CONG_GOC);
                     TongGiaCong = DanhSachTonKhoVang.Sum(x => x.GIA_CONG);
                     TongSoLuongTon = DanhSachTonKhoVang.Sum(x => x.SL_TON);
-                    TongThanhTien = DanhSachTonKhoVang.Sum(x => x.ThanhTien);
+                    TongThanhTien = DanhSachHienThi.Sum(x => x.ThanhTien);
                 }
                 else
                 {

@@ -10,7 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
-
+                <ResourceDictionary Source="Resources/Styles/AppStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <local:NullToBooleanConverter x:Key="NullToBooleanConverter" />
@@ -26,6 +26,7 @@
             <local:IsLessThanTongSoTrangConverter x:Key="IsLessThanTongSoTrang" />
             <converter:NullableValueConverter x:Key="NullableValueConverter" />
             <converter:DisplayPriceConverter x:Key="DisplayPriceConverter" />
+            <converter:SelectedButtonColorConverter x:Key="SelectedButtonColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
