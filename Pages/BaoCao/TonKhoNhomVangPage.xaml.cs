@@ -9,7 +9,8 @@ public partial class TonKhoNhomVangPage : ContentPage
     public TonKhoNhomVangPage()
     {
         InitializeComponent();
-        _viewModel = BindingContext as TonKhoNhomVangViewModel;
+        _viewModel = new TonKhoNhomVangViewModel();
+        BindingContext = _viewModel;
     }
 
     protected override void OnAppearing()

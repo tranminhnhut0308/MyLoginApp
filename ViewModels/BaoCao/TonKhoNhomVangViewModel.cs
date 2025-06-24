@@ -4,11 +4,18 @@ using CommunityToolkit.Mvvm.Input;
 using MyLoginApp.Helpers;
 using MyLoginApp.Models.BaoCao;
 using MySqlConnector;
+using System.Timers;
 
 namespace MyLoginApp.ViewModels
 {
-    public partial class TonKhoNhomVangViewModel : ObservableObject
+    public partial class TonKhoNhomVangViewModel : ObservableObject, IDisposable
     {
+        private System.Timers.Timer autoRefreshTimer;
+        private const int AUTO_REFRESH_INTERVAL = 30000; // 30 giây
+
+        [ObservableProperty]
+        private bool isAutoRefreshEnabled = true;
+
         [ObservableProperty]
         private ObservableCollection<TonKhoNhomVangModel> danhSachTonKho = new();
 
@@ -51,14 +58,72 @@ namespace MyLoginApp.ViewModels
         [ObservableProperty]
         private string debugInfo = string.Empty;
 
+        [ObservableProperty]
+        private decimal tongCanTong;
+        [ObservableProperty]
+        private decimal tongTLHot;
+        [ObservableProperty]
+        private decimal tongTLVang;
+        [ObservableProperty]
+        private decimal tongCongGoc;
+
         public TonKhoNhomVangViewModel()
         {
+            // Khởi tạo và cấu hình timer
+            autoRefreshTimer = new System.Timers.Timer(AUTO_REFRESH_INTERVAL);
+            autoRefreshTimer.Elapsed += AutoRefreshTimer_Elapsed;
+            autoRefreshTimer.AutoReset = true;
+            
+            if (IsAutoRefreshEnabled)
+            {
+                autoRefreshTimer.Start();
+            }
+
             // Tải dữ liệu ban đầu
             Task.Run(async () =>
             {
                 await LoadDanhSachTonKhoAsync();
                 await LoadDanhSachLoaiVangAsync();
             });
+        }
+
+        private async void AutoRefreshTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            try
+            {
+                await MainThread.InvokeOnMainThreadAsync(async () =>
+                {
+                    Console.WriteLine("Đang tự động làm mới dữ liệu...");
+                    await LoadDanhSachLoaiVangAsync();
+                    await LoadDanhSachTonKhoAsync();
+                    Console.WriteLine("Đã làm mới dữ liệu thành công!");
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Lỗi khi tự động làm mới: {ex.Message}");
+            }
+        }
+
+        [RelayCommand]
+        private void ToggleAutoRefresh()
+        {
+            IsAutoRefreshEnabled = !IsAutoRefreshEnabled;
+            if (IsAutoRefreshEnabled)
+            {
+                autoRefreshTimer.Start();
+                Console.WriteLine("Đã bật tự động làm mới");
+            }
+            else
+            {
+                autoRefreshTimer.Stop();
+                Console.WriteLine("Đã tắt tự động làm mới");
+            }
+        }
+
+        public void Dispose()
+        {
+            autoRefreshTimer?.Dispose();
         }
 
         [RelayCommand]
@@ -306,6 +371,11 @@ namespace MyLoginApp.ViewModels
 
                 DanhSachTonKho.Clear();
 
+                decimal sumCanTong = 0;
+                decimal sumTLHot = 0;
+                decimal sumTLVang = 0;
+                decimal sumCongGoc = 0;
+
                 while (await reader.ReadAsync())
                 {
                     try
@@ -324,12 +394,22 @@ namespace MyLoginApp.ViewModels
                         };
 
                         DanhSachTonKho.Add(tonKho);
+
+                        sumCanTong += tonKho.CAN_TONG;
+                        sumTLHot += tonKho.TL_HOT;
+                        sumTLVang += tonKho.TL_VANG;
+                        sumCongGoc += tonKho.CONG_GOC;
                     }
                     catch (Exception ex)
                     {
                         Console.WriteLine($"Lỗi khi đọc dữ liệu: {ex.Message}");
                     }
                 }
+
+                TongCanTong = sumCanTong;
+                TongTLHot = sumTLHot;
+                TongTLVang = sumTLVang;
+                TongCongGoc = sumCongGoc;
 
                 // Cập nhật danh sách hiển thị
                 DanhSachHienThi = new ObservableCollection<TonKhoNhomVangModel>(DanhSachTonKho);
