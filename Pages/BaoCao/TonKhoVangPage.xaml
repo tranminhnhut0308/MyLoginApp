@@ -31,7 +31,7 @@
             <Frame BackgroundColor="White" CornerRadius="16" Padding="18" Margin="10,10,10,0" HasShadow="True">
                 <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="12" ColumnSpacing="24">
                     <VerticalStackLayout Grid.Column="0" Grid.Row="0" Spacing="2">
-                        <Label Text="Tổng số nhóm" TextColor="#888" FontSize="12"/>
+                        <Label Text="Tổng số phiếu" TextColor="#888" FontSize="12"/>
                         <Label Text="{Binding TongSoNhom}" TextColor="#1976D2" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="0" Spacing="2">
@@ -48,19 +48,19 @@
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="0" Grid.Row="2" Spacing="2">
                         <Label Text="Tổng công gốc" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongCongGoc, StringFormat='{0:N0}'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongCongGoc, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="2" Spacing="2">
                         <Label Text="Tổng giá công" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongGiaCong, StringFormat='{0:N0}'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongGiaCong, StringFormat='{0:N0} VNĐ'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="0" Grid.Row="3" Spacing="2">
                         <Label Text="Tổng số lượng tồn" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongSoLuongTon, StringFormat='{0:N0}'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongSoLuongTon, StringFormat='{0:N0} cái'}" TextColor="#E53935" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                     <VerticalStackLayout Grid.Column="1" Grid.Row="3" Spacing="2">
                         <Label Text="Tổng thành tiền" TextColor="#888" FontSize="12"/>
-                        <Label Text="{Binding TongThanhTien, StringFormat='{0:N0}'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
+                        <Label Text="{Binding TongThanhTien, StringFormat='{0:N0} VNĐ'}" TextColor="#388E3C" FontSize="16" FontAttributes="Bold"/>
                     </VerticalStackLayout>
                 </Grid>
             </Frame>
@@ -109,22 +109,22 @@
 
                                 <!-- Công gốc -->
                                 <Label Text="Công Gốc:" Grid.Row="4" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding CONG_GOC, StringFormat='{0:N0}'}" Grid.Row="4" Grid.Column="1"/>
+                                <Label Text="{Binding CONG_GOC, StringFormat='{0:N0} VNĐ'}" Grid.Row="4" Grid.Column="1"/>
 
                                 <!-- Giá công -->
                                 <Label Text="Giá Công:" Grid.Row="5" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding GIA_CONG, StringFormat='{0:N0}'}" Grid.Row="5" Grid.Column="1"/>
+                                <Label Text="{Binding GIA_CONG, StringFormat='{0:N0} VNĐ'}" Grid.Row="5" Grid.Column="1"/>
 
                                 <!-- Thành Tiền -->
                                 <Label Text="Thành Tiền:" Grid.Row="6" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding ThanhTien, StringFormat='{0:N0}'}"
+                                <Label Text="{Binding ThanhTien, StringFormat='{0:N0} VNĐ'}"
                                        TextColor="Black"
                                        FontAttributes="Bold"
                                        Grid.Row="6" Grid.Column="1"/>
 
                                 <!-- Số lượng tồn -->
                                 <Label Text="Số Lượng Tồn:" Grid.Row="7" Grid.Column="0" FontAttributes="Bold"/>
-                                <Label Text="{Binding SL_TON, StringFormat='{0:N0}'}"
+                                <Label Text="{Binding SL_TON, StringFormat='{0:N0} Cái'}"
                                        TextColor="Red"
                                        Grid.Row="7" Grid.Column="1"/>
                             </Grid>
