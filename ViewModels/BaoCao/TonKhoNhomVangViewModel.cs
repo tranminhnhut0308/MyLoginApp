@@ -83,10 +83,6 @@ namespace MyLoginApp.ViewModels
 
         private ObservableCollection<TonKhoNhomVangModel> danhSachTonKhoFull = new();
 
-        public string TongCanTongL => (TongCanTong / 1000m).ToString("0.#####") + " L";
-        public string TongTLHotL => (TongTLHot / 1000m).ToString("0.#####") + " L";
-        public string TongTLVangL => (TongTLVang / 1000m).ToString("0.#####") + " L";
-
         public TonKhoNhomVangViewModel()
         {
             // Khởi tạo timer tự động làm mới dữ liệu

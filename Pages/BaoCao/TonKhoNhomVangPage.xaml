@@ -70,15 +70,15 @@
                 <!-- Hàng 1 -->
                 <VerticalStackLayout Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng cân tổng" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongCanTongL}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng TL hột" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongTLHotL}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng TL vàng" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongTLVangL}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongTLVang, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <!-- Hàng 2 -->
                 <VerticalStackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="Center" Spacing="2">
