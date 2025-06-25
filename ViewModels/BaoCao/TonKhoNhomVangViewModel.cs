@@ -12,10 +12,10 @@ namespace MyLoginApp.ViewModels
     {
         // Timer để tự động làm mới dữ liệu
         private System.Timers.Timer autoRefreshTimer;
-        private const int AUTO_REFRESH_INTERVAL = 30000; // 30 giây
+        private const int AUTO_REFRESH_INTERVAL = 120000; // 2 phút thay vì 30 giây
 
         [ObservableProperty]
-        private bool isAutoRefreshEnabled = true;
+        private bool isAutoRefreshEnabled = false;
 
         [ObservableProperty]
         private ObservableCollection<TonKhoNhomVangModel> danhSachTonKho = new();
@@ -90,10 +90,11 @@ namespace MyLoginApp.ViewModels
             autoRefreshTimer.Elapsed += AutoRefreshTimer_Elapsed;
             autoRefreshTimer.AutoReset = true;
             
-            if (IsAutoRefreshEnabled)
-            {
-                autoRefreshTimer.Start();
-            }
+            // Không tự động khởi động timer vì mặc định tắt auto refresh
+            // if (IsAutoRefreshEnabled)
+            // {
+            //     autoRefreshTimer.Start();
+            // }
 
             // Tải dữ liệu ban đầu
             Task.Run(async () =>
@@ -110,7 +111,8 @@ namespace MyLoginApp.ViewModels
                 await MainThread.InvokeOnMainThreadAsync(async () =>
                 {
                     Console.WriteLine("Đang tự động làm mới dữ liệu...");
-                    await LoadDanhSachLoaiVangAsync();
+                    // Chỉ refresh dữ liệu tồn kho, không refresh danh sách loại vàng
+                    // để tránh làm mất bộ lọc hiện tại
                     await LoadDanhSachTonKhoAsync();
                     Console.WriteLine("Đã làm mới dữ liệu thành công!");
                 });
@@ -169,11 +171,18 @@ namespace MyLoginApp.ViewModels
         {
             try
             {
+                Console.WriteLine($"ApplyFilter được gọi với loaiVang: '{loaiVang}'");
+                
                 // Nếu chọn "Tất cả" thì đặt LoaiVangDuocChon về rỗng để xóa bộ lọc
                 LoaiVangDuocChon = loaiVang == "Tất cả" ? string.Empty : loaiVang;
+                
+                Console.WriteLine($"LoaiVangDuocChon sau khi set: '{LoaiVangDuocChon}'");
 
                 CurrentPage = 1; // Reset về trang đầu tiên khi lọc
                 await LoadDanhSachTonKhoAsync();
+                
+                // Đóng popup filter
+                IsFilterPopupVisible = false;
             }
             catch (Exception ex)
             {
@@ -274,6 +283,8 @@ namespace MyLoginApp.ViewModels
         {
             try
             {
+                Console.WriteLine($"LoadTonKhoWithPaginationAsync - page: {page}, pageSize: {pageSize}, searchText: '{searchText}', loaiVang: '{loaiVang}'");
+                
                 IsLoading = true;
                 LoadingMessage = "Đang tải dữ liệu tồn kho...";
 
@@ -317,6 +328,11 @@ namespace MyLoginApp.ViewModels
                 if (!string.IsNullOrWhiteSpace(loaiVang) && loaiVang != "Tất cả")
                 {
                     queryFull += " AND loai_hang.LOAI_TEN = @LoaiVang";
+                    Console.WriteLine($"Thêm bộ lọc loại vàng: '{loaiVang}'");
+                }
+                else
+                {
+                    Console.WriteLine("Không áp dụng bộ lọc loại vàng");
                 }
 
                 queryFull += " ORDER BY loai_hang.LOAI_TEN, danh_muc_hang_hoa.HANG_HOA_TEN";
@@ -383,6 +399,7 @@ namespace MyLoginApp.ViewModels
                 CanGoPrevious = CurrentPage > 1;
 
                 DebugInfo = $"Tìm thấy {DanhSachTonKho.Count} kết quả. Trang {CurrentPage}/{TotalPages}.";
+                Console.WriteLine($"LoadTonKhoWithPaginationAsync hoàn thành - Tổng: {danhSachTonKhoFull.Count}, Hiển thị: {DanhSachTonKho.Count}, Trang: {CurrentPage}/{TotalPages}");
             }
             catch (Exception ex)
             {

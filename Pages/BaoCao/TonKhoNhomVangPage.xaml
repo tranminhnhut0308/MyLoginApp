@@ -14,7 +14,7 @@
 
     <Shell.TitleView>
         <Grid ColumnDefinitions="*,Auto,Auto" VerticalOptions="FillAndExpand">
-            <Label Text="Tồn kho nhóm vàng"
+            <Label Text="Tồn kho nhóm vàng       "
                    TextColor="White"
                    FontSize="22"
                    FontAttributes="Bold"
@@ -70,28 +70,28 @@
                 <!-- Hàng 1 -->
                 <VerticalStackLayout Grid.Row="0" Grid.Column="0" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng cân tổng" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongCanTong, StringFormat='{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="0" Grid.Column="1" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng TL hột" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongTLHot, StringFormat='{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="0" Grid.Column="2" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng TL vàng" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongTLVang, StringFormat='{0:N2}'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongTLVang, StringFormat='{0:N2}'}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <!-- Hàng 2 -->
                 <VerticalStackLayout Grid.Row="1" Grid.Column="0" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng công gốc" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongCongGoc, StringFormat='{0:N0} VNĐ'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongCongGoc, StringFormat='{0:N0} VNĐ'}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="1" Grid.Column="1" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng giá công" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongGiaCong, StringFormat='{0:N0} VNĐ'}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongGiaCong, StringFormat='{0:N0} VNĐ'}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
                 <VerticalStackLayout Grid.Row="1" Grid.Column="2" HorizontalOptions="Center" Spacing="2">
                     <Label Text="Tổng số phiếu" FontSize="13" TextColor="#1976D2" HorizontalOptions="Center"/>
-                    <Label Text="{Binding TongSoPhieu}" FontSize="20" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
+                    <Label Text="{Binding TongSoPhieu}" FontSize="16" FontAttributes="Bold" TextColor="#0D47A1" HorizontalOptions="Center"/>
                 </VerticalStackLayout>
             </Grid>
         </Frame>
@@ -117,53 +117,53 @@
                             <Label Grid.Row="0" 
                                    Grid.Column="0" 
                                    Text="Loại vàng:" 
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold" FontSize="16"/>
                             <Label Grid.Row="0" 
                                    Grid.Column="1" 
-                                   Text="{Binding LOAI_TEN}"/>
+                                   Text="{Binding LOAI_TEN}" FontSize="16"/>
 
                             <!-- Mã hàng -->
                             <Label Grid.Row="1" 
                                    Grid.Column="0" 
                                    Text="Mã hàng:" 
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold" FontSize="16"/>
                             <Label Grid.Row="1" 
                                    Grid.Column="1" 
-                                   Text="{Binding HANGHOAMA}"/>
+                                   Text="{Binding HANGHOAMA}" FontSize="16"/>
 
                             <!-- Tên hàng -->
                             <Label Grid.Row="2" 
                                    Grid.Column="0" 
                                    Text="Tên hàng:" 
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold" FontSize="16"/>
                             <Label Grid.Row="2" 
                                    Grid.Column="1" 
-                                   Text="{Binding HANG_HOA_TEN}"/>
+                                   Text="{Binding HANG_HOA_TEN}" FontSize="16"/>
 
                             <!-- Cân tổng -->
-                            <Label Text="Cân tổng:" Grid.Row="3" Grid.Column="0" Style="{StaticResource DetailLabelStyle}"/>
-                            <Label Text="{Binding CanTongL}" Grid.Row="3" Grid.Column="1" Style="{StaticResource DetailValueStyle}"/>
+                            <Label Text="Cân tổng:" Grid.Row="3" Grid.Column="0" Style="{StaticResource DetailLabelStyle}" FontSize="16"/>
+                            <Label Text="{Binding CanTongL}" Grid.Row="3" Grid.Column="1" Style="{StaticResource DetailValueStyle}" FontSize="16"/>
 
                             <!-- TL hột -->
-                            <Label Text="TL hột:" Grid.Row="4" Grid.Column="0" Style="{StaticResource DetailLabelStyle}"/>
-                            <Label Text="{Binding TLHotL}" Grid.Row="4" Grid.Column="1" Style="{StaticResource DetailValueStyle}"/>
+                            <Label Text="TL hột:" Grid.Row="4" Grid.Column="0" Style="{StaticResource DetailLabelStyle}" FontSize="16"/>
+                            <Label Text="{Binding TLHotL}" Grid.Row="4" Grid.Column="1" Style="{StaticResource DetailValueStyle}" FontSize="16"/>
 
                             <!-- TL vàng -->
-                            <Label Text="TL vàng:" Grid.Row="5" Grid.Column="0" Style="{StaticResource DetailLabelStyle}"/>
-                            <Label Text="{Binding TLVangL}" Grid.Row="5" Grid.Column="1" Style="{StaticResource DetailValueStyle}"/>
+                            <Label Text="TL vàng:" Grid.Row="5" Grid.Column="0" Style="{StaticResource DetailLabelStyle}" FontSize="16"/>
+                            <Label Text="{Binding TLVangL}" Grid.Row="5" Grid.Column="1" Style="{StaticResource DetailValueStyle}" FontSize="16"/>
 
                             <!-- Công gốc -->
                             <Label Grid.Row="6" 
                                    Grid.Column="0" 
                                    Text="Công gốc:" 
-                                   FontAttributes="Bold"/>
+                                   FontAttributes="Bold" FontSize="16"/>
                             <Label Grid.Row="6" 
                                    Grid.Column="1" 
-                                   Text="{Binding CONG_GOC, StringFormat='{0:N0} VNĐ'}"/>
+                                   Text="{Binding CONG_GOC, StringFormat='{0:N0} VNĐ'}" FontSize="16"/>
 
                             <!-- Giá công -->
-                            <Label Text="Giá công:" FontAttributes="Bold" Grid.Row="7" Grid.Column="0" Style="{StaticResource DetailLabelStyle}"/>
-                            <Label Text="{Binding GIA_CONG, StringFormat='{0:N0} VNĐ'}" Grid.Row="7" Grid.Column="1" Style="{StaticResource DetailValueStyle}"/>
+                            <Label Text="Giá công:" FontAttributes="Bold" Grid.Row="7" Grid.Column="0" Style="{StaticResource DetailLabelStyle}" FontSize="16"/>
+                            <Label Text="{Binding GIA_CONG, StringFormat='{0:N0} VNĐ'}" Grid.Row="7" Grid.Column="1" Style="{StaticResource DetailValueStyle}" FontSize="16"/>
                         </Grid>
                     </Frame>
                 </DataTemplate>

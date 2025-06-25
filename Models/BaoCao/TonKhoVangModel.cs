@@ -19,9 +19,18 @@ namespace MyLoginApp.Models.BaoCao
         public int SL_TON { get; set; }
         public decimal TL_THUC => CAN_TONG - TL_HOT;
         public bool IsGroup { get; set; }
-        public decimal ThanhTien => IsGroup
-            ? (DON_GIA_BAN * (TL_THUC / 100)) + GIA_CONG
-            : ((DON_GIA_BAN * (TL_THUC / 100)) + GIA_CONG) * SL_TON;
+        public decimal ThanhTien
+        {
+            get
+            {
+                // Nếu có giá công (GIA_CONG > 0) thì là dòng tổng hợp
+                if (GIA_CONG > 0)
+                    return (DON_GIA_BAN * (TL_THUC / 100)) + GIA_CONG;
+                // Nếu không có giá công thì là dòng chi tiết
+                else
+                    return (CAN_TONG / 100) * DON_GIA_BAN * SL_TON;
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
