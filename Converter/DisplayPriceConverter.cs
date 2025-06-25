@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Diagnostics;
 using Microsoft.Maui.Controls;
+using System.Text.RegularExpressions;
 
 namespace MyLoginApp.Converter
 {
@@ -31,17 +32,29 @@ namespace MyLoginApp.Converter
                 // Xử lý trường hợp null hoặc chuỗi trống
                 if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
                 {
-                    return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+                    return null; // Trả về null thay vì giá trị mặc định
                 }
 
                 string input = value.ToString().Trim();
                 
-                // Loại bỏ tất cả ký tự không phải số, dấu chấm hoặc dấu phẩy
-                string numericValue = new string(input.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
+                // Thêm kiểm tra an toàn trước khi xử lý
+                if (input.Length == 0)
+                {
+                    return null;
+                }
+                
+                // Sử dụng Regex để xử lý an toàn hơn
+                string numericValue = Regex.Replace(input, "[^0-9.,]", "");
                 
                 if (string.IsNullOrWhiteSpace(numericValue))
                 {
-                    return targetType.IsValueType ? Activator.CreateInstance(targetType) : null;
+                    return null;
+                }
+
+                // Thêm xử lý đặc biệt cho trường hợp chỉ còn dấu phẩy hoặc dấu chấm
+                if (numericValue == "." || numericValue == ",")
+                {
+                    return null;
                 }
 
                 // Chuẩn hóa định dạng số
@@ -64,8 +77,8 @@ namespace MyLoginApp.Converter
                     {
                         return result;
                     }
-                    // Nếu parse không thành công, trả về 0 thay vì null để tránh crash
-                    return 0m;
+                    // Nếu parse không thành công, trả về null thay vì 0 để tránh crash
+                    return null;
                 }
                 else if (targetType == typeof(double) || targetType == typeof(double?))
                 {
@@ -73,7 +86,7 @@ namespace MyLoginApp.Converter
                     {
                         return result;
                     }
-                    return 0d;
+                    return null;
                 }
                 else if (targetType == typeof(int) || targetType == typeof(int?))
                 {
@@ -81,7 +94,7 @@ namespace MyLoginApp.Converter
                     {
                         return result;
                     }
-                    return 0;
+                    return null;
                 }
                 else if (targetType == typeof(long) || targetType == typeof(long?))
                 {
@@ -89,12 +102,12 @@ namespace MyLoginApp.Converter
                     {
                         return result;
                     }
-                    return 0L;
+                    return null;
                 }
                 
-                // Kiểu dữ liệu không được hỗ trợ, trả về UnsetValue
+                // Kiểu dữ liệu không được hỗ trợ, trả về null
                 Debug.WriteLine($"DisplayPriceConverter: Không hỗ trợ kiểu dữ liệu {targetType}");
-                return BindableProperty.UnsetValue;
+                return null;
             }
             catch (Exception ex)
             {
@@ -102,8 +115,8 @@ namespace MyLoginApp.Converter
                 Debug.WriteLine($"DisplayPriceConverter Error: {ex.Message}");
                 Debug.WriteLine($"Stack Trace: {ex.StackTrace}");
                 
-                // Trả về UnsetValue nếu có lỗi nghiêm trọng để bảo vệ ứng dụng
-                return BindableProperty.UnsetValue;
+                // Trả về null nếu có lỗi nghiêm trọng để bảo vệ ứng dụng
+                return null;
             }
         }
     }

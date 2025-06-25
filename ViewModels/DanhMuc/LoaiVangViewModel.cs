@@ -9,6 +9,8 @@ using Microsoft.Maui.Controls;
 using Microsoft.Maui.Dispatching;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Diagnostics;
 
 namespace MyLoginApp.ViewModels
 {
@@ -42,106 +44,11 @@ namespace MyLoginApp.ViewModels
             set => SetProperty(ref _formLoaiVang, value);
         }
 
-        // ===== Các property tùy chỉnh cho form =====
-        public string DonGiaVonText
-        {
-            get => FormLoaiVang.DonGiaVon.HasValue ? FormLoaiVang.DonGiaVon.Value.ToString("N0") : string.Empty;
-            set
-            {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        FormLoaiVang.DonGiaVon = null;
-                    }
-                    else
-                    {
-                        string numericValue = new string(value.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
-                        if (decimal.TryParse(numericValue, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal result))
-                        {
-                            FormLoaiVang.DonGiaVon = result;
-                        }
-                    }
-                    OnPropertyChanged(nameof(DonGiaVonText));
-                }
-                catch (Exception)
-                {
-                    // Nếu có lỗi thì giữ giá trị cũ
-                }
-            }
-        }
-
-        public string DonGiaMuaText
-        {
-            get => FormLoaiVang.DonGiaMua.HasValue ? FormLoaiVang.DonGiaMua.Value.ToString("N0") : string.Empty;
-            set
-            {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        FormLoaiVang.DonGiaMua = null;
-                    }
-                    else
-                    {
-                        FormLoaiVang.DonGiaMua = ParseDecimalValue(value);
-                    }
-                    OnPropertyChanged(nameof(DonGiaMuaText));
-                }
-                catch (Exception)
-                {
-                    // Xử lý ngoại lệ
-                }
-            }
-        }
-
-        public string DonGiaBanText
-        {
-            get => FormLoaiVang.DonGiaBan.HasValue ? FormLoaiVang.DonGiaBan.Value.ToString("N0") : string.Empty;
-            set
-            {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        FormLoaiVang.DonGiaBan = null;
-                    }
-                    else
-                    {
-                        FormLoaiVang.DonGiaBan = ParseDecimalValue(value);
-                    }
-                    OnPropertyChanged(nameof(DonGiaBanText));
-                }
-                catch (Exception)
-                {
-                    // Xử lý ngoại lệ
-                }
-            }
-        }
-
-        public string DonGiaCamText
-        {
-            get => FormLoaiVang.DonGiaCam.HasValue ? FormLoaiVang.DonGiaCam.Value.ToString("N0") : string.Empty;
-            set
-            {
-                try
-                {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        FormLoaiVang.DonGiaCam = null;
-                    }
-                    else
-                    {
-                        FormLoaiVang.DonGiaCam = ParseDecimalValue(value);
-                    }
-                    OnPropertyChanged(nameof(DonGiaCamText));
-                }
-                catch (Exception)
-                {
-                    // Xử lý ngoại lệ
-                }
-            }
-        }
+        // ===== Cơ chế debounce cho việc nhập liệu =====
+        private CancellationTokenSource _donGiaVonCts = new();
+        private CancellationTokenSource _donGiaMuaCts = new();
+        private CancellationTokenSource _donGiaBanCts = new();
+        private CancellationTokenSource _donGiaCamCts = new();
 
         // ===== Model item được chọn =====
         private LoaiVangModel _selectedLoaiVang;
@@ -195,29 +102,155 @@ namespace MyLoginApp.ViewModels
         // ===== Helper method để parse giá trị số từ chuỗi =====
         private decimal? ParseDecimalValue(string value)
         {
+            return ParseDecimalValueSafe(value);
+        }
+
+        // ===== Phương thức xử lý an toàn hơn =====
+        private decimal? ParseDecimalValueSafe(string value)
+        {
             if (string.IsNullOrWhiteSpace(value))
                 return null;
 
             try
             {
-                // Loại bỏ tất cả ký tự không phải số, chấm hoặc phẩy
-                string numericValue = new string(value.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
+                // Loại bỏ ký tự đặc biệt
+                string numericValue = Regex.Replace(value, "[^0-9.,]", "");
                 
-                if (string.IsNullOrWhiteSpace(numericValue))
+                if (string.IsNullOrWhiteSpace(numericValue) || numericValue == "." || numericValue == ",")
                     return null;
 
                 // Chuẩn hóa định dạng số
-                if (decimal.TryParse(numericValue, NumberStyles.Any, CultureInfo.CurrentCulture, out decimal result))
+                if (CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator == ",")
+                {
+                    // Nếu dấu phẩy là dấu ngăn cách phần nghìn (VD: 1,000,000)
+                    numericValue = numericValue.Replace(",", string.Empty);
+                }
+                else if (CultureInfo.CurrentCulture.NumberFormat.NumberGroupSeparator == ".")
+                {
+                    // Nếu dấu chấm là dấu ngăn cách phần nghìn (VD: 1.000.000)
+                    numericValue = numericValue.Replace(".", string.Empty).Replace(",", ".");
+                }
+
+                if (decimal.TryParse(numericValue, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal result))
                 {
                     return result;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Xử lý ngoại lệ nếu có
+                Debug.WriteLine($"ParseDecimalValueSafe Error: {ex.Message}");
             }
 
             return null;
+        }
+
+        // ===== Phương thức xử lý sự kiện TextChanged với Debounce =====
+        public void HandleDonGiaVonTextChanged(string newValue)
+        {
+            try
+            {
+                _donGiaVonCts.Cancel();
+                _donGiaVonCts = new CancellationTokenSource();
+                var token = _donGiaVonCts.Token;
+
+                Task.Delay(300, token).ContinueWith(t =>
+                {
+                    if (t.IsCanceled) return;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var newDecimalValue = ParseDecimalValueSafe(newValue);
+                        if (FormLoaiVang.DonGiaVon != newDecimalValue)
+                        {
+                            FormLoaiVang.DonGiaVon = newDecimalValue;
+                        }
+                    });
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"HandleDonGiaVonTextChanged Error: {ex.Message}");
+            }
+        }
+
+        public void HandleDonGiaMuaTextChanged(string newValue)
+        {
+            try
+            {
+                _donGiaMuaCts.Cancel();
+                _donGiaMuaCts = new CancellationTokenSource();
+                var token = _donGiaMuaCts.Token;
+
+                Task.Delay(300, token).ContinueWith(t =>
+                {
+                    if (t.IsCanceled) return;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var newDecimalValue = ParseDecimalValueSafe(newValue);
+                        if (FormLoaiVang.DonGiaMua != newDecimalValue)
+                        {
+                            FormLoaiVang.DonGiaMua = newDecimalValue;
+                        }
+                    });
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"HandleDonGiaMuaTextChanged Error: {ex.Message}");
+            }
+        }
+
+        public void HandleDonGiaBanTextChanged(string newValue)
+        {
+            try
+            {
+                _donGiaBanCts.Cancel();
+                _donGiaBanCts = new CancellationTokenSource();
+                var token = _donGiaBanCts.Token;
+
+                Task.Delay(300, token).ContinueWith(t =>
+                {
+                    if (t.IsCanceled) return;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var newDecimalValue = ParseDecimalValueSafe(newValue);
+                        if (FormLoaiVang.DonGiaBan != newDecimalValue)
+                        {
+                            FormLoaiVang.DonGiaBan = newDecimalValue;
+                        }
+                    });
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"HandleDonGiaBanTextChanged Error: {ex.Message}");
+            }
+        }
+
+        public void HandleDonGiaCamTextChanged(string newValue)
+        {
+            try
+            {
+                _donGiaCamCts.Cancel();
+                _donGiaCamCts = new CancellationTokenSource();
+                var token = _donGiaCamCts.Token;
+
+                Task.Delay(300, token).ContinueWith(t =>
+                {
+                    if (t.IsCanceled) return;
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        var newDecimalValue = ParseDecimalValueSafe(newValue);
+                        if (FormLoaiVang.DonGiaCam != newDecimalValue)
+                        {
+                            FormLoaiVang.DonGiaCam = newDecimalValue;
+                        }
+                    });
+                }, TaskScheduler.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"HandleDonGiaCamTextChanged Error: {ex.Message}");
+            }
         }
 
         // ===== Load dữ liệu từ database =====
