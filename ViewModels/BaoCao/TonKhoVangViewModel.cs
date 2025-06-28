@@ -181,25 +181,8 @@ namespace MyLoginApp.ViewModels.BaoCao
                         AND nhom_hang.SU_DUNG = 1
                     GROUP BY
                         nhom_hang.NHOM_TEN, nhom_hang.DON_GIA_BAN
-                    UNION ALL
-                    SELECT
-                        nhom_hang.NHOM_TEN,
-                        danh_muc_hang_hoa.CAN_TONG,
-                        danh_muc_hang_hoa.TL_HOT,
-                        danh_muc_hang_hoa.CAN_TONG - danh_muc_hang_hoa.TL_HOT AS TL_THUC,
-                        danh_muc_hang_hoa.CONG_GOC,
-                        danh_muc_hang_hoa.GIA_CONG,
-                        nhom_hang.DON_GIA_BAN,
-                        ton_kho.SL_TON
-                    FROM
-                        danh_muc_hang_hoa
-                        JOIN ton_kho ON danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
-                        JOIN nhom_hang ON danh_muc_hang_hoa.NHOMHANGID = nhom_hang.NHOMHANGID
-                        JOIN loai_hang ON danh_muc_hang_hoa.LOAIID = loai_hang.LOAIID
-                    WHERE
-                        ton_kho.SL_TON > 1
-                        AND danh_muc_hang_hoa.SU_DUNG = 1
-                        AND nhom_hang.SU_DUNG = 1
+                    ORDER BY
+                        nhom_hang.NHOM_TEN
                 ";
 
                 await using var cmd = new MySqlCommand(query, conn);

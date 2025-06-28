@@ -33,16 +33,6 @@ namespace MyLoginApp.ViewModels
         // Giả sử có property lưu ID khách hàng
         [ObservableProperty] private string khachHangId;
 
-        // Trừ hột được tính tự động từ cân tổng và TL hột
-        public string TruHotDisplay
-        {
-            get
-            {
-                double truHot = (CanTong ?? 0) - (TlHot ?? 0);
-                return truHot.ToString("N3");
-            }
-        }
-
         public ObservableCollection<LoaiVangItem> LoaiVangList { get; } = new ObservableCollection<LoaiVangItem>();
 
         // Tải danh sách loại vàng từ cơ sở dữ liệu
@@ -91,22 +81,17 @@ namespace MyLoginApp.ViewModels
         partial void OnDonGiaChanged(double? value) => TinhThanhTien();
         partial void OnCanTongChanged(double? value)
         {
-            TinhTruHot();
+            OnPropertyChanged(nameof(TruHot));
             TinhThanhTien();
         }
         partial void OnTlHotChanged(double? value)
         {
-            TinhTruHot();
+            OnPropertyChanged(nameof(TruHot));
             TinhThanhTien();
         }
 
-        // Tính trừ hột = cân tổng - TL hột
-        private void TinhTruHot()
-        {
-            OnPropertyChanged(nameof(TruHotDisplay));
-        }
-        // Tính thành tiền = trừ hột * đơn giá
-        private void TinhThanhTien() => ThanhTien = ((CanTong ?? 0) - (TlHot ?? 0)) * (DonGia ?? 0);
+        // Tính thành tiền = trừ hột * đơn giá (dùng giá trị nhập tay của TruHot)
+        private void TinhThanhTien() => ThanhTien = TruHot * (DonGia ?? 0);
 
         // Xử lý thanh toán
         [RelayCommand]
@@ -307,5 +292,8 @@ namespace MyLoginApp.ViewModels
 
         // Khởi tạo và tải dữ liệu ban đầu
         public CamVangViewModel() => LoadLoaiVangAsync();
+
+        // Thêm property TruHot tự động tính
+        public double TruHot => (CanTong ?? 0) - (TlHot ?? 0);
     }
 }

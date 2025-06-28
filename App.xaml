@@ -27,6 +27,7 @@
             <converter:NullableValueConverter x:Key="NullableValueConverter" />
             <converter:DisplayPriceConverter x:Key="DisplayPriceConverter" />
             <converter:SelectedButtonColorConverter x:Key="SelectedButtonColorConverter" />
+            <converter:DoubleToStringConverter x:Key="DoubleToStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

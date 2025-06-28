@@ -176,18 +176,18 @@
                     <Label Text="⚖️ Cân tổng" TextColor="Black"/>
                     <Entry x:Name="entryCanTong" 
                            Keyboard="Numeric" 
-                           Placeholder="Nhập cân tổng (gram)" 
+                           Placeholder="Nhập cân tổng " 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
-                           Text="{Binding CanTong, Mode=TwoWay}"/>
+                           Text="{Binding CanTong, Mode=TwoWay, Converter={StaticResource DoubleToStringConverter}}"/>
 
                     <Label Text="💎 TL Hột" TextColor="Black"/>
                     <Entry x:Name="entryTLHot" 
                            Keyboard="Numeric" 
-                           Placeholder="Nhập TL hột (gram)" 
+                           Placeholder="Nhập TL hột " 
                            TextColor="Black" 
                            PlaceholderColor="Gray"
-                           Text="{Binding TlHot, Mode=TwoWay}"/>
+                           Text="{Binding TlHot, Mode=TwoWay, Converter={StaticResource DoubleToStringConverter}}"/>
 
                     <Label Text="➖ Trừ hột" TextColor="Black"/>
                     <Entry x:Name="entryTruHot" 
@@ -195,7 +195,7 @@
                            TextColor="Black" 
                            Placeholder="Tự động tính"
                            BackgroundColor="#F0F0F0"
-                           Text="{Binding TruHotDisplay}"/>
+                           Text="{Binding TruHot, Converter={StaticResource DoubleToStringConverter}}"/>
 
                     <Label Text="💵 Đơn giá" TextColor="Black"/>
                     <Entry x:Name="entryDonGia" 

@@ -5,6 +5,7 @@ using MyLoginApp.Helpers;
 using MyLoginApp.Models.BaoCao;
 using MySqlConnector;
 using System.Timers;
+using System.Linq;
 
 namespace MyLoginApp.ViewModels
 {
@@ -47,7 +48,7 @@ namespace MyLoginApp.ViewModels
         private int totalPages = 1;
 
         [ObservableProperty]
-        private int pageSize = 10;
+        private int pageSize = 3;
 
         [ObservableProperty]
         private bool canGoNext = false;
@@ -295,17 +296,17 @@ namespace MyLoginApp.ViewModels
                     return;
                 }
 
-                // Câu truy vấn cho toàn bộ dữ liệu
+                // Câu truy vấn cho toàn bộ dữ liệu - TỔNG HỢP theo loại vàng
                 string queryFull = @"
                     SELECT 
                         loai_hang.LOAI_TEN,
                         loai_hang.LOAIMA,
-                        danh_muc_hang_hoa.HANGHOAMA,
-                        danh_muc_hang_hoa.HANG_HOA_TEN,
-                        danh_muc_hang_hoa.CAN_TONG,
-                        danh_muc_hang_hoa.TL_HOT,
-                        danh_muc_hang_hoa.CONG_GOC,
-                        danh_muc_hang_hoa.GIA_CONG
+                        'TỔNG HỢP' as HANGHOAMA,
+                        CONCAT('Tổng hợp ', loai_hang.LOAI_TEN) as HANG_HOA_TEN,
+                        SUM(danh_muc_hang_hoa.CAN_TONG) as CAN_TONG,
+                        SUM(danh_muc_hang_hoa.TL_HOT) as TL_HOT,
+                        SUM(danh_muc_hang_hoa.CONG_GOC) as CONG_GOC,
+                        SUM(danh_muc_hang_hoa.GIA_CONG) as GIA_CONG
                     FROM 
                         danh_muc_hang_hoa
                         JOIN ton_kho ON danh_muc_hang_hoa.HANGHOAID = ton_kho.HANGHOAID
@@ -318,9 +319,8 @@ namespace MyLoginApp.ViewModels
                 if (!string.IsNullOrWhiteSpace(searchText))
                 {
                     queryFull += @" AND (
-                        danh_muc_hang_hoa.HANG_HOA_TEN LIKE @SearchText OR 
-                        danh_muc_hang_hoa.HANGHOAMA LIKE @SearchText OR
-                        loai_hang.LOAI_TEN LIKE @SearchText
+                        loai_hang.LOAI_TEN LIKE @SearchText OR 
+                        loai_hang.LOAIMA LIKE @SearchText
                     )";
                 }
 
@@ -335,7 +335,7 @@ namespace MyLoginApp.ViewModels
                     Console.WriteLine("Không áp dụng bộ lọc loại vàng");
                 }
 
-                queryFull += " ORDER BY loai_hang.LOAI_TEN, danh_muc_hang_hoa.HANG_HOA_TEN";
+                queryFull += " GROUP BY loai_hang.LOAI_TEN, loai_hang.LOAIMA ORDER BY loai_hang.LOAI_TEN";
 
                 using var cmdFull = new MySqlCommand(queryFull, conn);
                 if (!string.IsNullOrWhiteSpace(searchText))
@@ -349,11 +349,6 @@ namespace MyLoginApp.ViewModels
                 using var readerFull = await cmdFull.ExecuteReaderAsync();
 
                 danhSachTonKhoFull.Clear();
-                decimal sumCanTong = 0;
-                decimal sumTLHot = 0;
-                decimal sumTLVang = 0;
-                decimal sumCongGoc = 0;
-                decimal sumGiaCong = 0;
                 while (await readerFull.ReadAsync())
                 {
                     var tonKho = new TonKhoNhomVangModel
@@ -369,18 +364,7 @@ namespace MyLoginApp.ViewModels
                         GIA_CONG = readerFull.GetDecimal("GIA_CONG")
                     };
                     danhSachTonKhoFull.Add(tonKho);
-                    sumCanTong += tonKho.CAN_TONG;
-                    sumTLHot += tonKho.TL_HOT;
-                    sumTLVang += tonKho.TL_VANG;
-                    sumCongGoc += tonKho.CONG_GOC;
-                    sumGiaCong += tonKho.GIA_CONG;
                 }
-                TongCanTong = sumCanTong;
-                TongTLHot = sumTLHot;
-                TongTLVang = sumTLVang;
-                TongCongGoc = sumCongGoc;
-                TongGiaCong = sumGiaCong;
-                TongSoPhieu = danhSachTonKhoFull.Count;
 
                 // Phân trang dữ liệu để hiển thị
                 DanhSachTonKho.Clear();
@@ -391,6 +375,14 @@ namespace MyLoginApp.ViewModels
                     DanhSachTonKho.Add(item);
                 }
                 DanhSachHienThi = new ObservableCollection<TonKhoNhomVangModel>(DanhSachTonKho);
+
+                // Thống kê tổng hợp trên toàn bộ danh sách đã load
+                TongCanTong = danhSachTonKhoFull.Sum(x => x.CAN_TONG);
+                TongTLHot = danhSachTonKhoFull.Sum(x => x.TL_HOT);
+                TongTLVang = danhSachTonKhoFull.Sum(x => x.TL_VANG);
+                TongCongGoc = danhSachTonKhoFull.Sum(x => x.CONG_GOC);
+                TongGiaCong = danhSachTonKhoFull.Sum(x => x.GIA_CONG);
+                TongSoPhieu = danhSachTonKhoFull.Count;
 
                 // Tính lại tổng số trang
                 TotalPages = (int)Math.Ceiling((double)danhSachTonKhoFull.Count / pageSize);
