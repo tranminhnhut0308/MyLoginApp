@@ -79,11 +79,16 @@
                 <Frame BorderColor="Green" CornerRadius="15" Padding="10" IsVisible="{Binding IsAdding}">
                     <VerticalStackLayout Spacing="10">
                         <Label Text="➕ Thêm loại vàng mới" FontAttributes="Bold" FontSize="{OnPlatform Android=18, iOS=18, Default=20}" TextColor="Green" HorizontalOptions="Center" />
-                        <Entry Placeholder="Tên loại vàng" Text="{Binding FormLoaiVang.TenLoaiVang}" />
-                        <Entry Placeholder="Đơn giá vốn" Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
-                        <Entry Placeholder="Đơn giá mua" Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
-                        <Entry Placeholder="Đơn giá bán" Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
-                        <Entry Placeholder="Đơn giá cầm" Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Label Text="Tên loại vàng:" FontAttributes="Bold" TextColor="#333333" />
+                        <Entry Placeholder="Nhập tên loại vàng" Text="{Binding FormLoaiVang.TenLoaiVang}" />
+                        <Label Text="Giá vốn (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
+                        <Entry Placeholder="Nhập giá vốn" Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Label Text="Giá mua (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
+                        <Entry Placeholder="Nhập giá mua" Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Label Text="Giá bán (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
+                        <Entry Placeholder="Nhập giá bán" Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Label Text="Giá cầm (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
+                        <Entry Placeholder="Nhập giá cầm" Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                             <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
                             <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
@@ -198,16 +203,16 @@
                                                FontSize="{OnPlatform Android=15, iOS=15, Default=16}" 
                                                IsVisible="{Binding SuDung, Converter={StaticResource IntToBoolConverter}}" />
                                     </Grid>
-                                    <Label Text="{Binding DonGiaVon, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá vốn: {0:N0}'}" 
+                                    <Label Text="{Binding DonGiaVon, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá vốn: {0:N0} VNĐ'}" 
                                            FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
                                            TextColor="#444444" />
-                                    <Label Text="{Binding DonGiaMua, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá mua: {0:N0}'}" 
+                                    <Label Text="{Binding DonGiaMua, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá mua: {0:N0} VNĐ'}" 
                                            FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
                                            TextColor="#444444" />
-                                    <Label Text="{Binding DonGiaBan, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá bán: {0:N0}'}" 
+                                    <Label Text="{Binding DonGiaBan, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá bán: {0:N0} VNĐ'}" 
                                            FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
                                            TextColor="#444444" />
-                                    <Label Text="{Binding DonGiaCam, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá cầm: {0:N0}'}" 
+                                    <Label Text="{Binding DonGiaCam, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá cầm: {0:N0} VNĐ'}" 
                                            FontSize="{OnPlatform Android=12, iOS=12, Default=13}" 
                                            TextColor="#444444" />
                                 </VerticalStackLayout>

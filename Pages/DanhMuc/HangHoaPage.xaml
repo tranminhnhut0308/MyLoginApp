@@ -2,11 +2,18 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             xmlns:converters="clr-namespace:MyLoginApp.Converter"
              x:Class="MyLoginApp.Pages.HangHoaPage"
              BackgroundColor="#f5f5f5">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:DisplayPriceConverter x:Key="DisplayPriceConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <Shell.TitleView>
-        <Grid ColumnDefinitions="*,Auto" VerticalOptions="FillAndExpand">
+        <Grid ColumnDefinitions="*,Auto">
             <Label Text="📦 Hàng Hóa"
                    TextColor="White"
                    FontSize="22"
@@ -73,51 +80,55 @@
 
         <!-- FORM THÊM HÀNG HÓA -->
         <Grid Grid.Row="1" IsVisible="{Binding IsAdding}" BackgroundColor="#f9f9f9" Padding="20" RowDefinitions="Auto,*,Auto">
-            <Label Text="📝 THÊM HÀNG HÓA MỚI" FontAttributes="Bold" FontSize="22" HorizontalOptions="Center" TextColor="#333" />
-
             <ScrollView Grid.Row="1" Margin="0,10">
                 <VerticalStackLayout Spacing="15">
-                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
-                        <!-- Tên hàng -->
-                        <Label Grid.Row="0" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                    <Grid ColumnDefinitions="Auto,*"
+                          ColumnSpacing="10"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                          RowSpacing="15">
+                        <!-- Tên hàng hóa -->
+                        <Label Grid.Row="0" Grid.Column="0" Text="Tên hàng hóa:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
                         <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
-
-                        <!-- Nhóm -->
-                        <Label Grid.Row="1" Grid.Column="0" Text="Loại Vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
-
                         <!-- Loại vàng -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding FormHangHoa.LoaiVang}" Placeholder="Nhập loại vàng" />
+                        <!-- Nhóm -->
                         <Label Grid.Row="2" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
-
+                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding FormHangHoa.Nhom}" Placeholder="Nhập nhóm" />
                         <!-- Cân tổng -->
                         <Label Grid.Row="3" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" Placeholder="0.000" />
-
-                        <!-- Trọng lượng hột -->
-                        <Label Grid.Row="4" Grid.Column="0" Text="TL Hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" Placeholder="0.000" />
-
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" />
+                        <!-- TL hột -->
+                        <Label Grid.Row="4" Grid.Column="0" Text="TL hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" />
+                        <!-- Trừ hột (readonly, tự động tính) -->
+                        <Label Grid.Row="5" Grid.Column="0" Text="Trừ hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="5" Grid.Column="1"
+                               Text="{Binding FormHangHoa.TruHot}"
+                               IsReadOnly="True"
+                               IsEnabled="False" />
                         <!-- Công gốc -->
-                        <Label Grid.Row="5" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="5" Grid.Column="1" Text="{Binding FormHangHoa.CongGoc}" Keyboard="Numeric" Placeholder="0.000" />
-
+                        <Label Grid.Row="6" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="6" Grid.Column="1"
+                               Text="{Binding FormHangHoa.CongGoc, Mode=TwoWay}"
+                               Keyboard="Numeric"
+                               Unfocused="CongGocEntry_Unfocused"
+                               TextChanged="CongGocEntry_TextChanged"/>
                         <!-- Giá công -->
-                        <Label Grid.Row="6" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="6" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" Placeholder="0.000" />
-
+                        <Label Grid.Row="7" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" />
                         <!-- Đơn giá gốc -->
-                        <Label Grid.Row="7" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="8" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="8" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" />
+                        <!-- Ghi chú -->
+                        <Label Grid.Row="9" Grid.Column="0" Text="Ghi chú:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="9" Grid.Column="1" Text="{Binding FormHangHoa.GhiChu}" Placeholder="Nhập ghi chú" />
                     </Grid>
                 </VerticalStackLayout>
             </ScrollView>
-
             <HorizontalStackLayout Grid.Row="2" HorizontalOptions="Center" Spacing="15">
-                <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" 
-                        BackgroundColor="#4CAF50" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
-                <Button Text="❌ Hủy" Command="{Binding CancelFormCommand}" 
-                        BackgroundColor="#9E9E9E" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+                <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" BackgroundColor="#4CAF50" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
+                <Button Text="❌ Hủy" Command="{Binding CancelFormCommand}" BackgroundColor="#9E9E9E" TextColor="White" WidthRequest="120" HeightRequest="45" CornerRadius="22" />
             </HorizontalStackLayout>
         </Grid>
 
@@ -128,41 +139,44 @@
             <ScrollView Grid.Row="1" Margin="0,10">
                 <VerticalStackLayout Spacing="15">
                     <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="15">
-                        <!-- Mã hàng -->
-                        <Label Grid.Row="0" Grid.Column="0" Text="Mã hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.HangHoaID}" IsReadOnly="True" BackgroundColor="#f0f0f0" />
-
                         <!-- Tên hàng -->
-                        <Label Grid.Row="1" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
+                        <Label Grid.Row="0" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
 
                         <!-- Nhóm -->
-                        <Label Grid.Row="2" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
+                        <Label Grid.Row="1" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
 
                         <!-- Loại vàng -->
-                        <Label Grid.Row="3" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="3" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
+                        <Label Grid.Row="2" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
 
                         <!-- Cân tổng -->
-                        <Label Grid.Row="4" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="3" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="3" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" />
 
                         <!-- Trọng lượng hột -->
-                        <Label Grid.Row="5" Grid.Column="0" Text="TL Hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="5" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="4" Grid.Column="0" Text="TL Hột:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="4" Grid.Column="1" Text="{Binding FormHangHoa.TrongLuongHot}" Keyboard="Numeric" />
 
                         <!-- Công gốc -->
-                        <Label Grid.Row="6" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="6" Grid.Column="1" Text="{Binding FormHangHoa.CongGoc}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="5" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry
+                            Text="{Binding FormHangHoa.CongGoc, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}"
+                            Keyboard="Numeric"
+                            Placeholder="0.000" />
 
                         <!-- Giá công -->
-                        <Label Grid.Row="7" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="6" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="6" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" />
 
                         <!-- Đơn giá gốc -->
-                        <Label Grid.Row="8" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="8" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" Placeholder="0.000" />
+                        <Label Grid.Row="7" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" />
+
+                        <!-- Ghi chú -->
+                        <Label Grid.Row="8" Grid.Column="0" Text="Ghi chú:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Entry Grid.Row="8" Grid.Column="1" Text="{Binding FormHangHoa.GhiChu}" Placeholder="Nhập ghi chú" />
                     </Grid>
                 </VerticalStackLayout>
             </ScrollView>
@@ -228,13 +242,15 @@
                                                FontSize="16" 
                                                IsVisible="{Binding SuDung, Converter={StaticResource IntToBoolConverter}}" />
                                     </Grid>
-                                    <Label Text="{Binding HangHoaID, StringFormat='Mã: {0}'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding Nhom, StringFormat='Nhóm vàng: {0}'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding LoaiVang, StringFormat='Loại vàng: {0}'}" FontSize="13" TextColor="#444444" />
-                                    <Label Text="{Binding CanTong, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Cân tổng: {0:N3}'}" FontSize="13" TextColor="#444444" />
-                                    <Label Text="{Binding TrongLuongHot, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='TL.Hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
-                                    <Label Text="{Binding CongGoc, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Công gốc: {0:N0}'}" FontSize="13" TextColor="#444444" />
-                                    <Label Text="{Binding GiaCong, Converter={StaticResource DisplayPriceConverter}, ConverterParameter='Giá công: {0:N0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding CanTong, StringFormat='Cân tổng: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding TrongLuongHot, StringFormat='TL hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding TruHot, StringFormat='Trừ hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding CongGoc, StringFormat='Công gốc: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding GiaCong, StringFormat='Giá công: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding DonViGoc, StringFormat='Đơn giá gốc: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding GhiChu, StringFormat='Ghi chú: {0}'}" FontSize="13" TextColor="#444444" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>

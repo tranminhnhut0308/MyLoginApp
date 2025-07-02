@@ -57,6 +57,76 @@ namespace MyLoginApp.ViewModels
         [ObservableProperty]
         private bool isRefreshing;
 
+        private string _canTong;
+        public string CanTong
+        {
+            get => _canTong;
+            set
+            {
+                if (_canTong != value)
+                {
+                    _canTong = value;
+                    OnPropertyChanged(nameof(CanTong));
+                }
+            }
+        }
+
+        private string _trongLuongHot;
+        public string TrongLuongHot
+        {
+            get => _trongLuongHot;
+            set
+            {
+                if (_trongLuongHot != value)
+                {
+                    _trongLuongHot = value;
+                    OnPropertyChanged(nameof(TrongLuongHot));
+                }
+            }
+        }
+
+        private string _congGoc;
+        public string CongGoc
+        {
+            get => _congGoc;
+            set
+            {
+                if (_congGoc != value)
+                {
+                    _congGoc = value;
+                    OnPropertyChanged(nameof(CongGoc));
+                }
+            }
+        }
+
+        private string _giaCong;
+        public string GiaCong
+        {
+            get => _giaCong;
+            set
+            {
+                if (_giaCong != value)
+                {
+                    _giaCong = value;
+                    OnPropertyChanged(nameof(GiaCong));
+                }
+            }
+        }
+
+        private string _donViGoc;
+        public string DonViGoc
+        {
+            get => _donViGoc;
+            set
+            {
+                if (_donViGoc != value)
+                {
+                    _donViGoc = value;
+                    OnPropertyChanged(nameof(DonViGoc));
+                }
+            }
+        }
+
         // Tự động kích hoạt tìm kiếm khi SearchKeyword thay đổi
         partial void OnSearchKeywordChanged(string value)
         {
@@ -222,19 +292,20 @@ namespace MyLoginApp.ViewModels
                     string query = @"
                     SELECT 
                         h.HANGHOAMA, 
-                        h.HANG_HOA_TEN,
-                        l.LOAI_TEN,
-                        n.NHOM_TEN,
-                        h.CAN_TONG,
+                        h.HANG_HOA_TEN, 
+                        l.LOAI_TEN, 
+                        n.NHOM_TEN, 
+                        h.CAN_TONG, 
                         h.TL_HOT, 
+                        (h.CAN_TONG - h.TL_HOT) AS TRU_HOT, 
                         h.CONG_GOC, 
-                        h.GIA_CONG,
-                        h.DON_GIA_GOC 
-                    FROM 
-                        danh_muc_hang_hoa h
-                        LEFT JOIN loai_hang l ON l.LOAIID = h.LOAIID 
-                        LEFT JOIN nhom_hang n ON n.NHOMHANGID = h.NHOMHANGID
-                    WHERE " + whereClause + @"
+                        h.GIA_CONG, 
+                        h.DON_GIA_GOC, 
+                        h.GHI_CHU
+                    FROM danh_muc_hang_hoa h
+                    LEFT JOIN loai_hang l ON l.LOAIID = h.LOAIID
+                    LEFT JOIN nhom_hang n ON n.NHOMHANGID = h.NHOMHANGID
+                    WHERE h.SU_DUNG = 1
                     ORDER BY h.HANGHOAMA DESC
                     LIMIT @PageSize OFFSET @Offset";
 
@@ -255,15 +326,16 @@ namespace MyLoginApp.ViewModels
                         {
                             var hangHoa = new HangHoaModel
                             {
-                                HangHoaID = reader.IsDBNull(reader.GetOrdinal("HANGHOAMA")) ? "" : reader.GetString("HANGHOAMA"),
+                                HangHoaMa = reader.IsDBNull(reader.GetOrdinal("HANGHOAMA")) ? "" : reader.GetString("HANGHOAMA"),
                                 TenHangHoa = reader.IsDBNull(reader.GetOrdinal("HANG_HOA_TEN")) ? "" : reader.GetString("HANG_HOA_TEN"),
-                                Nhom = reader.IsDBNull(reader.GetOrdinal("NHOM_TEN")) ? "Chưa có nhóm" : reader.GetString("NHOM_TEN"),
-                                LoaiVang = reader.IsDBNull(reader.GetOrdinal("LOAI_TEN")) ? "Không xác định" : reader.GetString("LOAI_TEN"),
-                                CanTong = reader.IsDBNull(reader.GetOrdinal("CAN_TONG")) ? 0 : reader.GetDecimal("CAN_TONG"),
-                                TrongLuongHot = reader.IsDBNull(reader.GetOrdinal("TL_HOT")) ? 0 : reader.GetDecimal("TL_HOT"),
-                                CongGoc = reader.IsDBNull(reader.GetOrdinal("CONG_GOC")) ? 0 : reader.GetDecimal("CONG_GOC"),
-                                GiaCong = reader.IsDBNull(reader.GetOrdinal("GIA_CONG")) ? 0 : reader.GetDecimal("GIA_CONG"),
-                                DonViGoc = reader.IsDBNull(reader.GetOrdinal("DON_GIA_GOC")) ? 0 : reader.GetDecimal("DON_GIA_GOC")
+                                LoaiVang = reader.IsDBNull(reader.GetOrdinal("LOAI_TEN")) ? "" : reader.GetString("LOAI_TEN"),
+                                Nhom = reader.IsDBNull(reader.GetOrdinal("NHOM_TEN")) ? "" : reader.GetString("NHOM_TEN"),
+                                CanTong = reader["CAN_TONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CAN_TONG"]),
+                                TrongLuongHot = reader["TL_HOT"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["TL_HOT"]),
+                                CongGoc = reader["CONG_GOC"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["CONG_GOC"]),
+                                GiaCong = reader["GIA_CONG"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["GIA_CONG"]),
+                                DonViGoc = reader["DON_GIA_GOC"] == DBNull.Value ? 0 : Convert.ToDecimal(reader["DON_GIA_GOC"]),
+                                GhiChu = reader.IsDBNull(reader.GetOrdinal("GHI_CHU")) ? "" : reader.GetString("GHI_CHU"),
                             };
 
                             DanhSachHangHoa.Add(hangHoa);
@@ -330,9 +402,6 @@ namespace MyLoginApp.ViewModels
         [RelayCommand]
         private async Task ShowAddForm()
         {
-            // Tạo mới đối tượng HangHoaModel
-            FormHangHoa = new HangHoaModel();
-
             // Lấy mã hàng hóa cao nhất và tự động tăng lên
             FormHangHoa.HangHoaID = await GetNextHangHoaIDAsync();
 
@@ -411,6 +480,16 @@ namespace MyLoginApp.ViewModels
                 int loaiID = await GetLoaiIDFromNameAsync(FormHangHoa.LoaiVang, conn);
                 int nhomID = await GetNhomIDFromNameAsync(FormHangHoa.Nhom, conn);
 
+                decimal canTongValue = 0;
+
+                decimal trongLuongHotValue = 0;
+
+                decimal congGocValue = 0;
+
+                decimal giaCongValue = 0;
+
+                decimal donViGocValue = 0;
+
                 string query = @"
                 INSERT INTO danh_muc_hang_hoa (
                     HANGHOAMA, 
@@ -441,11 +520,11 @@ namespace MyLoginApp.ViewModels
                 cmd.Parameters.AddWithValue("@HANG_HOA_TEN", FormHangHoa.TenHangHoa);
                 cmd.Parameters.AddWithValue("@LOAIID", loaiID);
                 cmd.Parameters.AddWithValue("@NHOMHANGID", nhomID);
-                cmd.Parameters.AddWithValue("@CAN_TONG", FormHangHoa.CanTong);
-                cmd.Parameters.AddWithValue("@TL_HOT", FormHangHoa.TrongLuongHot);
-                cmd.Parameters.AddWithValue("@CONG_GOC", FormHangHoa.CongGoc);
-                cmd.Parameters.AddWithValue("@GIA_CONG", FormHangHoa.GiaCong);
-                cmd.Parameters.AddWithValue("@DON_GIA_GOC", FormHangHoa.DonViGoc);
+                cmd.Parameters.AddWithValue("@CAN_TONG", canTongValue);
+                cmd.Parameters.AddWithValue("@TL_HOT", trongLuongHotValue);
+                cmd.Parameters.AddWithValue("@CONG_GOC", congGocValue);
+                cmd.Parameters.AddWithValue("@GIA_CONG", giaCongValue);
+                cmd.Parameters.AddWithValue("@DON_GIA_GOC", donViGocValue);
 
                 await cmd.ExecuteNonQueryAsync();
 
@@ -489,6 +568,16 @@ namespace MyLoginApp.ViewModels
                 int loaiID = await GetLoaiIDFromNameAsync(FormHangHoa.LoaiVang, conn);
                 int nhomID = await GetNhomIDFromNameAsync(FormHangHoa.Nhom, conn);
 
+                decimal canTongValue = 0;
+
+                decimal trongLuongHotValue = 0;
+
+                decimal congGocValue = 0;
+
+                decimal giaCongValue = 0;
+
+                decimal donViGocValue = 0;
+
                 string query = @"
                 UPDATE danh_muc_hang_hoa SET
                     HANG_HOA_TEN = @HANG_HOA_TEN,
@@ -506,11 +595,11 @@ namespace MyLoginApp.ViewModels
                 cmd.Parameters.AddWithValue("@HANG_HOA_TEN", FormHangHoa.TenHangHoa);
                 cmd.Parameters.AddWithValue("@LOAIID", loaiID);
                 cmd.Parameters.AddWithValue("@NHOMHANGID", nhomID);
-                cmd.Parameters.AddWithValue("@CAN_TONG", FormHangHoa.CanTong);
-                cmd.Parameters.AddWithValue("@TL_HOT", FormHangHoa.TrongLuongHot);
-                cmd.Parameters.AddWithValue("@CONG_GOC", FormHangHoa.CongGoc);
-                cmd.Parameters.AddWithValue("@GIA_CONG", FormHangHoa.GiaCong);
-                cmd.Parameters.AddWithValue("@DON_GIA_GOC", FormHangHoa.DonViGoc);
+                cmd.Parameters.AddWithValue("@CAN_TONG", canTongValue);
+                cmd.Parameters.AddWithValue("@TL_HOT", trongLuongHotValue);
+                cmd.Parameters.AddWithValue("@CONG_GOC", congGocValue);
+                cmd.Parameters.AddWithValue("@GIA_CONG", giaCongValue);
+                cmd.Parameters.AddWithValue("@DON_GIA_GOC", donViGocValue);
 
                 await cmd.ExecuteNonQueryAsync();
 
