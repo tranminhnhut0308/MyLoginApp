@@ -256,12 +256,15 @@
                                     <Label Text="{Binding Nhom, StringFormat='Nhóm vàng: {0}'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding LoaiVang, StringFormat='Loại vàng: {0}'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding CanTong, StringFormat='Cân tổng: {0:N3}'}" FontSize="13" TextColor="#444444" />
-                                    <Label Text="{Binding TrongLuongHot, StringFormat='TL hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding TrongLuongHot, StringFormat='TL hột: {0:N3} L'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding TruHot, StringFormat='Trừ hột: {0:N3}'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding CongGoc, StringFormat='Công gốc: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding GiaCong, StringFormat='Giá công: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding DonViGoc, StringFormat='Đơn giá gốc: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
                                     <Label Text="{Binding GhiChu, StringFormat='Ghi chú: {0}'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding DinhGia, StringFormat='Định giá: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding LaiSuat, StringFormat='Lãi suất: {0:N2}%'}" FontSize="13" TextColor="#444444" />
+                                    <Label Text="{Binding TienNhanThem, StringFormat='Tiền cầm thêm: {0:N0} VNĐ'}" FontSize="13" TextColor="#444444" />
                                 </StackLayout>
                             </Frame>
                         </DataTemplate>
@@ -312,5 +315,37 @@
                         CornerRadius="20"/>
             </HorizontalStackLayout>
         </Frame>
+
+        <!-- Thông tin chính -->
+        <StackLayout Grid.Row="1" Spacing="2">
+            <!-- Dòng 1: Ngày cầm, Quá hạn -->
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="10">
+                <Label Text="Ngày cầm:" TextColor="#666"/>
+                <Label Text="{Binding NgayCam, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#333"/>
+                <Label Text="Quá hạn:" TextColor="#666"/>
+                <Label Text="{Binding NgayQuaHan, StringFormat='{0:dd/MM/yyyy}'}" TextColor="#E74C3C"/>
+            </Grid>
+            <!-- Dòng 2: Cân tổng, TL hột -->
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="10">
+                <Label Text="Cân tổng:" TextColor="#666"/>
+                <Label Text="{Binding CanTongInLuong, StringFormat='{0:N3} L'}" TextColor="#333"/>
+                <Label Text="TL hột:" TextColor="#666"/>
+                <Label Text="{Binding TLHot, StringFormat='{0:N3} L'}" TextColor="#333"/>
+            </Grid>
+            <!-- Dòng 3: TL thực, Định giá -->
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="10">
+                <Label Text="TL thực:" TextColor="#666"/>
+                <Label Text="{Binding TLThucInLuong, StringFormat='{0:N3} L'}" TextColor="#333"/>
+                <Label Text="Định giá:" TextColor="#666"/>
+                <Label Text="{Binding DinhGia, StringFormat='{0:N0} VNĐ'}" TextColor="#FF9800"/>
+            </Grid>
+            <!-- Dòng 4: Tiền cầm thêm, Lãi suất -->
+            <Grid ColumnDefinitions="Auto,*,Auto,*" ColumnSpacing="10">
+                <Label Text="Tiền cầm thêm:" TextColor="#666"/>
+                <Label Text="{Binding TienNhanThem, StringFormat='{0:N0} VNĐ'}" TextColor="#43A047"/>
+                <Label Text="Lãi suất:" TextColor="#666"/>
+                <Label Text="{Binding LaiSuat, StringFormat='{0:N2}%'}" TextColor="#E53935"/>
+            </Grid>
+        </StackLayout>
     </Grid>
 </ContentPage>
