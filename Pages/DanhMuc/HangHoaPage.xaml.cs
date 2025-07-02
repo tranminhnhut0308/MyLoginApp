@@ -161,14 +161,47 @@ public partial class HangHoaPage : ContentPage
     {
         if (sender is Entry entry)
         {
-            // Loại bỏ mọi ký tự không phải số
             string raw = new string(entry.Text?.Where(char.IsDigit).ToArray());
-            decimal value;
-            if (!decimal.TryParse(raw, out value))
+            if (decimal.TryParse(raw, out decimal value))
             {
-                value = 0;
+                entry.Text = string.Format("{0:N0}", value);
             }
-            entry.Text = value.ToString(); // Không format lại có dấu phẩy
+            else
+            {
+                entry.Text = string.Empty;
+            }
+        }
+    }
+
+    private void GiaCongEntry_Unfocused(object sender, FocusEventArgs e)
+    {
+        if (sender is Entry entry)
+        {
+            string raw = new string(entry.Text?.Where(char.IsDigit).ToArray());
+            if (decimal.TryParse(raw, out decimal value))
+            {
+                entry.Text = string.Format("{0:N0}", value);
+            }
+            else
+            {
+                entry.Text = string.Empty;
+            }
+        }
+    }
+
+    private void DonViGocEntry_Unfocused(object sender, FocusEventArgs e)
+    {
+        if (sender is Entry entry)
+        {
+            string raw = new string(entry.Text?.Where(char.IsDigit).ToArray());
+            if (decimal.TryParse(raw, out decimal value))
+            {
+                entry.Text = string.Format("{0:N0}", value);
+            }
+            else
+            {
+                entry.Text = string.Empty;
+            }
         }
     }
 }

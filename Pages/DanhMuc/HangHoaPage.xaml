@@ -91,10 +91,16 @@
                         <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
                         <!-- Loại vàng -->
                         <Label Grid.Row="1" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="1" Grid.Column="1" Text="{Binding FormHangHoa.LoaiVang}" Placeholder="Nhập loại vàng" />
+                        <Picker Grid.Row="1" Grid.Column="1"
+                                ItemsSource="{Binding DanhSachLoaiVang}"
+                                SelectedItem="{Binding FormHangHoa.LoaiVang, Mode=TwoWay}"
+                                Title="Chọn loại vàng" />
                         <!-- Nhóm -->
                         <Label Grid.Row="2" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="2" Grid.Column="1" Text="{Binding FormHangHoa.Nhom}" Placeholder="Nhập nhóm" />
+                        <Picker Grid.Row="2" Grid.Column="1"
+                                ItemsSource="{Binding DanhSachNhom}"
+                                SelectedItem="{Binding FormHangHoa.Nhom, Mode=TwoWay}"
+                                Title="Chọn nhóm" />
                         <!-- Cân tổng -->
                         <Label Grid.Row="3" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
                         <Entry Grid.Row="3" Grid.Column="1" Text="{Binding FormHangHoa.CanTong}" Keyboard="Numeric" />
@@ -112,14 +118,19 @@
                         <Entry Grid.Row="6" Grid.Column="1"
                                Text="{Binding FormHangHoa.CongGoc, Mode=TwoWay}"
                                Keyboard="Numeric"
-                               Unfocused="CongGocEntry_Unfocused"
-                               TextChanged="CongGocEntry_TextChanged"/>
+                               Unfocused="CongGocEntry_Unfocused"/>
                         <!-- Giá công -->
                         <Label Grid.Row="7" Grid.Column="0" Text="Giá công:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="7" Grid.Column="1" Text="{Binding FormHangHoa.GiaCong}" Keyboard="Numeric" />
+                        <Entry Grid.Row="7" Grid.Column="1"
+                               Text="{Binding FormHangHoa.GiaCong}"
+                               Keyboard="Numeric"
+                               Unfocused="GiaCongEntry_Unfocused"/>
                         <!-- Đơn giá gốc -->
                         <Label Grid.Row="8" Grid.Column="0" Text="Đơn giá gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry Grid.Row="8" Grid.Column="1" Text="{Binding FormHangHoa.DonViGoc}" Keyboard="Numeric" />
+                        <Entry Grid.Row="8" Grid.Column="1"
+                               Text="{Binding FormHangHoa.DonViGoc}"
+                               Keyboard="Numeric"
+                               Unfocused="DonViGocEntry_Unfocused"/>
                         <!-- Ghi chú -->
                         <Label Grid.Row="9" Grid.Column="0" Text="Ghi chú:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
                         <Entry Grid.Row="9" Grid.Column="1" Text="{Binding FormHangHoa.GhiChu}" Placeholder="Nhập ghi chú" />
