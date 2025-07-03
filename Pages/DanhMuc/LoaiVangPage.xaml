@@ -82,13 +82,37 @@
                         <Label Text="Tên loại vàng:" FontAttributes="Bold" TextColor="#333333" />
                         <Entry Placeholder="Nhập tên loại vàng" Text="{Binding FormLoaiVang.TenLoaiVang}" />
                         <Label Text="Giá vốn (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
-                        <Entry Placeholder="Nhập giá vốn" Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry x:Name="EntryAddDonGiaVon" 
+                               Placeholder="Nhập giá vốn" 
+                               Text="{Binding FormLoaiVang.DonGiaVon, Converter={StaticResource DisplayPriceConverter}, Mode=OneWay}"
+                               TextChanged="OnDonGiaVonTextChanged"
+                               Keyboard="Numeric"
+                               ClearButtonVisibility="WhileEditing"
+                               MaxLength="20" />
                         <Label Text="Giá mua (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
-                        <Entry Placeholder="Nhập giá mua" Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry x:Name="EntryAddDonGiaMua" 
+                               Placeholder="Nhập giá mua" 
+                               Text="{Binding FormLoaiVang.DonGiaMua, Converter={StaticResource DisplayPriceConverter}, Mode=OneWay}"
+                               TextChanged="OnDonGiaMuaTextChanged"
+                               Keyboard="Numeric"
+                               ClearButtonVisibility="WhileEditing"
+                               MaxLength="20" />
                         <Label Text="Giá bán (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
-                        <Entry Placeholder="Nhập giá bán" Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry x:Name="EntryAddDonGiaBan" 
+                               Placeholder="Nhập giá bán" 
+                               Text="{Binding FormLoaiVang.DonGiaBan, Converter={StaticResource DisplayPriceConverter}, Mode=OneWay}"
+                               TextChanged="OnDonGiaBanTextChanged"
+                               Keyboard="Numeric"
+                               ClearButtonVisibility="WhileEditing"
+                               MaxLength="20" />
                         <Label Text="Giá cầm (VNĐ):" FontAttributes="Bold" TextColor="#333333" />
-                        <Entry Placeholder="Nhập giá cầm" Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}" Keyboard="Numeric" />
+                        <Entry x:Name="EntryAddDonGiaCam" 
+                               Placeholder="Nhập giá cầm" 
+                               Text="{Binding FormLoaiVang.DonGiaCam, Converter={StaticResource DisplayPriceConverter}, Mode=OneWay}"
+                               TextChanged="OnDonGiaCamTextChanged"
+                               Keyboard="Numeric"
+                               ClearButtonVisibility="WhileEditing"
+                               MaxLength="20" />
                         <HorizontalStackLayout HorizontalOptions="Center" Spacing="15">
                             <Button Text="💾 Lưu" Command="{Binding SaveAddCommand}" BackgroundColor="Green" TextColor="White" WidthRequest="100" />
                             <Button Text="❌ Hủy" Command="{Binding CancelAddEditCommand}" BackgroundColor="Gray" TextColor="White" WidthRequest="100" />
