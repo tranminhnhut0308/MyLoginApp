@@ -2,24 +2,49 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewmodels="clr-namespace:MyLoginApp.ViewModels"
+             xmlns:converters="clr-namespace:MyLoginApp.Converters"
              x:Class="MyLoginApp.Pages.NguoiDungPage"
              Title="Quản lý Người Dùng">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IntToBoolConverter x:Key="IntToBoolConverter"/>
+            <converters:IsGreaterThanOneConverter x:Key="IsGreaterThanOneConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.BindingContext>
         <viewmodels:NguoiDungViewModel />
     </ContentPage.BindingContext>
 
-    <StackLayout Padding="10" Spacing="10">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Padding="10" RowSpacing="10">
         <!-- Ô tìm kiếm -->
-        <SearchBar Placeholder="Tìm kiếm người dùng..." 
+        <SearchBar Grid.Row="0" 
+                   Placeholder="Tìm kiếm người dùng..." 
                    Text="{Binding SearchKeyword}" 
                    TextChanged="OnSearchTextChanged" />
+        
+        <!-- Hiển thị số lượng kết quả -->
+        <Label Grid.Row="1" 
+               Text="{Binding KetQuaTimKiem}"
+               HorizontalOptions="Start"
+               Margin="5,0,0,0"
+               FontSize="14"
+               IsVisible="{Binding TongSoNguoiDung, Converter={StaticResource IsGreaterThanOneConverter}}" />
 
         <!-- Danh sách người dùng -->
-        <CollectionView ItemsSource="{Binding DanhSachNguoiDung}">
+        <CollectionView Grid.Row="2" 
+                       ItemsSource="{Binding DanhSachNguoiDung}"
+                       VerticalOptions="Fill">
+            <CollectionView.EmptyView>
+                <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Không có dữ liệu người dùng" 
+                           FontSize="18"
+                           HorizontalOptions="Center"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-
                     <Frame BorderColor="LightGray" CornerRadius="10" Padding="10" Margin="0,5">
                         <Grid ColumnDefinitions="Auto, *" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto">
                             <!-- Cột 1: Tiêu đề -->
@@ -38,18 +63,42 @@
                             <Label Text="{Binding NhomUserId}" FontSize="17" Grid.Row="4" Grid.Column="1" Padding="5" />
 
                             <!-- CheckBox nằm cùng hàng và giữa theo chiều dọc -->
-                            <CheckBox IsChecked="{Binding BiKhoa}" 
-                  IsEnabled="False" 
-                  Grid.Row="5" Grid.Column="1" 
-                  VerticalOptions="Center"
-                  HorizontalOptions="Start"/>
+                            <CheckBox IsChecked="{Binding BiKhoa, Converter={StaticResource IntToBoolConverter}}" 
+                                     IsEnabled="False" 
+                                     Grid.Row="5" Grid.Column="1" 
+                                     VerticalOptions="Center"
+                                     HorizontalOptions="Start"/>
                         </Grid>
                     </Frame>
-
-
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-    </StackLayout>
+        <!-- Điều hướng phân trang -->
+        <Grid Grid.Row="3" ColumnDefinitions="Auto,*,Auto" Margin="0,10,0,0">
+            <Button Grid.Column="0" 
+                   Text="Trước" 
+                   IsEnabled="{Binding CanGoPrevious}"
+                   Clicked="OnPreviousPageClicked"
+                   HorizontalOptions="Start"/>
+            
+            <Label Grid.Column="1" 
+                  Text="{Binding CurrentPage, StringFormat='Trang {0}'}" 
+                  HorizontalOptions="Center" 
+                  VerticalOptions="Center"/>
+            
+            <Button Grid.Column="2" 
+                   Text="Sau" 
+                   IsEnabled="{Binding CanGoNext}"
+                   Clicked="OnNextPageClicked"
+                   HorizontalOptions="End"/>
+        </Grid>
+
+        <!-- Indicator hiển thị khi đang tải dữ liệu -->
+        <ActivityIndicator Grid.Row="2" 
+                          IsRunning="{Binding IsLoading}"
+                          IsVisible="{Binding IsLoading}"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"/>
+    </Grid>
 </ContentPage>

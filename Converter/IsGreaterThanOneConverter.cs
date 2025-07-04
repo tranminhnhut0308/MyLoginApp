@@ -6,10 +6,15 @@ namespace MyLoginApp.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is int pageNumber)
-            {
-                return pageNumber > 1;
-            }
+            if (value == null)
+                return false;
+
+            if (value is int intValue)
+                return intValue > 0;
+
+            if (int.TryParse(value.ToString(), out int parsedValue))
+                return parsedValue > 0;
+
             return false;
         }
 

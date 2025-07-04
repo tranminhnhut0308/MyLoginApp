@@ -10,16 +10,25 @@ namespace MyLoginApp.ViewModels
     public partial class NguoiDungViewModel : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<NguoiDungModel> danhSachNguoiDung = new();  // Make sure this is public
+        private ObservableCollection<NguoiDungModel> danhSachNguoiDung = new();
 
         [ObservableProperty]
         private bool isLoading;
+
+        [ObservableProperty]
+        private string searchKeyword = string.Empty;
+
+        [ObservableProperty]
+        private string ketQuaTimKiem = string.Empty;
 
         [ObservableProperty]
         private int pageSize = 20; // mặc định mỗi trang 20 user
 
         [ObservableProperty]
         private int currentPage = 1;
+
+        [ObservableProperty]
+        private int tongSoNguoiDung = 0;
 
         public bool CanGoNext => DanhSachNguoiDung.Count >= PageSize;
         public bool CanGoPrevious => CurrentPage > 1;
@@ -38,18 +47,51 @@ namespace MyLoginApp.ViewModels
                     return;
                 }
 
-                // Sử dụng SELECT * để lấy tất cả cột
-                string query = @"
-            SELECT * 
+                // Đếm tổng số người dùng không trùng lặp
+                string countQuery = @"
+            SELECT COUNT(DISTINCT USER_TEN) AS TongSo
             FROM pq_user
-            WHERE su_dung = 1";  // Chỉ lấy người dùng có su_dung = 1
+            WHERE su_dung = 1";
 
                 if (!string.IsNullOrEmpty(searchKeyword))
                 {
-                    query += " AND USER_TEN LIKE @Search";
+                    countQuery += " AND USER_TEN LIKE @Search";
                 }
 
-                query += " ORDER BY user_id DESC LIMIT @PageSize OFFSET @Offset";
+                using var countCmd = new MySqlCommand(countQuery, conn);
+                
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    countCmd.Parameters.AddWithValue("@Search", $"%{searchKeyword}%");
+                }
+
+                var totalCount = Convert.ToInt32(await countCmd.ExecuteScalarAsync());
+                TongSoNguoiDung = totalCount;
+
+                // Truy vấn để lấy danh sách người dùng không trùng lặp
+                string query = @"
+            SELECT u.* 
+            FROM pq_user u
+            JOIN (
+                SELECT USER_TEN, MAX(USER_ID) AS max_id
+                FROM pq_user
+                WHERE su_dung = 1
+                GROUP BY USER_TEN
+            ) as grouped
+            ON u.USER_TEN = grouped.USER_TEN AND u.USER_ID = grouped.max_id
+            WHERE u.su_dung = 1";
+
+                if (!string.IsNullOrEmpty(searchKeyword))
+                {
+                    query += " AND u.USER_TEN LIKE @Search";
+                    KetQuaTimKiem = $"Kết quả tìm kiếm cho '{searchKeyword}': {totalCount} người dùng";
+                }
+                else
+                {
+                    KetQuaTimKiem = $"Tổng số: {totalCount} người dùng";
+                }
+
+                query += " ORDER BY u.USER_ID DESC LIMIT @PageSize OFFSET @Offset";
 
                 using var cmd = new MySqlCommand(query, conn);
                 cmd.Parameters.AddWithValue("@PageSize", PageSize);
@@ -77,7 +119,11 @@ namespace MyLoginApp.ViewModels
                     });
                 }
 
-                if (list.Count == 0)
+                if (list.Count == 0 && !string.IsNullOrEmpty(searchKeyword))
+                {
+                    await Shell.Current.DisplayAlert("Thông báo", "Không tìm thấy người dùng phù hợp", "OK");
+                }
+                else if (list.Count == 0 && CurrentPage == 1)
                 {
                     await Shell.Current.DisplayAlert("Thông báo", "Không có người dùng nào", "OK");
                 }
@@ -99,6 +145,5 @@ namespace MyLoginApp.ViewModels
                 IsLoading = false;
             }
         }
-
     }
 }
