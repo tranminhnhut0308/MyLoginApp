@@ -154,13 +154,13 @@
                         <Label Grid.Row="0" Grid.Column="0" Text="Tên hàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
                         <Entry Grid.Row="0" Grid.Column="1" Text="{Binding FormHangHoa.TenHangHoa}" Placeholder="Nhập tên hàng hóa" />
 
-                        <!-- Nhóm -->
-                        <Label Grid.Row="1" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
-
                         <!-- Loại vàng -->
+                        <Label Grid.Row="1" Grid.Column="0" Text="Loại vàng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
+                        <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
+
+                        <!-- Nhóm -->
                         <Label Grid.Row="2" Grid.Column="0" Text="Nhóm:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachLoaiVang}" SelectedItem="{Binding FormHangHoa.LoaiVang}" />
+                        <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding DanhSachNhom}" SelectedItem="{Binding FormHangHoa.Nhom}" />
 
                         <!-- Cân tổng -->
                         <Label Grid.Row="3" Grid.Column="0" Text="Cân tổng:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
@@ -172,8 +172,8 @@
 
                         <!-- Công gốc -->
                         <Label Grid.Row="5" Grid.Column="0" Text="Công gốc:" VerticalOptions="Center" FontSize="16" TextColor="#555" />
-                        <Entry
-                            Text="{Binding FormHangHoa.CongGoc, Converter={StaticResource DisplayPriceConverter}, Mode=TwoWay}"
+                        <Entry Grid.Row="5" Grid.Column="1"
+                            Text="{Binding FormHangHoa.CongGoc, Mode=TwoWay}"
                             Keyboard="Numeric"
                             Placeholder="0.000" />
 

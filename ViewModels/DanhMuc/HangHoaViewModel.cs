@@ -305,7 +305,7 @@ namespace MyLoginApp.ViewModels
                     FROM danh_muc_hang_hoa h
                     LEFT JOIN loai_hang l ON l.LOAIID = h.LOAIID
                     LEFT JOIN nhom_hang n ON n.NHOMHANGID = h.NHOMHANGID
-                    WHERE h.SU_DUNG = 1
+                    WHERE " + whereClause + @"
                     ORDER BY h.HANGHOAMA DESC
                     LIMIT @PageSize OFFSET @Offset";
 
@@ -326,6 +326,7 @@ namespace MyLoginApp.ViewModels
                         {
                             var hangHoa = new HangHoaModel
                             {
+                                HangHoaID = reader.IsDBNull(reader.GetOrdinal("HANGHOAMA")) ? "" : reader.GetString("HANGHOAMA"),
                                 HangHoaMa = reader.IsDBNull(reader.GetOrdinal("HANGHOAMA")) ? "" : reader.GetString("HANGHOAMA"),
                                 TenHangHoa = reader.IsDBNull(reader.GetOrdinal("HANG_HOA_TEN")) ? "" : reader.GetString("HANG_HOA_TEN"),
                                 LoaiVang = reader.IsDBNull(reader.GetOrdinal("LOAI_TEN")) ? "" : reader.GetString("LOAI_TEN"),
@@ -447,7 +448,7 @@ namespace MyLoginApp.ViewModels
 
             FormHangHoa = new HangHoaModel
             {
-                HangHoaID = SelectedHangHoa.HangHoaID,
+                HangHoaID = SelectedHangHoa.HangHoaMa,
                 TenHangHoa = SelectedHangHoa.TenHangHoa,
                 LoaiVang = SelectedHangHoa.LoaiVang,
                 Nhom = SelectedHangHoa.Nhom,
@@ -480,15 +481,11 @@ namespace MyLoginApp.ViewModels
                 int loaiID = await GetLoaiIDFromNameAsync(FormHangHoa.LoaiVang, conn);
                 int nhomID = await GetNhomIDFromNameAsync(FormHangHoa.Nhom, conn);
 
-                decimal canTongValue = 0;
-
-                decimal trongLuongHotValue = 0;
-
-                decimal congGocValue = 0;
-
-                decimal giaCongValue = 0;
-
-                decimal donViGocValue = 0;
+                decimal canTongValue = FormHangHoa.CanTong;
+                decimal trongLuongHotValue = FormHangHoa.TrongLuongHot;
+                decimal congGocValue = FormHangHoa.CongGoc;
+                decimal giaCongValue = FormHangHoa.GiaCong;
+                decimal donViGocValue = FormHangHoa.DonViGoc;
 
                 string query = @"
                 INSERT INTO danh_muc_hang_hoa (
@@ -568,15 +565,11 @@ namespace MyLoginApp.ViewModels
                 int loaiID = await GetLoaiIDFromNameAsync(FormHangHoa.LoaiVang, conn);
                 int nhomID = await GetNhomIDFromNameAsync(FormHangHoa.Nhom, conn);
 
-                decimal canTongValue = 0;
-
-                decimal trongLuongHotValue = 0;
-
-                decimal congGocValue = 0;
-
-                decimal giaCongValue = 0;
-
-                decimal donViGocValue = 0;
+                decimal canTongValue = FormHangHoa.CanTong;
+                decimal trongLuongHotValue = FormHangHoa.TrongLuongHot;
+                decimal congGocValue = FormHangHoa.CongGoc;
+                decimal giaCongValue = FormHangHoa.GiaCong;
+                decimal donViGocValue = FormHangHoa.DonViGoc;
 
                 string query = @"
                 UPDATE danh_muc_hang_hoa SET
@@ -694,7 +687,7 @@ namespace MyLoginApp.ViewModels
                 // Xóa logic thay vì xóa thật
                 string query = "UPDATE danh_muc_hang_hoa SET SU_DUNG = 0 WHERE HANGHOAMA = @HANGHOAMA";
                 await using var cmd = new MySqlCommand(query, conn);
-                cmd.Parameters.AddWithValue("@HANGHOAMA", SelectedHangHoa.HangHoaID);
+                cmd.Parameters.AddWithValue("@HANGHOAMA", SelectedHangHoa.HangHoaMa);
 
                 await cmd.ExecuteNonQueryAsync();
                 await Shell.Current.DisplayAlert("Thông báo", "✓ Xóa hàng hóa thành công!", "OK");
@@ -720,7 +713,7 @@ namespace MyLoginApp.ViewModels
                 // Đánh dấu mục hiện tại là được chọn
                 hangHoa.IsSelected = true;
                 SelectedHangHoa = hangHoa;
-                Debug.WriteLine($"Đã chọn hàng hóa: {hangHoa.TenHangHoa} (ID: {hangHoa.HangHoaID})");
+                Debug.WriteLine($"Đã chọn hàng hóa: {hangHoa.TenHangHoa} (Mã: {hangHoa.HangHoaMa})");
             }
         }
 
